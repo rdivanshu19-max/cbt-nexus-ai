@@ -233,6 +233,34 @@ const TestTaking = () => {
       <div className="flex flex-1">
         {/* Question area */}
         <div className="flex-1 p-6 md:p-8 max-w-4xl">
+          <div className="grid gap-3 md:grid-cols-2 mb-6">
+            <div className="surface-elevated p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Marking scheme</p>
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div className="rounded-xl bg-success/10 px-3 py-3 text-center">
+                  <p className="text-lg font-bold text-success">+{test.correct_marks}</p>
+                  <p className="text-muted-foreground">Correct</p>
+                </div>
+                <div className="rounded-xl bg-destructive/10 px-3 py-3 text-center">
+                  <p className="text-lg font-bold text-destructive">{test.wrong_marks}</p>
+                  <p className="text-muted-foreground">Wrong</p>
+                </div>
+                <div className="rounded-xl bg-secondary px-3 py-3 text-center">
+                  <p className="text-lg font-bold">0</p>
+                  <p className="text-muted-foreground">Skipped</p>
+                </div>
+              </div>
+            </div>
+            <div className="surface-elevated p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Question status</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-success" /> Attempted = green</div>
+                <div className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-destructive" /> Not attempted = red</div>
+                <div className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-warning" /> Marked for review = orange</div>
+              </div>
+            </div>
+          </div>
+
           <div className="mb-6">
             <div className="flex items-center gap-3 mb-4">
               <Badge variant="secondary">Q{currentQuestion.question_number}</Badge>

@@ -111,29 +111,30 @@ export const NexusAIChat = () => {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-20 md:bottom-6 right-6 z-50 w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+        className="fixed bottom-20 md:bottom-6 right-6 z-50 h-16 w-16 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
       >
         {open ? <X className="h-6 w-6 text-primary-foreground" /> : <MessageCircle className="h-6 w-6 text-primary-foreground" />}
       </button>
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-36 md:bottom-24 right-6 z-50 w-[360px] max-h-[500px] glass-card flex flex-col shadow-2xl">
+        <div className="fixed bottom-40 md:bottom-28 right-4 md:right-6 z-50 w-[min(92vw,30rem)] h-[min(72vh,42rem)] glass-card flex flex-col shadow-2xl">
           <div className="p-4 border-b border-border flex items-center gap-3">
             <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center">
               <Bot className="h-4 w-4 text-primary-foreground" />
             </div>
             <div>
-              <h3 className="font-semibold text-sm">Nexus AI</h3>
-              <p className="text-xs text-muted-foreground">Your study assistant</p>
+              <h3 className="font-semibold">Nexus AI</h3>
+              <p className="text-xs text-muted-foreground">Your larger, smarter study assistant</p>
             </div>
+            <div className="ml-auto rounded-full bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary">Live insights</div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-[350px]">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
-              <div className="text-center text-muted-foreground text-sm py-8">
-                <Bot className="h-8 w-8 mx-auto mb-2 text-primary" />
-                <p>Hi! I'm Nexus AI. Ask me anything about your studies, doubts, or preparation strategy!</p>
+              <div className="text-center text-muted-foreground text-sm py-10 px-3">
+                <Bot className="h-10 w-10 mx-auto mb-3 text-primary" />
+                <p>Hi! I’m Nexus AI. Ask about performance, weak topics, revision strategy, or what to do today.</p>
               </div>
             )}
             {messages.map((msg, i) => (
@@ -143,9 +144,9 @@ export const NexusAIChat = () => {
                     <Bot className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                <div className={`rounded-xl px-3 py-2 text-sm max-w-[80%] ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
+                <div className={`rounded-2xl px-4 py-3 text-sm max-w-[84%] ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
                   {msg.role === 'assistant' ? (
-                    <div className="prose prose-sm prose-invert max-w-none">
+                    <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-headings:text-foreground prose-strong:text-foreground">
                       <ReactMarkdown>{msg.content}</ReactMarkdown>
                     </div>
                   ) : msg.content}
@@ -165,12 +166,12 @@ export const NexusAIChat = () => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-3 border-t border-border">
+          <div className="p-3 border-t border-border bg-card/70">
             <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
               <Input
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Ask anything..."
+                placeholder="Ask about your tests, weak areas, or daily plan..."
                 className="flex-1 text-sm"
                 disabled={loading}
               />

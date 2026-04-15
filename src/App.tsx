@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Tests from "./pages/Tests";
 import TestTaking from "./pages/TestTaking";
 import Results from "./pages/Results";
+import TestHistory from "./pages/TestHistory";
 import GenerateTest from "./pages/GenerateTest";
 import CustomTest from "./pages/CustomTest";
 import Profile from "./pages/Profile";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/tests" element={<ProtectedRoute><Tests /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
             <Route path="/test/:testId" element={<ProtectedRoute><TestTaking /></ProtectedRoute>} />
             <Route path="/results/:attemptId" element={<ProtectedRoute><Results /></ProtectedRoute>} />
             <Route path="/generate-test" element={<ProtectedRoute><GenerateTest /></ProtectedRoute>} />

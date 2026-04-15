@@ -20,6 +20,7 @@ const CustomTest = () => {
   const [correctMarks, setCorrectMarks] = useState('4');
   const [wrongMarks, setWrongMarks] = useState('-1');
   const [file, setFile] = useState<File | null>(null);
+  const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,34 +29,29 @@ const CustomTest = () => {
     setGenerating(true);
 
     try {
-      // Upload PDF
       const filePath = `${user.id}/${Date.now()}_${file.name}`;
       const { error: uploadErr } = await supabase.storage.from('test-pdfs').upload(filePath, file);
       if (uploadErr) throw uploadErr;
 
-      const { data: urlData } = supabase.storage.from('test-pdfs').getPublicUrl(filePath);
+      let answerKeyFilePath: string | null = null;
+      if (answerKeyFile) {
+        answerKeyFilePath = `${user.id}/answer-keys/${Date.now()}_${answerKeyFile.name}`;
+        const { error: keyUploadError } = await supabase.storage.from('test-pdfs').upload(answerKeyFilePath, answerKeyFile);
+        if (keyUploadError) throw keyUploadError;
+      }
 
-      // Call AI to process PDF
-      const FUNC_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-pdf-test`;
-      const resp = await fetch(FUNC_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
-          userId: user.id,
+      const { data, error } = await supabase.functions.invoke('process-pdf-test', {
+        body: {
           title,
-          duration: parseInt(duration),
+          duration: parseInt(duration, 10),
           correctMarks: parseFloat(correctMarks),
           wrongMarks: parseFloat(wrongMarks),
-          pdfUrl: urlData.publicUrl,
           filePath,
-        }),
+          answerKeyFilePath,
+        },
       });
 
-      if (!resp.ok) throw new Error('Failed to process PDF');
-      const data = await resp.json();
+      if (error) throw error;
       toast({ title: 'Test created!', description: 'Your custom test is ready.' });
       navigate(`/test/${data.testId}`);
     } catch (err: any) {
@@ -119,6 +115,15 @@ const CustomTest = () => {
                     </>
                   )}
                   <input id="pdf-upload" type="file" accept=".pdf" className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Optional Answer Key</Label>
+                <div className="border border-border rounded-xl p-5 bg-secondary/40 cursor-pointer hover:border-primary/30 transition-colors" onClick={() => document.getElementById('answer-key-upload')?.click()}>
+                  <p className="font-medium">{answerKeyFile ? answerKeyFile.name : 'Attach answer key PDF or TXT'}</p>
+                  <p className="text-xs text-muted-foreground mt-1">When attached, the extracted CBT uses this key instead of guessing answers.</p>
+                  <input id="answer-key-upload" type="file" accept=".pdf,.txt" className="hidden" onChange={e => setAnswerKeyFile(e.target.files?.[0] || null)} />
                 </div>
               </div>
 

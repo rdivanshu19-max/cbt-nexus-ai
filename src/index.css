@@ -4,6 +4,60 @@
 
 @layer base {
   :root {
+    --background: 42 35% 97%;
+    --foreground: 222 39% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 39% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 39% 14%;
+
+    --primary: 43 60% 55%;
+    --primary-foreground: 222 47% 8%;
+    --primary-glow: 43 82% 66%;
+
+    --secondary: 42 25% 92%;
+    --secondary-foreground: 222 39% 18%;
+
+    --muted: 38 24% 90%;
+    --muted-foreground: 220 14% 40%;
+
+    --accent: 43 60% 55%;
+    --accent-foreground: 222 47% 8%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 35 24% 82%;
+    --input: 35 24% 82%;
+    --ring: 43 60% 55%;
+
+    --radius: 0.75rem;
+
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 6%;
+    --info: 217 91% 60%;
+    --info-foreground: 210 40% 98%;
+
+    --sidebar-background: 45 32% 95%;
+    --sidebar-foreground: 222 39% 14%;
+    --sidebar-primary: 43 60% 55%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 42 25% 90%;
+    --sidebar-accent-foreground: 222 39% 18%;
+    --sidebar-border: 35 24% 82%;
+    --sidebar-ring: 43 60% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--card) / 0.98), hsl(var(--secondary) / 0.92));
+    --hero-glow: radial-gradient(circle at top, hsl(var(--primary) / 0.22), transparent 52%);
+    --shadow-elegant: 0 20px 60px -30px hsl(var(--foreground) / 0.18);
+  }
+
+  .dark {
     --background: 222 47% 6%;
     --foreground: 210 40% 96%;
 
@@ -15,12 +69,13 @@
 
     --primary: 43 60% 55%;
     --primary-foreground: 222 47% 6%;
+    --primary-glow: 43 80% 68%;
 
     --secondary: 222 30% 14%;
     --secondary-foreground: 210 40% 96%;
 
     --muted: 222 30% 14%;
-    --muted-foreground: 215 20% 55%;
+    --muted-foreground: 215 20% 65%;
 
     --accent: 43 60% 55%;
     --accent-foreground: 222 47% 6%;
@@ -31,8 +86,6 @@
     --border: 222 30% 18%;
     --input: 222 30% 18%;
     --ring: 43 60% 55%;
-
-    --radius: 0.75rem;
 
     --success: 142 76% 36%;
     --success-foreground: 210 40% 98%;
@@ -49,6 +102,11 @@
     --sidebar-accent-foreground: 210 40% 96%;
     --sidebar-border: 222 30% 18%;
     --sidebar-ring: 43 60% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--card) / 0.98), hsl(var(--secondary) / 0.94));
+    --hero-glow: radial-gradient(circle at top, hsl(var(--primary) / 0.2), transparent 52%);
+    --shadow-elegant: 0 24px 64px -32px hsl(var(--primary) / 0.35);
   }
 }
 
@@ -56,24 +114,47 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply scroll-smooth;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-image: var(--hero-glow);
+    background-attachment: fixed;
+  }
+  #root {
+    min-height: 100vh;
   }
 }
 
 @layer utilities {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
+    @apply bg-card/80 backdrop-blur-xl border border-border/60 rounded-xl;
+    box-shadow: var(--shadow-elegant);
   }
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(43, 60%, 55%), hsl(43, 80%, 65%));
+    background-image: var(--gradient-primary);
   }
   .gradient-text {
-    background: linear-gradient(135deg, hsl(43, 60%, 55%), hsl(43, 80%, 70%));
+    background-image: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  .surface-elevated {
+    background-image: var(--gradient-surface);
+    @apply border border-border/70 rounded-2xl;
+    box-shadow: var(--shadow-elegant);
+  }
+  .hero-mesh {
+    background-image:
+      radial-gradient(circle at 15% 20%, hsl(var(--primary) / 0.2), transparent 24%),
+      radial-gradient(circle at 85% 12%, hsl(var(--info) / 0.18), transparent 20%),
+      radial-gradient(circle at 60% 85%, hsl(var(--warning) / 0.15), transparent 22%);
+  }
+  .section-shell {
+    @apply surface-elevated p-6 md:p-8;
   }
   .animate-float {
     animation: float 6s ease-in-out infinite;

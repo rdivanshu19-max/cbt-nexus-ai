@@ -1,10 +1,24 @@
 import { Link } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Brain, BarChart3, Zap, Shield, Users } from 'lucide-react';
+import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy } from 'lucide-react';
 
 const Index = () => {
+  const features = [
+    { icon: FileCheck2, title: 'Exact PDF to CBT conversion', desc: 'Upload papers, preserve the original question flow, and turn them into a real exam interface.' },
+    { icon: Brain, title: 'AI test generation', desc: 'Create JEE or NEET full tests, subject papers, and chapter drills in minutes.' },
+    { icon: BarChart3, title: 'Deep analysis', desc: 'Review score, accuracy, timing, weak topics, and every solved question in detail.' },
+    { icon: Zap, title: 'Nexus AI support', desc: 'Chat with an assistant that understands your attempts, pace, and study gaps.' },
+  ];
+
+  const platformStats = [
+    { value: '3 modes', label: 'Official, AI, and custom CBT' },
+    { value: 'JEE + NEET', label: 'Built for competitive exam patterns' },
+    { value: 'Full analytics', label: 'Timing, accuracy, score, mistakes' },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background hero-mesh">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -13,8 +27,9 @@ const Index = () => {
             <span className="text-xl font-bold gradient-text">CBT Nexus</span>
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Link to="/auth">
-              <Button variant="ghost" className="text-foreground">Log In</Button>
+              <Button variant="ghost">Log In</Button>
             </Link>
             <Link to="/auth?mode=signup">
               <Button className="gradient-primary text-primary-foreground font-semibold">Sign Up</Button>
@@ -24,50 +39,100 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="container mx-auto text-center max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm text-primary font-medium">AI-Powered Exam Preparation</span>
+      <section className="pt-32 pb-16 px-6">
+        <div className="container mx-auto grid gap-10 xl:grid-cols-[1.2fr_0.8fr] items-center">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-sm text-primary font-medium">AI-powered CBT platform for serious JEE / NEET prep</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Real exam pressure, <span className="gradient-text">smarter preparation</span>, better decisions.
+            </h1>
+            <p className="text-xl text-muted-foreground mb-10 max-w-2xl">
+              CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a proper CBT workflow with analysis, revision insight, and a personal study copilot.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+              <Link to="/auth?mode=signup">
+                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold text-lg px-8 py-6">
+                  Start Preparing Free <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-border">
+                  Already have an account
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {platformStats.map((item) => (
+                <div key={item.label} className="surface-elevated p-4">
+                  <p className="text-2xl font-bold gradient-text">{item.value}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Master Your <span className="gradient-text">Competitive Exams</span> with AI
-          </h1>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Real CBT experience for JEE & NEET. AI-generated tests, deep analytics, and personalized preparation — all in one platform.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/auth?mode=signup">
-              <Button size="lg" className="gradient-primary text-primary-foreground font-semibold text-lg px-8 py-6">
-                Start Preparing Free
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-border">
-                Already have an account
-              </Button>
-            </Link>
+
+          <div className="surface-elevated p-5 md:p-6 animate-float">
+            <div className="rounded-2xl border border-border/70 bg-background/60 p-5">
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Today inside CBT Nexus</p>
+                  <h2 className="text-2xl font-semibold mt-1">Your prep cockpit</h2>
+                </div>
+                <img src="/logo.jpg" alt="CBT Nexus logo" className="h-12 w-12 rounded-xl" />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl bg-secondary p-4">
+                  <p className="text-sm text-muted-foreground">Live exam simulation</p>
+                  <p className="text-lg font-semibold mt-2">Timer, panel, review flags, and final analysis</p>
+                </div>
+                <div className="rounded-2xl bg-secondary p-4">
+                  <p className="text-sm text-muted-foreground">Official paper pipeline</p>
+                  <p className="text-lg font-semibold mt-2">Upload PDF → extract questions → launch CBT</p>
+                </div>
+                <div className="rounded-2xl bg-secondary p-4 sm:col-span-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Nexus AI suggestion</p>
+                      <p className="font-semibold mt-2">Revisit Electrostatics and Organic Chemistry after your next attempt.</p>
+                    </div>
+                    <Brain className="h-10 w-10 text-primary shrink-0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-20 px-6">
+        <div className="container mx-auto grid gap-4 lg:grid-cols-3">
+          <div className="section-shell lg:col-span-2">
+            <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3">What makes it useful</p>
+            <h2 className="text-3xl font-bold mb-4">Built for the actual exam loop, not just practice questions.</h2>
+            <p className="text-muted-foreground max-w-2xl">From official paper conversion to daily AI guidance, everything is centered on realistic testing and clear post-test decisions.</p>
+          </div>
+          <div className="section-shell">
+            <p className="text-sm text-muted-foreground">Admin uploads official papers, students generate targeted mocks, and every attempt feeds back into better planning.</p>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="py-20 px-6">
+      <section className="pb-20 px-6">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Why CBT Nexus?</h2>
-          <p className="text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
-            Everything you need to crack JEE & NEET in one intelligent platform.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: BookOpen, title: 'Real CBT Experience', desc: 'Exam-like interface with timer, question navigation, and marking scheme identical to actual JEE/NEET exams.' },
-              { icon: Brain, title: 'AI-Generated Tests', desc: 'Generate full-length or chapter-wise tests instantly. No duplicate questions, exam-level quality.' },
-              { icon: BarChart3, title: 'Deep Analytics', desc: 'Score breakdown, accuracy, time analysis, weak topics, and personalized improvement suggestions.' },
-              { icon: Zap, title: 'Nexus AI Assistant', desc: 'Chat with AI that knows your performance. Get doubts cleared, study plans, and daily recommendations.' },
-              { icon: Shield, title: 'PDF to CBT Conversion', desc: 'Upload any test PDF and our AI converts it into a real CBT exam with auto-generated answer keys.' },
-              { icon: Users, title: 'Custom Tests', desc: 'Create your own tests with custom marking schemes, or let AI generate subject/chapter-wise papers.' },
-            ].map((f, i) => (
-              <div key={i} className="glass-card p-8 hover:border-primary/30 transition-all group">
+          <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Why CBT Nexus?</h2>
+              <p className="text-muted-foreground max-w-2xl">A sharper stack for aspirants who want realistic practice and useful analysis.</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
+            {features.map((f) => (
+              <div key={f.title} className="section-shell group">
                 <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-5">
                   <f.icon className="h-6 w-6 text-primary-foreground" />
                 </div>
@@ -79,25 +144,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Marking Scheme */}
-      <section className="py-20 px-6 bg-card/50">
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold mb-8">Marking Scheme</h2>
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            <div className="glass-card p-6">
-              <div className="text-3xl font-bold text-success">+4</div>
-              <div className="text-muted-foreground mt-2">Correct Answer</div>
+      <section className="pb-20 px-6">
+        <div className="container mx-auto grid gap-5 lg:grid-cols-3">
+          {[
+            { icon: Shield, title: 'Official tests', desc: 'Admin-uploaded papers are kept separate, clean, and easy to find.' },
+            { icon: BookOpen, title: 'Custom uploads', desc: 'Students can upload their own PDFs and optionally attach answer keys.' },
+            { icon: Trophy, title: 'History & progress', desc: 'Every attempt becomes a trackable record with dates, scores, and review access.' },
+          ].map((item) => (
+            <div key={item.title} className="section-shell">
+              <item.icon className="h-8 w-8 text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+              <p className="text-muted-foreground">{item.desc}</p>
             </div>
-            <div className="glass-card p-6">
-              <div className="text-3xl font-bold text-destructive">−1</div>
-              <div className="text-muted-foreground mt-2">Wrong Answer</div>
-            </div>
-            <div className="glass-card p-6">
-              <div className="text-3xl font-bold text-muted-foreground">0</div>
-              <div className="text-muted-foreground mt-2">Unattempted</div>
-            </div>
-          </div>
-          <p className="text-muted-foreground">Marked for review questions are counted normally if answered, or scored 0 if left blank.</p>
+          ))}
+        </div>
+      </section>
+
+      <section className="pb-20 px-6">
+        <div className="container mx-auto section-shell text-center max-w-4xl">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to practice like the real thing?</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">Create your account once, stay signed in, and build your full CBT routine around official papers, AI tests, and revision analysis.</p>
+            <Link to="/auth?mode=signup">
+            <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8 py-6">
+              Create your CBT account
+            </Button>
+          </Link>
         </div>
       </section>
 

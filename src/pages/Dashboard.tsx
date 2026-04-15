@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { NexusAIChat } from '@/components/NexusAIChat';
 import { TutorialPopup } from '@/components/TutorialPopup';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle } from 'lucide-react';
+import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
 
 interface DashboardStats {
   totalTests: number;
@@ -125,6 +126,26 @@ const Dashboard = () => {
           ))}
         </div>
 
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card className="glass-card border-primary/20">
+            <CardContent className="p-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Need a full record?</p>
+                <h2 className="text-xl font-semibold">See your test history</h2>
+              </div>
+              <Link to="/history" className="inline-flex items-center gap-2 rounded-lg px-4 py-2 gradient-primary text-primary-foreground font-medium">
+                <History className="h-4 w-4" /> Open History
+              </Link>
+            </CardContent>
+          </Card>
+          <Card className="glass-card">
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground mb-1">Nexus AI next step</p>
+              <p className="font-medium">Ask Nexus AI for a plan based on your latest weak areas and score trend.</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {stats.totalTests === 0 && (
           <Card className="glass-card border-primary/20">
             <CardContent className="p-8 text-center">
@@ -172,8 +193,5 @@ const Dashboard = () => {
     </DashboardLayout>
   );
 };
-
-// Need Brain import for empty state
-import { Brain } from 'lucide-react';
 
 export default Dashboard;
