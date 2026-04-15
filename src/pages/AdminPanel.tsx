@@ -30,6 +30,7 @@ const AdminPanel = () => {
   const [testDuration, setTestDuration] = useState('180');
   const [testExamType, setTestExamType] = useState('JEE');
   const [testFile, setTestFile] = useState<File | null>(null);
+  const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -67,30 +68,31 @@ const AdminPanel = () => {
       const { error: uploadErr } = await supabase.storage.from('test-pdfs').upload(filePath, testFile);
       if (uploadErr) throw uploadErr;
 
-      const FUNC_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-pdf-test`;
-      const resp = await fetch(FUNC_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
-          userId: user.id,
+      let answerKeyFilePath: string | null = null;
+      if (answerKeyFile) {
+        answerKeyFilePath = `admin/answer-keys/${Date.now()}_${answerKeyFile.name}`;
+        const { error: keyUploadError } = await supabase.storage.from('test-pdfs').upload(answerKeyFilePath, answerKeyFile);
+        if (keyUploadError) throw keyUploadError;
+      }
+
+      const { error: functionError } = await supabase.functions.invoke('process-pdf-test', {
+        body: {
           title: testTitle,
-          duration: parseInt(testDuration),
+          duration: parseInt(testDuration, 10),
           correctMarks: 4,
           wrongMarks: -1,
-          pdfUrl: '',
           filePath,
-          isAdmin: true,
+          answerKeyFilePath,
+          isAdminUpload: true,
           examType: testExamType,
-        }),
+        },
       });
 
-      if (!resp.ok) throw new Error('Failed to process test');
+      if (functionError) throw functionError;
       toast({ title: 'Test uploaded and processed!', description: 'It is now available to all users.' });
       setTestTitle('');
       setTestFile(null);
+      setAnswerKeyFile(null);
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
@@ -184,6 +186,14 @@ const AdminPanel = () => {
                         <><Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" /><p className="text-muted-foreground text-sm">Click to select PDF</p></>
                       )}
                       <input id="admin-pdf" type="file" accept=".pdf" className="hidden" onChange={e => setTestFile(e.target.files?.[0] || null)} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Optional Answer Key</Label>
+                    <div className="border border-border rounded-xl p-4 bg-secondary/50 cursor-pointer hover:border-primary/30" onClick={() => document.getElementById('admin-answer-key')?.click()}>
+                      <p className="text-sm font-medium">{answerKeyFile ? answerKeyFile.name : 'Attach answer key PDF or TXT'}</p>
+                      <p className="text-xs text-muted-foreground mt-1">If provided, answers are matched from this file instead of being guessed.</p>
+                      <input id="admin-answer-key" type="file" accept=".pdf,.txt" className="hidden" onChange={e => setAnswerKeyFile(e.target.files?.[0] || null)} />
                     </div>
                   </div>
                   <Button type="submit" className="w-full gradient-primary text-primary-foreground" disabled={uploading || !testFile || !testTitle}>

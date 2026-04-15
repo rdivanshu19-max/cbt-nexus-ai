@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tests', icon: BookOpen, label: 'Tests' },
+  { to: '/history', icon: History, label: 'History' },
   { to: '/generate-test', icon: Brain, label: 'AI Test' },
   { to: '/custom-test', icon: Plus, label: 'Custom Test' },
   { to: '/profile', icon: User, label: 'Profile' },
@@ -26,6 +28,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
             <span className="text-lg font-bold gradient-text hidden sm:block">CBT Nexus</span>
           </Link>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             {isAdmin && (
               <Link to="/admin">
                 <Button variant="ghost" size="sm" className="text-primary">
@@ -59,9 +62,9 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 w-full bg-card border-t border-border z-50">
-        <div className="flex justify-around py-2">
-          {navItems.slice(0, 4).map(item => (
-            <Link key={item.to} to={item.to} className={`flex flex-col items-center gap-1 py-1 px-3 ${location.pathname === item.to ? 'text-primary' : 'text-muted-foreground'}`}>
+        <div className="flex gap-1 overflow-x-auto px-2 py-2">
+          {navItems.map(item => (
+            <Link key={item.to} to={item.to} className={`min-w-[72px] flex flex-col items-center gap-1 py-1 px-3 rounded-lg ${location.pathname === item.to ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
               <item.icon className="h-5 w-5" />
               <span className="text-xs">{item.label}</span>
             </Link>
