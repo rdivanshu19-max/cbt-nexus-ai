@@ -14,16 +14,364 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          has_seen_tutorial: boolean | null
+          id: string
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          has_seen_tutorial?: boolean | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          has_seen_tutorial?: boolean | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      study_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number | null
+          id: string
+          last_activity_date: string | null
+          longest_streak: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      test_attempts: {
+        Row: {
+          accuracy_percentage: number | null
+          completed_at: string | null
+          correct_count: number | null
+          created_at: string
+          id: string
+          marked_for_review_count: number | null
+          negative_marks: number | null
+          positive_marks: number | null
+          started_at: string
+          status: string
+          test_id: string
+          time_taken_seconds: number | null
+          total_score: number | null
+          unattempted_count: number | null
+          user_id: string
+          wrong_count: number | null
+        }
+        Insert: {
+          accuracy_percentage?: number | null
+          completed_at?: string | null
+          correct_count?: number | null
+          created_at?: string
+          id?: string
+          marked_for_review_count?: number | null
+          negative_marks?: number | null
+          positive_marks?: number | null
+          started_at?: string
+          status?: string
+          test_id: string
+          time_taken_seconds?: number | null
+          total_score?: number | null
+          unattempted_count?: number | null
+          user_id: string
+          wrong_count?: number | null
+        }
+        Update: {
+          accuracy_percentage?: number | null
+          completed_at?: string | null
+          correct_count?: number | null
+          created_at?: string
+          id?: string
+          marked_for_review_count?: number | null
+          negative_marks?: number | null
+          positive_marks?: number | null
+          started_at?: string
+          status?: string
+          test_id?: string
+          time_taken_seconds?: number | null
+          total_score?: number | null
+          unattempted_count?: number | null
+          user_id?: string
+          wrong_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          difficulty: string | null
+          explanation: string | null
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_number: number
+          question_text: string
+          subject: string | null
+          test_id: string
+          topic: string | null
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_number: number
+          question_text: string
+          subject?: string | null
+          test_id: string
+          topic?: string | null
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_number?: number
+          question_text?: string
+          subject?: string | null
+          test_id?: string
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_responses: {
+        Row: {
+          attempt_id: string
+          created_at: string
+          id: string
+          is_correct: boolean | null
+          is_marked_for_review: boolean | null
+          question_id: string
+          selected_answer: string | null
+          time_spent_seconds: number | null
+          updated_at: string
+        }
+        Insert: {
+          attempt_id: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          is_marked_for_review?: boolean | null
+          question_id: string
+          selected_answer?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          attempt_id?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          is_marked_for_review?: boolean | null
+          question_id?: string
+          selected_answer?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_responses_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "test_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "test_responses_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "test_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tests: {
+        Row: {
+          chapter: string | null
+          class_level: string | null
+          correct_marks: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          duration_minutes: number
+          exam_type: string | null
+          id: string
+          is_published: boolean | null
+          pdf_url: string | null
+          subject: string | null
+          test_type: string
+          title: string
+          total_marks: number
+          unattempted_marks: number
+          updated_at: string
+          wrong_marks: number
+        }
+        Insert: {
+          chapter?: string | null
+          class_level?: string | null
+          correct_marks?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          exam_type?: string | null
+          id?: string
+          is_published?: boolean | null
+          pdf_url?: string | null
+          subject?: string | null
+          test_type: string
+          title: string
+          total_marks?: number
+          unattempted_marks?: number
+          updated_at?: string
+          wrong_marks?: number
+        }
+        Update: {
+          chapter?: string | null
+          class_level?: string | null
+          correct_marks?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number
+          exam_type?: string | null
+          id?: string
+          is_published?: boolean | null
+          pdf_url?: string | null
+          subject?: string | null
+          test_type?: string
+          title?: string
+          total_marks?: number
+          unattempted_marks?: number
+          updated_at?: string
+          wrong_marks?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +498,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
