@@ -38,6 +38,24 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_conversions: {
+        Row: {
+          converted_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          converted_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          converted_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
