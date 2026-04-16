@@ -52,7 +52,9 @@ const CustomTest = () => {
       });
 
       if (error) throw error;
-      toast({ title: 'Test created!', description: 'Your custom test is ready.' });
+      if (!data?.ok) throw new Error(data?.error || 'Unable to process this PDF.');
+
+      toast({ title: 'Test created!', description: data.message || 'Your custom test is ready.' });
       navigate(`/test/${data.testId}`);
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
