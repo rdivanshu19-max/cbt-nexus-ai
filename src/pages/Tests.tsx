@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { NexusAIChat } from '@/components/NexusAIChat';
@@ -22,20 +23,27 @@ interface Test {
 }
 
 const Tests = () => {
+  const { user } = useAuth();
   const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTests = async () => {
-      const { data } = await supabase.from('tests').select('*').eq('is_published', true).order('created_at', { ascending: false });
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('tests')
+        .select('*')
+        .or(`is_published.eq.true,created_by.eq.${user.id}`)
+        .order('created_at', { ascending: false });
       if (data) setTests(data);
       setLoading(false);
     };
     fetchTests();
-  }, []);
+  }, [user]);
 
   const officialTests = tests.filter((test) => test.test_type === 'admin_uploaded');
-  const generatedTests = tests.filter((test) => test.test_type !== 'admin_uploaded');
+  const generatedTests = tests.filter((test) => test.test_type !== 'admin_uploaded' && test.test_type !== 'user_custom');
 
   const renderTestGrid = (items: Test[], emptyTitle: string, emptyDescription: string) => {
     if (items.length === 0) {
@@ -155,7 +163,7 @@ const Tests = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold">AI & Custom Practice</h2>
-                  <p className="text-sm text-muted-foreground">Your generated and custom practice sets live here.</p>
+                  <p className="text-sm text-muted-foreground">Your generated practice sets live here.</p>
                 </div>
                 <Badge variant="outline">{generatedTests.length}</Badge>
               </div>

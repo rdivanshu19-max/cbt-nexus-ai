@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { NexusAIChat } from '@/components/NexusAIChat';
 import { TutorialPopup } from '@/components/TutorialPopup';
+import { MyTestsPanel } from '@/components/dashboard/MyTestsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
 
@@ -145,6 +146,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        <MyTestsPanel userId={user?.id} />
 
         {stats.totalTests === 0 && (
           <Card className="glass-card border-primary/20">
