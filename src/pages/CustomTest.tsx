@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -94,6 +94,15 @@ const CustomTest = () => {
           <h1 className="text-3xl font-bold">Create Custom Test</h1>
           <p className="text-muted-foreground mt-1">Upload a PDF and AI will convert it to CBT format</p>
         </div>
+
+        <Alert>
+          <Clock3 className="h-4 w-4" />
+          <AlertTitle>Daily limit: 3 PDFs per day</AlertTitle>
+          <AlertDescription>
+            You have used <strong>{usedToday}</strong> of 3 today. Remaining: <strong>{Math.max(0, 3 - usedToday)}</strong>.
+            Limit resets at <strong>12:00 AM IST</strong> (next reset {resetText || 'midnight IST'}).
+          </AlertDescription>
+        </Alert>
 
         <Card className="glass-card">
           <CardHeader>
