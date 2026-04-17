@@ -31,12 +31,14 @@ const Dashboard = () => {
     totalCorrect: 0, totalWrong: 0, totalUnattempted: 0,
   });
   const [showTutorial, setShowTutorial] = useState(false);
+  const [tutorialDismissed, setTutorialDismissed] = useState(false);
 
   useEffect(() => {
-    if (profile && !profile.has_seen_tutorial) {
+    if (tutorialDismissed) return;
+    if (profile && profile.has_seen_tutorial === false) {
       setShowTutorial(true);
     }
-  }, [profile]);
+  }, [profile, tutorialDismissed]);
 
   useEffect(() => {
     if (!user) return;
@@ -86,8 +88,10 @@ const Dashboard = () => {
 
   const closeTutorial = async () => {
     setShowTutorial(false);
+    setTutorialDismissed(true);
     if (user) {
       await supabase.from('profiles').update({ has_seen_tutorial: true }).eq('user_id', user.id);
+      await refreshProfile();
     }
   };
 
