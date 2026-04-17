@@ -23,7 +23,7 @@ interface DashboardStats {
 }
 
 const Dashboard = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalTests: 0, averageScore: 0, averageAccuracy: 0,
     currentStreak: 0, longestStreak: 0,
