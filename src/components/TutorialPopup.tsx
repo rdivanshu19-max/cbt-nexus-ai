@@ -32,10 +32,14 @@ const steps = [
 export const TutorialPopup = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(0);
 
+  const handleClose = () => {
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="glass-card max-w-lg w-full p-8 relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+        <button type="button" onClick={handleClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
           <X className="h-5 w-5" />
         </button>
         <div className="mb-6">
@@ -48,10 +52,10 @@ export const TutorialPopup = ({ onClose }: { onClose: () => void }) => {
           <p className="text-muted-foreground whitespace-pre-line leading-relaxed">{steps[step].content}</p>
         </div>
         <div className="flex justify-between">
-          <Button variant="ghost" onClick={() => step > 0 ? setStep(step - 1) : onClose} className="text-muted-foreground">
+          <Button type="button" variant="ghost" onClick={() => (step > 0 ? setStep(step - 1) : handleClose())} className="text-muted-foreground">
             {step === 0 ? 'Skip' : 'Back'}
           </Button>
-          <Button onClick={() => step < steps.length - 1 ? setStep(step + 1) : onClose} className="gradient-primary text-primary-foreground">
+          <Button type="button" onClick={() => (step < steps.length - 1 ? setStep(step + 1) : handleClose())} className="gradient-primary text-primary-foreground">
             {step === steps.length - 1 ? 'Get Started!' : 'Next'}
           </Button>
         </div>
