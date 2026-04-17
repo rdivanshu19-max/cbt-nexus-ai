@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Loader2, FileText } from 'lucide-react';
+import { Upload, Loader2, FileText, Clock3 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const CustomTest = () => {
   const { user } = useAuth();
@@ -22,6 +23,28 @@ const CustomTest = () => {
   const [file, setFile] = useState<File | null>(null);
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [usedToday, setUsedToday] = useState<number>(0);
+  const [resetText, setResetText] = useState<string>('');
+
+  const fetchUsage = async () => {
+    if (!user) return;
+    const fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
+    });
+    const [y, m, d] = fmt.format(new Date()).split('-');
+    const startIso = new Date(`${y}-${m}-${d}T00:00:00+05:30`).toISOString();
+    const endIso = new Date(new Date(`${y}-${m}-${d}T00:00:00+05:30`).getTime() + 86400000).toISOString();
+    const { count } = await supabase
+      .from('pdf_conversions')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('converted_at', startIso)
+      .lt('converted_at', endIso);
+    setUsedToday(count || 0);
+    setResetText(new Date(endIso).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' }));
+  };
+
+  useEffect(() => { fetchUsage(); }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +78,7 @@ const CustomTest = () => {
       if (!data?.ok) throw new Error(data?.error || 'Unable to process this PDF.');
 
       toast({ title: 'Test created!', description: data.message || 'Your custom test is ready.' });
+      await fetchUsage();
       navigate(`/test/${data.testId}`);
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
