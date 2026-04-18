@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle } from 'lucide-react';
-import { MathText } from '@/lib/math-render';
 
 interface Question {
   id: string;
@@ -17,7 +16,6 @@ interface Question {
   option_c: string;
   option_d: string;
   subject?: string | null;
-  image_url?: string | null;
 }
 
 interface Response {
@@ -40,7 +38,6 @@ const TestTaking = () => {
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const questionStartTime = useRef(Date.now());
 
   useEffect(() => {
@@ -113,10 +110,8 @@ const TestTaking = () => {
   };
 
   const handleSubmit = async () => {
-    if (!attemptId || !user || !test || submitting) return;
-    setSubmitting(true);
+    if (!attemptId || !user || !test) return;
     trackTime();
-    try {
 
     const allResponses = Array.from(responses.values());
 
@@ -191,12 +186,7 @@ const TestTaking = () => {
       }).eq('user_id', user.id);
     }
 
-      navigate(`/results/${attemptId}`);
-    } catch (err: any) {
-      toast({ title: 'Submit failed', description: err?.message || 'Please retry.', variant: 'destructive' });
-    } finally {
-      setSubmitting(false);
-    }
+    navigate(`/results/${attemptId}`);
   };
 
   const formatTime = (s: number) => {
@@ -234,14 +224,8 @@ const TestTaking = () => {
             <Clock className="h-4 w-4" />
             <span className="font-mono font-semibold text-sm">{formatTime(timeLeft)}</span>
           </div>
-          <Button
-            type="button"
-            onClick={() => { if (!submitting && confirm('Are you sure you want to submit?')) handleSubmit(); }}
-            size="sm"
-            disabled={submitting}
-            className="gradient-primary text-primary-foreground"
-          >
-            {submitting ? 'Submitting...' : 'Submit'}
+          <Button onClick={() => { if (confirm('Are you sure you want to submit?')) handleSubmit(); }} size="sm" className="gradient-primary text-primary-foreground">
+            Submit
           </Button>
         </div>
       </div>
@@ -283,12 +267,7 @@ const TestTaking = () => {
               {currentQuestion.subject && <Badge variant="outline">{currentQuestion.subject}</Badge>}
               {currentResponse?.is_marked_for_review && <Badge className="bg-warning/10 text-warning border-0"><Flag className="h-3 w-3 mr-1" />Review</Badge>}
             </div>
-            {currentQuestion.image_url && (
-              <div className="mb-4 rounded-xl border border-dashed border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
-                [This question contains a diagram. Please refer to the original paper.]
-              </div>
-            )}
-            <p className="text-lg leading-relaxed"><MathText text={currentQuestion.question_text} /></p>
+            <p className="text-lg leading-relaxed">{currentQuestion.question_text}</p>
           </div>
 
           <div className="space-y-3 mb-8">
@@ -305,7 +284,7 @@ const TestTaking = () => {
                 <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 ${
                   currentResponse?.selected_answer === opt.key ? 'gradient-primary text-primary-foreground' : 'bg-secondary'
                 }`}>{opt.key}</span>
-                <span><MathText text={opt.text} /></span>
+                <span>{opt.text}</span>
               </button>
             ))}
           </div>

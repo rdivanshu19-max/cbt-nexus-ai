@@ -23,7 +23,7 @@ interface DashboardStats {
 }
 
 const Dashboard = () => {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalTests: 0, averageScore: 0, averageAccuracy: 0,
     currentStreak: 0, longestStreak: 0,
@@ -31,14 +31,12 @@ const Dashboard = () => {
     totalCorrect: 0, totalWrong: 0, totalUnattempted: 0,
   });
   const [showTutorial, setShowTutorial] = useState(false);
-  const [tutorialDismissed, setTutorialDismissed] = useState(false);
 
   useEffect(() => {
-    if (tutorialDismissed) return;
-    if (profile && profile.has_seen_tutorial === false) {
+    if (profile && !profile.has_seen_tutorial) {
       setShowTutorial(true);
     }
-  }, [profile, tutorialDismissed]);
+  }, [profile]);
 
   useEffect(() => {
     if (!user) return;
@@ -88,10 +86,8 @@ const Dashboard = () => {
 
   const closeTutorial = async () => {
     setShowTutorial(false);
-    setTutorialDismissed(true);
     if (user) {
       await supabase.from('profiles').update({ has_seen_tutorial: true }).eq('user_id', user.id);
-      await refreshProfile();
     }
   };
 

@@ -28,7 +28,6 @@ type OfficialTest = {
   duration_minutes: number;
   total_marks: number;
   created_at: string;
-  is_published: boolean | null;
 };
 
 type ProcessPdfResponse = {
@@ -37,7 +36,6 @@ type ProcessPdfResponse = {
   message?: string;
   testId?: string;
   questionCount?: number;
-  diagnostics?: Record<string, unknown>;
 };
 
 const emptyEditState = {
@@ -47,7 +45,6 @@ const emptyEditState = {
   examType: 'JEE',
   duration: '180',
   description: '',
-  isPublished: true,
 };
 
 export const OfficialTestsManager = () => {
@@ -55,8 +52,6 @@ export const OfficialTestsManager = () => {
   const [tests, setTests] = useState<OfficialTest[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [lastDiagnostics, setLastDiagnostics] = useState<Record<string, unknown> | null>(null);
-  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -67,12 +62,11 @@ export const OfficialTestsManager = () => {
   const [testSubject, setTestSubject] = useState('');
   const [testFile, setTestFile] = useState<File | null>(null);
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
-  const [showProcessingDialog, setShowProcessingDialog] = useState(false);
 
   const fetchOfficialTests = async () => {
     const { data, error } = await supabase
       .from('tests')
-      .select('id, title, description, subject, exam_type, duration_minutes, total_marks, created_at, is_published')
+      .select('id, title, description, subject, exam_type, duration_minutes, total_marks, created_at')
       .eq('test_type', 'admin_uploaded')
       .order('created_at', { ascending: false });
 
@@ -104,7 +98,6 @@ export const OfficialTestsManager = () => {
     if (!testFile || !testTitle) return;
 
     setUploading(true);
-    setShowProcessingDialog(true);
 
     try {
       const timestamp = Date.now();
@@ -140,7 +133,6 @@ export const OfficialTestsManager = () => {
         throw new Error(response?.error || 'Unable to process this PDF.');
       }
 
-      setLastDiagnostics(response.diagnostics || null);
       toast({
         title: 'Official test ready',
         description: response.message || 'The uploaded paper is now available to all users.',
@@ -151,7 +143,6 @@ export const OfficialTestsManager = () => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
       setUploading(false);
-      setShowProcessingDialog(false);
     }
   };
 
@@ -163,7 +154,6 @@ export const OfficialTestsManager = () => {
       examType: test.exam_type || 'JEE',
       duration: String(test.duration_minutes),
       description: test.description || '',
-      isPublished: !!test.is_published,
     });
     setEditOpen(true);
   };
@@ -187,7 +177,6 @@ export const OfficialTestsManager = () => {
         exam_type: editState.examType || null,
         duration_minutes: duration,
         description: editState.description.trim() || null,
-        is_published: editState.isPublished,
       })
       .eq('id', editState.id);
 
@@ -200,21 +189,6 @@ export const OfficialTestsManager = () => {
 
     setEditOpen(false);
     toast({ title: 'Official test updated' });
-    await fetchOfficialTests();
-  };
-
-  const togglePublished = async (test: OfficialTest) => {
-    setTogglingId(test.id);
-    const { error } = await supabase
-      .from('tests')
-      .update({ is_published: !test.is_published })
-      .eq('id', test.id);
-    setTogglingId(null);
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-      return;
-    }
-    toast({ title: !test.is_published ? 'Test published' : 'Test unpublished' });
     await fetchOfficialTests();
   };
 
@@ -300,28 +274,6 @@ export const OfficialTestsManager = () => {
             <Button type="submit" className="w-full gradient-primary text-primary-foreground" disabled={uploading || !testFile || !testTitle.trim()}>
               {uploading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing PDF...</> : 'Upload & Process Test'}
             </Button>
-
-            {lastDiagnostics && (
-              <div className="rounded-xl border border-border bg-secondary/30 p-4 text-sm space-y-1">
-                <p className="font-semibold">Last upload diagnostics</p>
-                <p>Model: {String(lastDiagnostics.usedModel || 'unknown')}</p>
-                <p>Scanned PDF: {lastDiagnostics.scannedPdf ? 'Yes (used OCR)' : 'No'}</p>
-                <p>Extracted text length: {Number(lastDiagnostics.extractedTextLength || 0)}</p>
-                <p>Pages: {Number(lastDiagnostics.pageCount || 0)}</p>
-                <p>Questions with diagrams: {Number(lastDiagnostics.diagramQuestions || 0)}</p>
-                <p>Chunks sent: {Number(lastDiagnostics.chunkCount || 0)}</p>
-                <p>Chunk failures: {Number(lastDiagnostics.failedChunks || 0)}</p>
-                <p>Scanned pages: {Number(lastDiagnostics.scannedPages || 0)}</p>
-                <p>Scanned page failures: {Number(lastDiagnostics.failedScannedPages || 0)}</p>
-                <p>Answer key matches applied: {Number(lastDiagnostics.answerKeyApplied || 0)}</p>
-                <p>Question count mismatch warning: {lastDiagnostics.lowQuestionCountWarning ? 'Yes' : 'No'}</p>
-                <p>Chunks sent: {Number(lastDiagnostics.chunkCount || 0)}</p>
-                <p>Chunk failures: {Number(lastDiagnostics.failedChunks || 0)}</p>
-                <p>Scanned pages: {Number(lastDiagnostics.scannedPages || 0)}</p>
-                <p>Scanned page failures: {Number(lastDiagnostics.failedScannedPages || 0)}</p>
-                <p>Question count mismatch warning: {lastDiagnostics.lowQuestionCountWarning ? 'Yes' : 'No'}</p>
-              </div>
-            )}
           </form>
         </CardContent>
       </Card>
@@ -347,23 +299,15 @@ export const OfficialTestsManager = () => {
                     <h3 className="text-lg font-semibold">{test.title}</h3>
                     {test.exam_type && <Badge variant="secondary">{test.exam_type}</Badge>}
                     {test.subject && <Badge variant="outline">{test.subject}</Badge>}
-                    <Badge variant={test.is_published ? 'default' : 'outline'}>
-                      {test.is_published ? 'Published' : 'Draft'}
-                    </Badge>
                   </div>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1"><Clock3 className="h-4 w-4" /> {test.duration_minutes} min</span>
                     <span>{test.total_marks} marks</span>
                     <span>{new Date(test.created_at).toLocaleString()}</span>
                   </div>
-                  {test.description && <p className="text-sm text-muted-foreground">{test.description}</p>}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" onClick={() => togglePublished(test)} disabled={togglingId === test.id}>
-                    {togglingId === test.id ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                    {test.is_published ? 'Unpublish' : 'Publish'}
-                  </Button>
                   <Button variant="outline" onClick={() => openEditDialog(test)}>
                     <Pencil className="h-4 w-4 mr-2" /> Edit
                   </Button>
@@ -377,17 +321,6 @@ export const OfficialTestsManager = () => {
           )}
         </CardContent>
       </Card>
-
-      <Dialog open={showProcessingDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2"><Loader2 className="h-5 w-5 animate-spin text-primary" /> Processing official test PDF</DialogTitle>
-            <DialogDescription>
-              This may take some time. Please wait a moment while Nexus CBT extracts questions and prepares the official test.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
@@ -426,18 +359,6 @@ export const OfficialTestsManager = () => {
             <div className="space-y-2">
               <Label>Description</Label>
               <Textarea value={editState.description} onChange={(event) => setEditState((prev) => ({ ...prev, description: event.target.value }))} placeholder="Optional note for this official paper" />
-            </div>
-            <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
-              <div>
-                <p className="font-medium">Published</p>
-                <p className="text-xs text-muted-foreground">Unpublish to hide this test from all students.</p>
-              </div>
-              <input
-                type="checkbox"
-                className="h-5 w-5"
-                checked={editState.isPublished}
-                onChange={(event) => setEditState((prev) => ({ ...prev, isPublished: event.target.checked }))}
-              />
             </div>
           </div>
 

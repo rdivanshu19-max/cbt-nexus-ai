@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Brain, BarChart3, Zap, Shield, ArrowRight, Sparkles, FileCheck2, Trophy } from 'lucide-react';
-import rankersStarLogo from '@/assets/rankers-star-logo.jpg';
-import preppoLogo from '@/assets/preppro-logo.jpg';
+import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy } from 'lucide-react';
 
 const Index = () => {
   const features = [
@@ -65,48 +63,6 @@ const Index = () => {
                   Already have an account
                 </Button>
               </Link>
-            </div>
-
-            <div className="mb-10 overflow-hidden rounded-[2rem] border border-border/70 bg-card/85 shadow-[0_24px_120px_hsl(var(--foreground)/0.12)] backdrop-blur-sm">
-              <div className="grid gap-px bg-border lg:grid-cols-[0.95fr_1.05fr]">
-                <div className="bg-background px-6 py-6 md:px-7 md:py-7">
-                  <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground mb-3">Collaboration spotlight</p>
-                  <h2 className="text-2xl md:text-3xl font-bold leading-tight mb-3">Built in collaboration with Rankers Star and PrepPro Network.</h2>
-                  <p className="text-sm md:text-base text-muted-foreground max-w-xl">A premium exam-prep collaboration powering the Nexus CBT launch, combining realistic CBT practice with stronger student ecosystems.</p>
-                </div>
-                <div className="grid gap-px bg-border sm:grid-cols-2">
-                  <a
-                    href="https://rankers-stars.vercel.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group bg-background px-5 py-6 transition-colors hover:bg-secondary/60"
-                  >
-                    <div className="flex items-center gap-4">
-                      <img src={rankersStarLogo} alt="Rankers Star" className="h-16 w-16 rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105" />
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Partner platform</p>
-                        <p className="text-lg font-semibold">Rankers Star</p>
-                        <p className="text-sm text-primary">rankers-stars.vercel.app</p>
-                      </div>
-                    </div>
-                  </a>
-                  <a
-                    href="https://PrepProhub.lovable.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group bg-background px-5 py-6 transition-colors hover:bg-secondary/60"
-                  >
-                    <div className="flex items-center gap-4">
-                      <img src={preppoLogo} alt="PrepPro Network" className="h-16 w-16 rounded-2xl object-cover bg-background transition-transform duration-300 group-hover:scale-105" />
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Partner platform</p>
-                        <p className="text-lg font-semibold">PrepPro Network</p>
-                        <p className="text-sm text-primary">PrepProhub.lovable.app</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
@@ -218,14 +174,12 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-border">
-        <div className="container mx-auto space-y-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <img src="/logo.jpg" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
-              <span className="font-bold gradient-text">CBT Nexus</span>
-            </div>
-            <p className="text-muted-foreground text-sm">© 2026 CBT Nexus · Built in collaboration with Rankers Star & PrepPro Network.</p>
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img src="/logo.jpg" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
+            <span className="font-bold gradient-text">CBT Nexus</span>
           </div>
+          <p className="text-muted-foreground text-sm">© 2026 CBT Nexus. All rights reserved.</p>
         </div>
       </footer>
     </div>
