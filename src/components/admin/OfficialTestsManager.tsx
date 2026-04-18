@@ -67,6 +67,7 @@ export const OfficialTestsManager = () => {
   const [testSubject, setTestSubject] = useState('');
   const [testFile, setTestFile] = useState<File | null>(null);
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
+  const [showProcessingDialog, setShowProcessingDialog] = useState(false);
 
   const fetchOfficialTests = async () => {
     const { data, error } = await supabase
@@ -103,6 +104,7 @@ export const OfficialTestsManager = () => {
     if (!testFile || !testTitle) return;
 
     setUploading(true);
+    setShowProcessingDialog(true);
 
     try {
       const timestamp = Date.now();
@@ -149,6 +151,7 @@ export const OfficialTestsManager = () => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
       setUploading(false);
+      setShowProcessingDialog(false);
     }
   };
 
@@ -374,6 +377,17 @@ export const OfficialTestsManager = () => {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={showProcessingDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Loader2 className="h-5 w-5 animate-spin text-primary" /> Processing official test PDF</DialogTitle>
+            <DialogDescription>
+              This may take some time. Please wait a moment while Nexus CBT extracts questions and prepares the official test.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>

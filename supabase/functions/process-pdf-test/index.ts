@@ -52,8 +52,8 @@ const BodySchema = z.object({
   subject: z.string().trim().min(1).max(100).nullable().optional(),
 });
 
-const GEMINI_MODEL = "gemini-1.5-flash";
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
+const GEMINI_MODEL = "gemini-1.5-flash-latest";
+const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=";
 const QUESTION_START_REGEX = /^\s*(?:Q(?:uestion)?\s*)?\(?\d{1,3}\)?(?:\s*[.)\-:]|\s+)/i;
 const VALID_ANSWERS = new Set(["A", "B", "C", "D"]);
 const EXTRACT_FAILURE_MESSAGE = "Extraction failed. Please try again in 2 minutes.";
