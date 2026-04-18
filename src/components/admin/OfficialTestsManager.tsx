@@ -378,6 +378,17 @@ export const OfficialTestsManager = () => {
         </CardContent>
       </Card>
 
+      <Dialog open={showProcessingDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Loader2 className="h-5 w-5 animate-spin text-primary" /> Processing official test PDF</DialogTitle>
+            <DialogDescription>
+              This may take some time. Please wait a moment while Nexus CBT extracts questions and prepares the official test.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
