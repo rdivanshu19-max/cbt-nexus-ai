@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft } from 'lucide-react';
+import { MathText } from '@/lib/math-render';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -127,7 +128,12 @@ const Results = () => {
                         {q.subject && <Badge variant="outline" className="text-xs">{q.subject}</Badge>}
                         {resp?.time_spent_seconds && <span className="text-xs text-muted-foreground ml-auto"><Clock className="h-3 w-3 inline mr-1" />{resp.time_spent_seconds}s</span>}
                       </div>
-                      <p className="text-sm mb-3">{q.question_text}</p>
+                      {q.image_url && (
+                        <div className="mb-3 rounded-xl border border-dashed border-border bg-secondary/40 p-3 text-sm text-muted-foreground">
+                          [This question contains a diagram. Please refer to the original paper.]
+                        </div>
+                      )}
+                      <p className="text-sm mb-3"><MathText text={q.question_text} /></p>
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         {['A', 'B', 'C', 'D'].map(opt => {
                           const optText = q[`option_${opt.toLowerCase()}` as keyof typeof q];
@@ -138,7 +144,7 @@ const Results = () => {
                           else if (isSelected && !isCorrect) cls = 'bg-destructive/10 border-destructive text-destructive';
                           return (
                             <div key={opt} className={`px-3 py-2 rounded-lg border ${cls}`}>
-                              <span className="font-semibold mr-2">{opt}.</span>{optText as string}
+                              <span className="font-semibold mr-2">{opt}.</span><MathText text={String(optText || '')} />
                               {isAnswer && <Check className="h-3 w-3 inline ml-1" />}
                             </div>
                           );
@@ -146,7 +152,7 @@ const Results = () => {
                       </div>
                       {q.explanation && (
                         <div className="mt-3 p-3 rounded-lg bg-info/5 border border-info/20 text-sm">
-                          <span className="font-semibold text-info">Explanation: </span>{q.explanation}
+                          <span className="font-semibold text-info">Explanation: </span><MathText text={q.explanation} />
                         </div>
                       )}
                     </div>

@@ -48,6 +48,43 @@ const Index = () => {
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="text-sm text-primary font-medium">AI-powered CBT platform for serious JEE / NEET prep</span>
             </div>
+            <div className="mb-8 overflow-hidden rounded-3xl border border-border bg-card/80 shadow-[0_20px_80px_hsl(var(--foreground)/0.08)]">
+              <div className="grid gap-px bg-border md:grid-cols-[1.05fr_1fr]">
+                <div className="bg-background p-5 md:p-6">
+                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-2">Collab spotlight</p>
+                  <h2 className="text-2xl font-bold mb-2">A launch collaboration between Rankers Star and PrepPro Network.</h2>
+                  <p className="text-sm text-muted-foreground">CBT Nexus is being shaped as a shared exam-prep build with both platforms featured right at the top of the experience.</p>
+                </div>
+                <div className="grid gap-px bg-border sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+                  <a
+                    href="https://rankers-stars.vercel.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 bg-background p-5 transition-colors hover:bg-secondary/60"
+                  >
+                    <img src={rankersStarLogo} alt="Rankers Star" className="h-14 w-14 rounded-2xl object-cover" />
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Partner platform</p>
+                      <p className="text-lg font-semibold">Rankers Star</p>
+                      <p className="text-sm text-primary">rankers-stars.vercel.app</p>
+                    </div>
+                  </a>
+                  <a
+                    href="https://PrepProhub.lovable.app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 bg-background p-5 transition-colors hover:bg-secondary/60"
+                  >
+                    <img src={preppoLogo} alt="PrepPro Network" className="h-14 w-14 rounded-2xl object-cover bg-background" />
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Partner platform</p>
+                      <p className="text-lg font-semibold">PrepPro Network</p>
+                      <p className="text-sm text-primary">PrepProhub.lovable.app</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Real exam pressure, <span className="gradient-text">smarter preparation</span>, better decisions.
             </h1>
@@ -177,38 +214,6 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-border">
         <div className="container mx-auto space-y-8">
-          <div className="surface-elevated p-6 md:p-8">
-            <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-4 text-center">A Collaboration Between</p>
-            <div className="grid gap-6 md:grid-cols-2">
-              <a
-                href="https://rankers-stars.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 rounded-2xl border border-border/70 bg-background/60 p-5 hover:border-primary/40 transition-colors"
-              >
-                <img src={rankersStarLogo} alt="Rankers Star" className="h-16 w-16 rounded-xl object-cover" />
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Brand partner</p>
-                  <p className="text-lg font-semibold">Rankers Star</p>
-                  <p className="text-sm text-primary">rankers-stars.vercel.app</p>
-                </div>
-              </a>
-              <a
-                href="https://PrepProhub.lovable.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 rounded-2xl border border-border/70 bg-background/60 p-5 hover:border-primary/40 transition-colors"
-              >
-                <img src={preppoLogo} alt="PrepPro Network" className="h-16 w-16 rounded-full object-cover bg-white" />
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Brand partner</p>
-                  <p className="text-lg font-semibold">PrepPro Network</p>
-                  <p className="text-sm text-primary">PrepProhub.lovable.app</p>
-                </div>
-              </a>
-            </div>
-          </div>
-
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img src="/logo.jpg" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
