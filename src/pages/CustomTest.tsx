@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, Loader2, FileText, Clock3 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const CustomTest = () => {
   const { user } = useAuth();
@@ -169,6 +170,16 @@ const CustomTest = () => {
           </CardContent>
         </Card>
       </div>
+      <Dialog open={generating}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Loader2 className="h-5 w-5 animate-spin text-primary" /> Extracting your PDF</DialogTitle>
+            <DialogDescription>
+              This can take a little time. Please wait a moment while Nexus CBT reads the paper and builds your test.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
       <NexusAIChat />
     </DashboardLayout>
   );
