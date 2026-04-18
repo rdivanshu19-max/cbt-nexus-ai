@@ -67,6 +67,7 @@ export const OfficialTestsManager = () => {
   const [testSubject, setTestSubject] = useState('');
   const [testFile, setTestFile] = useState<File | null>(null);
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
+  const [showProcessingDialog, setShowProcessingDialog] = useState(false);
 
   const fetchOfficialTests = async () => {
     const { data, error } = await supabase
@@ -103,6 +104,7 @@ export const OfficialTestsManager = () => {
     if (!testFile || !testTitle) return;
 
     setUploading(true);
+    setShowProcessingDialog(true);
 
     try {
       const timestamp = Date.now();
@@ -149,6 +151,7 @@ export const OfficialTestsManager = () => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
       setUploading(false);
+      setShowProcessingDialog(false);
     }
   };
 
