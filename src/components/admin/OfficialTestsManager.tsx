@@ -307,6 +307,11 @@ export const OfficialTestsManager = () => {
                 <p>Pages: {Number(lastDiagnostics.pageCount || 0)}</p>
                 <p>Questions with diagrams: {Number(lastDiagnostics.diagramQuestions || 0)}</p>
                 <p>Answer key matches applied: {Number(lastDiagnostics.answerKeyApplied || 0)}</p>
+                <p>Chunks sent: {Number(lastDiagnostics.chunkCount || 0)}</p>
+                <p>Chunk failures: {Number(lastDiagnostics.failedChunks || 0)}</p>
+                <p>Scanned pages: {Number(lastDiagnostics.scannedPages || 0)}</p>
+                <p>Scanned page failures: {Number(lastDiagnostics.failedScannedPages || 0)}</p>
+                <p>Question count mismatch warning: {lastDiagnostics.lowQuestionCountWarning ? 'Yes' : 'No'}</p>
               </div>
             )}
           </form>
