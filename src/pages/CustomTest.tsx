@@ -53,13 +53,18 @@ const CustomTest = () => {
       const d = ist.getUTCDate();
       const startUtc = new Date(Date.UTC(y, mo, d, 0, 0, 0) - istOffsetMs);
       const endUtc = new Date(startUtc.getTime() + 24 * 60 * 60 * 1000);
-      const { count } = await supabase
+      const { count, error } = await supabase
         .from('pdf_conversions')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
         .gte('converted_at', startUtc.toISOString())
         .lt('converted_at', endUtc.toISOString());
-      setUsedToday(count ?? 0);
+      if (error) {
+        console.error('Failed to load PDF quota', error);
+        setUsedToday(0);
+      } else {
+        setUsedToday(count ?? 0);
+      }
     };
     fetchUsage();
   }, [user, isAdmin, generating]);
