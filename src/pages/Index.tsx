@@ -70,7 +70,7 @@ const Index = () => {
             {/* Collaboration callout (right under CTAs) */}
             <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-6 md:p-8 mb-10">
               <div className="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/10 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
               <div className="relative flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <Heart className="h-4 w-4 text-primary" />
