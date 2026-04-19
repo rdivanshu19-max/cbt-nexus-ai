@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle } from 'lucide-react';
+import { MathText } from '@/components/MathText';
 
 interface Question {
   id: string;
@@ -267,7 +268,7 @@ const TestTaking = () => {
               {currentQuestion.subject && <Badge variant="outline">{currentQuestion.subject}</Badge>}
               {currentResponse?.is_marked_for_review && <Badge className="bg-warning/10 text-warning border-0"><Flag className="h-3 w-3 mr-1" />Review</Badge>}
             </div>
-            <p className="text-lg leading-relaxed">{currentQuestion.question_text}</p>
+            <MathText block className="text-lg leading-relaxed">{currentQuestion.question_text}</MathText>
           </div>
 
           <div className="space-y-3 mb-8">
@@ -284,7 +285,7 @@ const TestTaking = () => {
                 <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 ${
                   currentResponse?.selected_answer === opt.key ? 'gradient-primary text-primary-foreground' : 'bg-secondary'
                 }`}>{opt.key}</span>
-                <span>{opt.text}</span>
+                <MathText className="flex-1">{opt.text}</MathText>
               </button>
             ))}
           </div>

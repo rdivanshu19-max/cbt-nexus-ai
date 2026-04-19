@@ -149,29 +149,57 @@ async function callGemini(
   }
 
   let lastError: Error | null = null;
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY_MS = 5000;
 
   for (const model of modelCandidates) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts }],
-        generationConfig: {
-          temperature: 0,
-          maxOutputTokens: 32768,
-        },
-      }),
-    });
+    let response: Response | null = null;
+    let attemptError: Error | null = null;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Gemini API error (${model}):`, response.status, errorText);
-      if (response.status === 404) {
-        lastError = new Error(`Gemini model ${model} is unavailable.`);
-        continue;
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts }],
+            generationConfig: {
+              temperature: 0,
+              maxOutputTokens: 32768,
+            },
+          }),
+        });
+
+        if (response.ok) {
+          attemptError = null;
+          break;
+        }
+
+        const errorText = await response.text();
+        console.error(`Gemini API error (${model}, attempt ${attempt}/${MAX_RETRIES}):`, response.status, errorText);
+        if (response.status === 404) {
+          attemptError = new Error(`Gemini model ${model} is unavailable.`);
+          break; // don't retry on 404 — try next model
+        }
+        attemptError = new Error(`Gemini API error: ${response.status} - ${errorText.slice(0, 500)}`);
+        response = null;
+      } catch (err) {
+        console.error(`Gemini fetch failed (${model}, attempt ${attempt}/${MAX_RETRIES}):`, err);
+        attemptError = err instanceof Error ? err : new Error(String(err));
+        response = null;
       }
-      throw new Error(`Gemini API error: ${response.status} - ${errorText.slice(0, 500)}`);
+
+      if (attempt < MAX_RETRIES) {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+      }
+    }
+
+    if (!response || attemptError) {
+      lastError = attemptError || new Error(`Gemini model ${model} failed after ${MAX_RETRIES} retries.`);
+      if (attemptError?.message.includes("unavailable")) continue;
+      // For other errors, also try next model
+      continue;
     }
 
     const data = await response.json();
