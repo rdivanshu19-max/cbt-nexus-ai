@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History } from 'lucide-react';
+import { PdfQuotaBadge } from '@/components/PdfQuotaBadge';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -53,6 +54,9 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
               <span className="text-sm font-medium">{item.label}</span>
             </Link>
           ))}
+          <div className="mt-auto">
+            <PdfQuotaBadge variant="sidebar" />
+          </div>
         </aside>
 
         <main className="flex-1 md:ml-56 p-4 md:p-8 pb-24 md:pb-8">
