@@ -225,8 +225,13 @@ const TestTaking = () => {
             <Clock className="h-4 w-4" />
             <span className="font-mono font-semibold text-sm">{formatTime(timeLeft)}</span>
           </div>
-          <Button onClick={() => { if (confirm('Are you sure you want to submit?')) handleSubmit(); }} size="sm" className="gradient-primary text-primary-foreground">
-            Submit
+          <Button
+            onClick={() => { if (!submitting && confirm('Are you sure you want to submit?')) handleSubmit(); }}
+            size="sm"
+            disabled={submitting}
+            className="gradient-primary text-primary-foreground"
+          >
+            {submitting ? 'Submitting...' : 'Submit'}
           </Button>
         </div>
       </div>
