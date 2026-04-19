@@ -66,6 +66,9 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 w-full bg-card border-t border-border z-50">
+        <div className="px-2 pt-2 pb-1 border-b border-border/50">
+          <PdfQuotaBadge variant="inline" />
+        </div>
         <div className="flex gap-1 overflow-x-auto px-2 py-2">
           {navItems.map(item => (
             <Link key={item.to} to={item.to} className={`min-w-[72px] flex flex-col items-center gap-1 py-1 px-3 rounded-lg ${location.pathname === item.to ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
