@@ -33,10 +33,13 @@ const Dashboard = () => {
   const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
-    if (profile && !profile.has_seen_tutorial) {
+    if (!profile || !user) return;
+    const localKey = `cbt_tutorial_seen_${user.id}`;
+    const localSeen = typeof window !== 'undefined' && localStorage.getItem(localKey) === '1';
+    if (!profile.has_seen_tutorial && !localSeen) {
       setShowTutorial(true);
     }
-  }, [profile]);
+  }, [profile, user]);
 
   useEffect(() => {
     if (!user) return;
@@ -87,6 +90,7 @@ const Dashboard = () => {
   const closeTutorial = async () => {
     setShowTutorial(false);
     if (user) {
+      try { localStorage.setItem(`cbt_tutorial_seen_${user.id}`, '1'); } catch {}
       await supabase.from('profiles').update({ has_seen_tutorial: true }).eq('user_id', user.id);
     }
   };

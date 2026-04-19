@@ -39,6 +39,8 @@ const TestTaking = () => {
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const submittedRef = useRef(false);
   const questionStartTime = useRef(Date.now());
 
   useEffect(() => {
@@ -112,82 +114,94 @@ const TestTaking = () => {
 
   const handleSubmit = async () => {
     if (!attemptId || !user || !test) return;
-    trackTime();
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+    setSubmitting(true);
 
-    const allResponses = Array.from(responses.values());
+    try {
+      trackTime();
 
-    // Save responses
-    for (const resp of allResponses) {
-      await supabase.from('test_responses').insert({
-        attempt_id: attemptId,
-        question_id: resp.question_id,
-        selected_answer: resp.selected_answer,
-        is_marked_for_review: resp.is_marked_for_review,
-        time_spent_seconds: resp.time_spent_seconds,
-      });
-    }
+      const allResponses = Array.from(responses.values());
 
-    // Calculate scores
-    const { data: fullQuestions } = await supabase.from('test_questions').select('*').eq('test_id', testId);
-    if (!fullQuestions) return;
-
-    let correct = 0, wrong = 0, unattempted = 0, markedReview = 0;
-    fullQuestions.forEach(q => {
-      const resp = responses.get(q.id);
-      if (!resp || !resp.selected_answer) { unattempted++; return; }
-      if (resp.is_marked_for_review) markedReview++;
-      if (resp.selected_answer === q.correct_answer) correct++;
-      else wrong++;
-    });
-
-    const positiveMarks = correct * test.correct_marks;
-    const negativeMarks = wrong * Math.abs(test.wrong_marks);
-    const totalScore = positiveMarks - negativeMarks;
-    const accuracy = correct + wrong > 0 ? (correct / (correct + wrong)) * 100 : 0;
-    const timeTaken = test.duration_minutes * 60 - timeLeft;
-
-    // Update responses with is_correct
-    for (const q of fullQuestions) {
-      const resp = responses.get(q.id);
-      if (resp?.selected_answer) {
-        await supabase.from('test_responses')
-          .update({ is_correct: resp.selected_answer === q.correct_answer })
-          .eq('attempt_id', attemptId)
-          .eq('question_id', q.id);
+      for (const resp of allResponses) {
+        await supabase.from('test_responses').insert({
+          attempt_id: attemptId,
+          question_id: resp.question_id,
+          selected_answer: resp.selected_answer,
+          is_marked_for_review: resp.is_marked_for_review,
+          time_spent_seconds: resp.time_spent_seconds,
+        });
       }
+
+      const { data: fullQuestions } = await supabase.from('test_questions').select('*').eq('test_id', testId);
+      if (!fullQuestions) {
+        toast({ title: 'Error', description: 'Could not load questions for scoring.', variant: 'destructive' });
+        submittedRef.current = false;
+        setSubmitting(false);
+        return;
+      }
+
+      let correct = 0, wrong = 0, unattempted = 0, markedReview = 0;
+      fullQuestions.forEach(q => {
+        const resp = responses.get(q.id);
+        if (!resp || !resp.selected_answer) { unattempted++; return; }
+        if (resp.is_marked_for_review) markedReview++;
+        if (resp.selected_answer === q.correct_answer) correct++;
+        else wrong++;
+      });
+
+      const positiveMarks = correct * test.correct_marks;
+      const negativeMarks = wrong * Math.abs(test.wrong_marks);
+      const totalScore = positiveMarks - negativeMarks;
+      const accuracy = correct + wrong > 0 ? (correct / (correct + wrong)) * 100 : 0;
+      const timeTaken = test.duration_minutes * 60 - timeLeft;
+
+      for (const q of fullQuestions) {
+        const resp = responses.get(q.id);
+        if (resp?.selected_answer) {
+          await supabase.from('test_responses')
+            .update({ is_correct: resp.selected_answer === q.correct_answer })
+            .eq('attempt_id', attemptId)
+            .eq('question_id', q.id);
+        }
+      }
+
+      await supabase.from('test_attempts').update({
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        total_score: totalScore,
+        positive_marks: positiveMarks,
+        negative_marks: negativeMarks,
+        correct_count: correct,
+        wrong_count: wrong,
+        unattempted_count: unattempted,
+        marked_for_review_count: markedReview,
+        accuracy_percentage: Math.round(accuracy * 10) / 10,
+        time_taken_seconds: timeTaken,
+      }).eq('id', attemptId);
+
+      const today = new Date().toISOString().split('T')[0];
+      const { data: streak } = await supabase.from('study_streaks').select('*').eq('user_id', user.id).single();
+      if (streak) {
+        const lastDate = streak.last_activity_date;
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        let newStreak = 1;
+        if (lastDate === yesterday) newStreak = (streak.current_streak || 0) + 1;
+        else if (lastDate === today) newStreak = streak.current_streak || 1;
+        await supabase.from('study_streaks').update({
+          current_streak: newStreak,
+          longest_streak: Math.max(newStreak, streak.longest_streak || 0),
+          last_activity_date: today,
+        }).eq('user_id', user.id);
+      }
+
+      navigate(`/results/${attemptId}`);
+    } catch (err: any) {
+      console.error('Submit failed:', err);
+      toast({ title: 'Submission failed', description: err?.message || 'Please try submitting again.', variant: 'destructive' });
+      submittedRef.current = false;
+      setSubmitting(false);
     }
-
-    await supabase.from('test_attempts').update({
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      total_score: totalScore,
-      positive_marks: positiveMarks,
-      negative_marks: negativeMarks,
-      correct_count: correct,
-      wrong_count: wrong,
-      unattempted_count: unattempted,
-      marked_for_review_count: markedReview,
-      accuracy_percentage: Math.round(accuracy * 10) / 10,
-      time_taken_seconds: timeTaken,
-    }).eq('id', attemptId);
-
-    // Update streak
-    const today = new Date().toISOString().split('T')[0];
-    const { data: streak } = await supabase.from('study_streaks').select('*').eq('user_id', user.id).single();
-    if (streak) {
-      const lastDate = streak.last_activity_date;
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-      let newStreak = 1;
-      if (lastDate === yesterday) newStreak = (streak.current_streak || 0) + 1;
-      else if (lastDate === today) newStreak = streak.current_streak || 1;
-      await supabase.from('study_streaks').update({
-        current_streak: newStreak,
-        longest_streak: Math.max(newStreak, streak.longest_streak || 0),
-        last_activity_date: today,
-      }).eq('user_id', user.id);
-    }
-
-    navigate(`/results/${attemptId}`);
   };
 
   const formatTime = (s: number) => {
