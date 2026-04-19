@@ -220,9 +220,24 @@ const CustomTest = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full gradient-primary text-primary-foreground font-semibold" disabled={generating || !file || !title}>
-                {generating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing PDF...</> : 'Create Test'}
-              </Button>
+              {(() => {
+                const limitReached = !isAdmin && usedToday !== null && usedToday >= DAILY_LIMIT;
+                return (
+                  <Button
+                    type="submit"
+                    className="w-full gradient-primary text-primary-foreground font-semibold"
+                    disabled={generating || !file || !title || limitReached}
+                  >
+                    {generating ? (
+                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing PDF...</>
+                    ) : limitReached ? (
+                      <>Daily limit reached — resets in {getResetText()}</>
+                    ) : (
+                      'Create Test'
+                    )}
+                  </Button>
+                );
+              })()}
             </form>
           </CardContent>
         </Card>
