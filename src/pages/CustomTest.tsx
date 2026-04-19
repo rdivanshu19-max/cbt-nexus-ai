@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Loader2, FileText, Info } from 'lucide-react';
+import { Upload, Loader2, FileText, AlertTriangle, Clock } from 'lucide-react';
 
 const DAILY_LIMIT = 3;
 
