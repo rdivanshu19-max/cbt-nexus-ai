@@ -389,6 +389,8 @@ export const OfficialTestsManager = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ProcessingDialog open={uploading} title="Processing official test PDF" />
     </div>
   );
 };
