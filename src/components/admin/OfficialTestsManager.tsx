@@ -17,7 +17,8 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { deleteTest } from '@/lib/test-management';
-import { Clock3, FileText, Loader2, Pencil, Trash2, Upload } from 'lucide-react';
+import { ProcessingDialog } from '@/components/ProcessingDialog';
+import { Clock3, Eye, EyeOff, FileText, Loader2, Pencil, Trash2, Upload } from 'lucide-react';
 
 type OfficialTest = {
   id: string;
@@ -27,6 +28,7 @@ type OfficialTest = {
   exam_type: string | null;
   duration_minutes: number;
   total_marks: number;
+  is_published: boolean | null;
   created_at: string;
 };
 
@@ -66,7 +68,7 @@ export const OfficialTestsManager = () => {
   const fetchOfficialTests = async () => {
     const { data, error } = await supabase
       .from('tests')
-      .select('id, title, description, subject, exam_type, duration_minutes, total_marks, created_at')
+      .select('id, title, description, subject, exam_type, duration_minutes, total_marks, is_published, created_at')
       .eq('test_type', 'admin_uploaded')
       .order('created_at', { ascending: false });
 
@@ -207,6 +209,17 @@ export const OfficialTestsManager = () => {
     }
   };
 
+  const togglePublished = async (test: OfficialTest) => {
+    const next = !test.is_published;
+    const { error } = await supabase.from('tests').update({ is_published: next }).eq('id', test.id);
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      return;
+    }
+    setTests((prev) => prev.map((t) => (t.id === test.id ? { ...t, is_published: next } : t)));
+    toast({ title: next ? 'Test published' : 'Test unpublished', description: next ? 'Visible to all users.' : 'Hidden from users (not deleted).' });
+  };
+
   return (
     <div className="space-y-6">
       <Card className="glass-card">
@@ -299,6 +312,9 @@ export const OfficialTestsManager = () => {
                     <h3 className="text-lg font-semibold">{test.title}</h3>
                     {test.exam_type && <Badge variant="secondary">{test.exam_type}</Badge>}
                     {test.subject && <Badge variant="outline">{test.subject}</Badge>}
+                    <Badge variant={test.is_published ? 'default' : 'outline'} className={test.is_published ? 'bg-success/20 text-success border-success/30' : 'text-muted-foreground'}>
+                      {test.is_published ? 'Published' : 'Unpublished'}
+                    </Badge>
                   </div>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1"><Clock3 className="h-4 w-4" /> {test.duration_minutes} min</span>
@@ -308,6 +324,9 @@ export const OfficialTestsManager = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" onClick={() => togglePublished(test)}>
+                    {test.is_published ? <><EyeOff className="h-4 w-4 mr-2" /> Unpublish</> : <><Eye className="h-4 w-4 mr-2" /> Publish</>}
+                  </Button>
                   <Button variant="outline" onClick={() => openEditDialog(test)}>
                     <Pencil className="h-4 w-4 mr-2" /> Edit
                   </Button>
@@ -370,6 +389,8 @@ export const OfficialTestsManager = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ProcessingDialog open={uploading} title="Processing official test PDF" />
     </div>
   );
 };

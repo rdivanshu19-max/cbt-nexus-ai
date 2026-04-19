@@ -1,18 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { NexusAIChat } from '@/components/NexusAIChat';
+import { ProcessingDialog } from '@/components/ProcessingDialog';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Loader2, FileText } from 'lucide-react';
+import { Upload, Loader2, FileText, Info } from 'lucide-react';
+
+const DAILY_LIMIT = 3;
 
 const CustomTest = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
@@ -22,6 +25,45 @@ const CustomTest = () => {
   const [file, setFile] = useState<File | null>(null);
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [usedToday, setUsedToday] = useState<number | null>(null);
+
+  // Compute time until next IST midnight reset
+  const getResetText = () => {
+    const now = new Date();
+    // IST midnight in UTC = 18:30 UTC
+    const nowUtc = now.getTime();
+    const todayUtcMidnight = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    let nextResetUtc = todayUtcMidnight + 18.5 * 60 * 60 * 1000; // today's IST midnight in UTC
+    if (nextResetUtc <= nowUtc) nextResetUtc += 24 * 60 * 60 * 1000;
+    const ms = nextResetUtc - nowUtc;
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    return `${h}h ${m}m`;
+  };
+
+  useEffect(() => {
+    if (!user || isAdmin) return;
+    const fetchUsage = async () => {
+      // IST day window
+      const now = new Date();
+      const istOffsetMs = 5.5 * 60 * 60 * 1000;
+      const ist = new Date(now.getTime() + istOffsetMs);
+      const y = ist.getUTCFullYear();
+      const mo = ist.getUTCMonth();
+      const d = ist.getUTCDate();
+      const startUtc = new Date(Date.UTC(y, mo, d, 0, 0, 0) - istOffsetMs);
+      const endUtc = new Date(startUtc.getTime() + 24 * 60 * 60 * 1000);
+      const { count } = await supabase
+        .from('pdf_conversions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('converted_at', startUtc.toISOString())
+        .lt('converted_at', endUtc.toISOString());
+      setUsedToday(count ?? 0);
+    };
+    fetchUsage();
+  }, [user, isAdmin, generating]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +112,24 @@ const CustomTest = () => {
           <h1 className="text-3xl font-bold">Create Custom Test</h1>
           <p className="text-muted-foreground mt-1">Upload a PDF and AI will convert it to CBT format</p>
         </div>
+
+        {!isAdmin && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-4 flex items-start gap-3">
+              <Info className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+              <div className="text-sm">
+                <p className="font-medium">
+                  Daily limit: <span className="text-primary">{usedToday ?? '…'}/{DAILY_LIMIT}</span> custom tests used today
+                </p>
+                <p className="text-muted-foreground mt-1">
+                  Resets at midnight IST (in {getResetText()}). {usedToday !== null && DAILY_LIMIT - usedToday <= 0
+                    ? 'You have reached today\'s limit — try again after reset.'
+                    : `${Math.max(0, DAILY_LIMIT - (usedToday ?? 0))} remaining.`}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="glass-card">
           <CardHeader>
@@ -136,6 +196,7 @@ const CustomTest = () => {
           </CardContent>
         </Card>
       </div>
+      <ProcessingDialog open={generating} />
       <NexusAIChat />
     </DashboardLayout>
   );

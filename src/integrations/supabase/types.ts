@@ -191,6 +191,7 @@ export type Database = {
           difficulty: string | null
           explanation: string | null
           id: string
+          image_url: string | null
           option_a: string
           option_b: string
           option_c: string
@@ -207,6 +208,7 @@ export type Database = {
           difficulty?: string | null
           explanation?: string | null
           id?: string
+          image_url?: string | null
           option_a: string
           option_b: string
           option_c: string
@@ -223,6 +225,7 @@ export type Database = {
           difficulty?: string | null
           explanation?: string | null
           id?: string
+          image_url?: string | null
           option_a?: string
           option_b?: string
           option_c?: string
