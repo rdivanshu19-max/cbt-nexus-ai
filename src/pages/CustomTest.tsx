@@ -118,23 +118,49 @@ const CustomTest = () => {
           <p className="text-muted-foreground mt-1">Upload a PDF and AI will convert it to CBT format</p>
         </div>
 
-        {!isAdmin && (
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-4 flex items-start gap-3">
-              <Info className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-              <div className="text-sm">
-                <p className="font-medium">
-                  Daily limit: <span className="text-primary">{usedToday ?? '…'}/{DAILY_LIMIT}</span> custom tests used today
-                </p>
-                <p className="text-muted-foreground mt-1">
-                  Resets at midnight IST (in {getResetText()}). {usedToday !== null && DAILY_LIMIT - usedToday <= 0
-                    ? 'You have reached today\'s limit — try again after reset.'
-                    : `${Math.max(0, DAILY_LIMIT - (usedToday ?? 0))} remaining.`}
-                </p>
+        {!isAdmin && (() => {
+          const remaining = usedToday === null ? null : Math.max(0, DAILY_LIMIT - usedToday);
+          const isOut = remaining === 0;
+          return (
+            <div
+              className={`rounded-xl border-2 p-4 shadow-md ${
+                isOut ? 'border-destructive bg-destructive/10' : 'border-primary bg-primary/10'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`shrink-0 rounded-lg p-2 ${
+                    isOut ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground'
+                  }`}
+                >
+                  {isOut ? <AlertTriangle className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <p className={`text-sm font-bold uppercase tracking-wide ${isOut ? 'text-destructive' : 'text-primary'}`}>
+                      Daily PDF Limit
+                    </p>
+                    <span
+                      className={`text-base font-extrabold px-3 py-1 rounded-full ${
+                        isOut ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground'
+                      }`}
+                    >
+                      {usedToday ?? '…'} / {DAILY_LIMIT}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-foreground">
+                    {isOut
+                      ? "🚫 You've reached today's limit. Please wait until reset to upload another PDF."
+                      : `${remaining ?? '…'} ${remaining === 1 ? 'upload' : 'uploads'} remaining today.`}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Resets at <span className="font-semibold text-foreground">12:00 AM IST</span> · in <span className="font-semibold text-foreground">{getResetText()}</span>
+                  </p>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          );
+        })()}
 
         <Card className="glass-card">
           <CardHeader>
