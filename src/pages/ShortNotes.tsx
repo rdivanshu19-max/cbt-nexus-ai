@@ -1,25 +1,17 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { MathText } from '@/components/MathText';
-import { Sparkles, BookOpen, Lightbulb, RotateCcw, AlertTriangle, Loader2, FileText } from 'lucide-react';
-
-interface Notes {
-  title: string;
-  summary: string;
-  sections: { heading: string; body: string }[];
-  important_points: string[];
-  formulas?: { name: string; expression: string; note?: string }[];
-  revision_cards: { front: string; back: string }[];
-  common_mistakes: string[];
-}
+import { Sparkles, Loader2, Bookmark, BookmarkCheck, RotateCcw } from 'lucide-react';
+import { ChapterAutocomplete } from '@/components/short-notes/ChapterAutocomplete';
+import { NotesView, type Notes } from '@/components/short-notes/NotesView';
+import { RevisionMode } from '@/components/short-notes/RevisionMode';
 
 const SUBJECTS_BY_EXAM: Record<string, string[]> = {
   JEE: ['Physics', 'Chemistry', 'Mathematics'],
@@ -28,6 +20,7 @@ const SUBJECTS_BY_EXAM: Record<string, string[]> = {
 };
 
 const ShortNotes = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [exam, setExam] = useState('JEE');
   const [classLevel, setClassLevel] = useState('11');
@@ -36,14 +29,16 @@ const ShortNotes = () => {
   const [style, setStyle] = useState<'concise' | 'descriptive'>('concise');
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState<Notes | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
 
   const handleGenerate = async () => {
     if (!chapter.trim()) {
-      toast({ title: 'Chapter required', description: 'Type the chapter name (e.g. "Rotational Motion").', variant: 'destructive' });
+      toast({ title: 'Chapter required', description: 'Pick or type a chapter name.', variant: 'destructive' });
       return;
     }
-    setLoading(true);
-    setNotes(null);
+    setLoading(true); setNotes(null); setSavedId(null);
     try {
       const { data, error } = await supabase.functions.invoke('generate-short-notes', {
         body: { exam, classLevel, subject, chapter: chapter.trim(), style },
@@ -60,17 +55,61 @@ const ShortNotes = () => {
     }
   };
 
+  const handleSave = async () => {
+    if (!user || !notes) return;
+    setSaving(true);
+    try {
+      const { data, error } = await supabase
+        .from('saved_notes')
+        .insert({
+          user_id: user.id,
+          exam, class_level: classLevel, subject, chapter: chapter.trim(), style,
+          notes: notes as any,
+        })
+        .select('id')
+        .single();
+      if (error) throw error;
+      setSavedId(data.id);
+      toast({ title: 'Saved', description: 'Note bookmarked. Open it anytime from "Saved Notes".' });
+    } catch (e: any) {
+      toast({ title: 'Save failed', description: e?.message || 'Try again.', variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateFinished = async (finished: number[]) => {
+    if (!savedId) return;
+    await supabase.from('saved_notes').update({ finished_card_indices: finished }).eq('id', savedId);
+  };
+
+  if (reviewing && notes) {
+    return (
+      <RevisionMode
+        title={`${subject} • ${chapter}`}
+        cards={notes.revision_cards || []}
+        onFinishedChange={(f) => savedId && updateFinished(f)}
+        onClose={() => setReviewing(false)}
+      />
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-start gap-3">
-          <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="flex items-start gap-3">
+            <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
+              <Sparkles className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold">AI Short Notes</h1>
+              <p className="text-sm text-muted-foreground">Pick a chapter and let AI generate exam-ready short notes, key points and revision cards.</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">AI Short Notes</h1>
-            <p className="text-sm text-muted-foreground">Pick a chapter and let AI generate exam-ready short notes, key points and revision cards.</p>
-          </div>
+          <Link to="/saved-notes">
+            <Button variant="outline" size="sm"><Bookmark className="h-4 w-4 mr-1" /> Saved Notes</Button>
+          </Link>
         </div>
 
         <Card className="p-4 sm:p-6 space-y-4">
@@ -120,11 +159,12 @@ const ShortNotes = () => {
 
           <div className="space-y-2">
             <Label>Chapter</Label>
-            <Input
-              placeholder='e.g. "Rotational Motion", "p-Block Elements", "Human Reproduction"'
+            <ChapterAutocomplete
+              subject={subject}
+              exam={exam}
+              classLevel={classLevel}
               value={chapter}
-              onChange={(e) => setChapter(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter' && !loading) handleGenerate(); }}
+              onChange={setChapter}
             />
           </div>
 
@@ -147,106 +187,33 @@ const ShortNotes = () => {
         )}
 
         {notes && (
-          <div className="space-y-4">
-            <Card className="p-5 sm:p-6">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge variant="secondary">{subject}</Badge>
-                <Badge variant="outline">Class {classLevel}</Badge>
-                <Badge variant="outline">{exam}</Badge>
-                <Badge className="bg-primary/10 text-primary border-0 capitalize">{style}</Badge>
-              </div>
-              <h2 className="text-2xl font-bold mb-2"><MathText>{notes.title}</MathText></h2>
-              <MathText block className="text-muted-foreground">{notes.summary}</MathText>
-            </Card>
-
-            {notes.sections?.length > 0 && (
-              <Card className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Concepts</h3>
-                </div>
-                <div className="space-y-4">
-                  {notes.sections.map((s, i) => (
-                    <div key={i} className="border-l-2 border-primary/40 pl-4">
-                      <h4 className="font-semibold mb-1"><MathText>{s.heading}</MathText></h4>
-                      <MathText block className="text-sm text-muted-foreground leading-relaxed">{s.body}</MathText>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {notes.important_points?.length > 0 && (
-              <Card className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Lightbulb className="h-5 w-5 text-warning" />
-                  <h3 className="text-lg font-semibold">Important points</h3>
-                </div>
-                <ul className="space-y-2">
-                  {notes.important_points.map((p, i) => (
-                    <li key={i} className="flex gap-2 text-sm">
-                      <span className="text-primary font-bold">•</span>
-                      <MathText className="flex-1">{p}</MathText>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            {notes.formulas && notes.formulas.length > 0 && (
-              <Card className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <FileText className="h-5 w-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Key formulas</h3>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {notes.formulas.map((f, i) => (
-                    <div key={i} className="rounded-lg bg-secondary p-4">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{f.name}</p>
-                      <MathText block className="font-mono text-base">{f.expression}</MathText>
-                      {f.note && <MathText block className="text-xs text-muted-foreground mt-2">{f.note}</MathText>}
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {notes.revision_cards?.length > 0 && (
-              <Card className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <RotateCcw className="h-5 w-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Revision cards</h3>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {notes.revision_cards.map((c, i) => (
-                    <div key={i} className="rounded-xl border border-border bg-card p-4">
-                      <p className="text-xs uppercase tracking-wider text-primary mb-1">Q</p>
-                      <MathText block className="font-medium mb-3">{c.front}</MathText>
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">A</p>
-                      <MathText block className="text-sm text-muted-foreground">{c.back}</MathText>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {notes.common_mistakes?.length > 0 && (
-              <Card className="p-5 sm:p-6 border-destructive/30">
-                <div className="flex items-center gap-2 mb-4">
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
-                  <h3 className="text-lg font-semibold">Common mistakes</h3>
-                </div>
-                <ul className="space-y-2">
-                  {notes.common_mistakes.map((m, i) => (
-                    <li key={i} className="flex gap-2 text-sm">
-                      <span className="text-destructive font-bold">!</span>
-                      <MathText className="flex-1">{m}</MathText>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-          </div>
+          <>
+            <div className="flex flex-wrap gap-2 sticky top-16 z-30 bg-background/80 backdrop-blur-md py-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:py-0 sm:relative sm:bg-transparent sm:backdrop-blur-none">
+              <Button
+                onClick={handleSave}
+                disabled={saving || !!savedId}
+                className={savedId ? 'bg-success text-success-foreground hover:bg-success/90' : 'gradient-primary text-primary-foreground'}
+              >
+                {savedId ? <><BookmarkCheck className="h-4 w-4 mr-1" /> Saved</> :
+                  saving ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Saving…</> :
+                  <><Bookmark className="h-4 w-4 mr-1" /> Save & Review later</>}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setReviewing(true)}
+                disabled={!notes.revision_cards?.length}
+              >
+                <RotateCcw className="h-4 w-4 mr-1" /> Start revision mode
+              </Button>
+            </div>
+            <NotesView
+              notes={notes}
+              exam={exam}
+              classLevel={classLevel}
+              subject={subject}
+              style={style}
+            />
+          </>
         )}
       </div>
     </DashboardLayout>
