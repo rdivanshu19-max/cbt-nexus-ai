@@ -198,6 +198,97 @@ const Index = () => {
         </div>
       </section>
 
+      {/* About the Developer */}
+      <section id="about-developer" className="pb-24 px-4 sm:px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-6 sm:p-10 md:p-14">
+            <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
+
+            <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] items-start">
+              <div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+                  <Rocket className="h-4 w-4 text-primary" />
+                  <span className="text-xs sm:text-sm text-primary font-semibold uppercase tracking-[0.2em]">About the developer</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5">
+                  Hi, I'm <span className="gradient-text">GCD</span> — I build practical, high-impact digital products.
+                </h2>
+                <p className="text-base sm:text-lg text-muted-foreground mb-5">
+                  Not just websites that look good — ones that actually solve problems. I'm currently building <strong>Rankers Stars</strong>, an AI-powered platform for JEE aspirants focused on smarter preparation, better resources, and real usability.
+                </p>
+                <p className="text-base sm:text-lg text-muted-foreground mb-8">
+                  Alongside that, I work as a freelance developer helping clients turn ideas into real products — from simple landing pages to full platforms.
+                </p>
+
+                <div className="flex flex-wrap gap-3">
+                  <a href="mailto:studyspacerankers@gmail.com">
+                    <Button size="lg" className="gradient-primary text-primary-foreground font-semibold">
+                      <Mail className="h-4 w-4 mr-2" /> Work with me
+                    </Button>
+                  </a>
+                  <a href="https://divyanshuportfolio-beta.vercel.app/" target="_blank" rel="noopener noreferrer">
+                    <Button size="lg" variant="outline">
+                      <Globe className="h-4 w-4 mr-2" /> View portfolio
+                    </Button>
+                  </a>
+                </div>
+
+                <p className="text-xs text-muted-foreground mt-5 break-all">
+                  📩 studyspacerankers@gmail.com
+                </p>
+              </div>
+
+              <div className="grid gap-4">
+                <div className="surface-elevated p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
+                      <Briefcase className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold">Freelance work</h3>
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Coaching institute websites</li>
+                    <li>• Restaurant websites with modern UI</li>
+                    <li>• Full coaching platforms & apps</li>
+                    <li>• High-end 3D animated websites with smooth interactions</li>
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: Code2, label: 'Full-stack web' },
+                    { icon: Cpu, label: 'AI & automation' },
+                    { icon: Palette, label: '3D & animation' },
+                    { icon: BookOpen, label: 'EdTech platforms' },
+                  ].map((s) => (
+                    <div key={s.label} className="surface-elevated p-4 flex items-center gap-3">
+                      <s.icon className="h-5 w-5 text-primary shrink-0" />
+                      <span className="text-sm font-medium">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="surface-elevated p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
+                      <Target className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold">My approach</h3>
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Clean UI that actually converts</li>
+                    <li>• Fast performance — no laggy nonsense</li>
+                    <li>• Practical features users will actually use</li>
+                    <li>• If it doesn't add value, I don't build it</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-border">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
