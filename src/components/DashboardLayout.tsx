@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles } from 'lucide-react';
 import { PdfQuotaBadge } from '@/components/PdfQuotaBadge';
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { to: '/history', icon: History, label: 'History' },
   { to: '/generate-test', icon: Brain, label: 'AI Test' },
   { to: '/custom-test', icon: Plus, label: 'Custom Test' },
+  { to: '/short-notes', icon: Sparkles, label: 'Short Notes' },
   { to: '/profile', icon: User, label: 'Profile' },
 ];
 
