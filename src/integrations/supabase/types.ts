@@ -89,6 +89,48 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_notes: {
+        Row: {
+          chapter: string
+          class_level: string
+          created_at: string
+          exam: string
+          finished_card_indices: number[]
+          id: string
+          notes: Json
+          style: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chapter: string
+          class_level: string
+          created_at?: string
+          exam: string
+          finished_card_indices?: number[]
+          id?: string
+          notes: Json
+          style: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chapter?: string
+          class_level?: string
+          created_at?: string
+          exam?: string
+          finished_card_indices?: number[]
+          id?: string
+          notes?: Json
+          style?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_streaks: {
         Row: {
           created_at: string

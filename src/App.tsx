@@ -18,6 +18,7 @@ import CustomTest from "./pages/CustomTest";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import ShortNotes from "./pages/ShortNotes";
+import SavedNotes from "./pages/SavedNotes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/custom-test" element={<ProtectedRoute><CustomTest /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/short-notes" element={<ProtectedRoute><ShortNotes /></ProtectedRoute>} />
+            <Route path="/saved-notes" element={<ProtectedRoute><SavedNotes /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
