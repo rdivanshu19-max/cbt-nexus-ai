@@ -27,27 +27,27 @@ const Index = () => {
             <img src="/logo.jpg" alt="CBT Nexus" className="h-10 w-10 rounded-lg" />
             <span className="text-xl font-bold gradient-text">CBT Nexus</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
-            <Link to="/auth">
+            <Link to="/auth" className="hidden sm:inline-flex">
               <Button variant="ghost">Log In</Button>
             </Link>
             <Link to="/auth?mode=signup">
-              <Button className="gradient-primary text-primary-foreground font-semibold">Sign Up</Button>
+              <Button size="sm" className="gradient-primary text-primary-foreground font-semibold">Sign Up</Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-16 px-6">
+      <section className="pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto grid gap-10 xl:grid-cols-[1.2fr_0.8fr] items-center">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm text-primary font-medium">AI-powered CBT platform for serious JEE / NEET prep</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 sm:mb-8">
+              <Sparkles className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-xs sm:text-sm text-primary font-medium">AI-powered CBT for JEE / NEET prep</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Real exam pressure, <span className="gradient-text">smarter preparation</span>, better decisions.
             </h1>
             <p className="text-xl text-muted-foreground mb-10 max-w-2xl">
