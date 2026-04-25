@@ -17,6 +17,7 @@ import GenerateTest from "./pages/GenerateTest";
 import CustomTest from "./pages/CustomTest";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import ShortNotes from "./pages/ShortNotes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
