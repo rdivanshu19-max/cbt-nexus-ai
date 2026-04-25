@@ -250,9 +250,9 @@ const TestTaking = () => {
         </div>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 w-full min-w-0">
         {/* Question area */}
-        <div className="flex-1 p-6 md:p-8 max-w-4xl">
+        <div className="flex-1 min-w-0 w-full p-4 sm:p-6 md:p-8 max-w-4xl overflow-x-hidden">
           <div className="grid gap-3 md:grid-cols-2 mb-6">
             <div className="surface-elevated p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Marking scheme</p>
