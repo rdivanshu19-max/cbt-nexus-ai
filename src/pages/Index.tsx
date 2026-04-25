@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy, Heart, ExternalLink } from 'lucide-react';
+import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy, Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target } from 'lucide-react';
 import rankersStarsLogo from '@/assets/rankers-stars-logo.jpg';
-import preppoHubLogo from '@/assets/preppro-hub-logo.jpg';
 
 const Index = () => {
   const features = [
