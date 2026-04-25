@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { NexusAIChat } from '@/components/NexusAIChat';
 import { TutorialPopup } from '@/components/TutorialPopup';
 import { MyTestsPanel } from '@/components/dashboard/MyTestsPanel';
+import { RecentNotesWidget } from '@/components/dashboard/RecentNotesWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
 
@@ -150,6 +151,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        <RecentNotesWidget />
 
         <MyTestsPanel userId={user?.id} />
 
