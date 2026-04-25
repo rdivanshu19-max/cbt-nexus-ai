@@ -287,7 +287,7 @@ const TestTaking = () => {
               {currentQuestion.subject && <Badge variant="outline">{currentQuestion.subject}</Badge>}
               {currentResponse?.is_marked_for_review && <Badge className="bg-warning/10 text-warning border-0"><Flag className="h-3 w-3 mr-1" />Review</Badge>}
             </div>
-            <MathText block className="text-lg leading-relaxed">{currentQuestion.question_text}</MathText>
+            <MathText block className="text-base sm:text-lg leading-relaxed break-words">{currentQuestion.question_text}</MathText>
           </div>
 
           <div className="space-y-3 mb-8">
