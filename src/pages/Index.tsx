@@ -66,37 +66,28 @@ const Index = () => {
               </Link>
             </div>
 
-            {/* Collaboration callout (right under CTAs) */}
+            {/* Partner callout (right under CTAs) */}
             <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-6 md:p-8 mb-10">
               <div className="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
               <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
               <div className="relative flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <Heart className="h-4 w-4 text-primary" />
-                  <span className="text-xs uppercase tracking-[0.24em] text-primary font-semibold">Powered by a free-education collaboration</span>
+                  <span className="text-xs uppercase tracking-[0.24em] text-primary font-semibold">Powered by free education</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold leading-tight">
-                  CBT Nexus is built together by <span className="gradient-text">Rankers Stars</span> &amp; <span className="gradient-text">Preppro Hub</span>
+                  CBT Nexus is built by <span className="gradient-text">Rankers Stars</span>
                 </h3>
                 <p className="text-muted-foreground max-w-2xl">
-                  Two student-first educational platforms uniting to give every aspirant <strong>free lectures, free tests, and free resources</strong> for JEE, NEET and other competitive exams — because every child deserves a fair shot at their dream rank.
+                  A student-first platform giving every aspirant <strong>free lectures, free tests, and free resources</strong> for JEE, NEET and other competitive exams — because every child deserves a fair shot at their dream rank.
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="group surface-elevated p-5 flex items-center gap-4 hover:border-primary/40 transition-all">
-                    <img src={rankersStarsLogo} alt="Rankers Stars" className="h-14 w-14 rounded-xl object-cover ring-2 ring-primary/20" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold flex items-center gap-2">Rankers Stars <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /></p>
-                      <p className="text-xs text-muted-foreground mt-1">Free lectures, notes & mock tests for serious aspirants.</p>
-                    </div>
-                  </a>
-                  <a href="https://prepprohub.lovable.app/" target="_blank" rel="noopener noreferrer" className="group surface-elevated p-5 flex items-center gap-4 hover:border-primary/40 transition-all">
-                    <img src={preppoHubLogo} alt="Preppro Hub" className="h-14 w-14 rounded-xl object-cover ring-2 ring-primary/20" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold flex items-center gap-2">Preppro Hub <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /></p>
-                      <p className="text-xs text-muted-foreground mt-1">Prep like a pro — full study toolkit, completely free.</p>
-                    </div>
-                  </a>
-                </div>
+                <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="group surface-elevated p-5 flex items-center gap-4 hover:border-primary/40 transition-all max-w-md">
+                  <img src={rankersStarsLogo} alt="Rankers Stars" className="h-14 w-14 rounded-xl object-cover ring-2 ring-primary/20" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold flex items-center gap-2">Rankers Stars <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /></p>
+                    <p className="text-xs text-muted-foreground mt-1">Free lectures, notes & mock tests for serious aspirants.</p>
+                  </div>
+                </a>
               </div>
             </div>
 
