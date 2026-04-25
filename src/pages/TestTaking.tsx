@@ -295,7 +295,7 @@ const TestTaking = () => {
               <button
                 key={opt.key}
                 onClick={() => selectAnswer(opt.key)}
-                className={`w-full text-left p-4 rounded-xl border transition-all flex items-center gap-4 ${
+                className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 min-w-0 ${
                   currentResponse?.selected_answer === opt.key
                     ? 'border-primary bg-primary/10 text-foreground'
                     : 'border-border bg-card hover:border-primary/30'
@@ -304,7 +304,7 @@ const TestTaking = () => {
                 <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 ${
                   currentResponse?.selected_answer === opt.key ? 'gradient-primary text-primary-foreground' : 'bg-secondary'
                 }`}>{opt.key}</span>
-                <MathText className="flex-1">{opt.text}</MathText>
+                <MathText className="flex-1 min-w-0 break-words">{opt.text}</MathText>
               </button>
             ))}
           </div>
