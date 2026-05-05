@@ -22,24 +22,25 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <div className="grid-overlay fixed inset-0 pointer-events-none opacity-60" />
       {/* Top Navbar */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+      <nav className="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-xl border-b border-primary/20">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg" />
-            <span className="text-lg font-bold gradient-text hidden sm:block">CBT Nexus</span>
+            <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-2 ring-primary/40 neon-glow" />
+            <span className="text-lg font-display font-bold gradient-text hidden sm:block tracking-widest">CBT NEXUS</span>
           </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             {isAdmin && (
               <Link to="/admin">
-                <Button variant="ghost" size="sm" className="text-primary">
+                <Button variant="ghost" size="sm" className="text-primary font-display tracking-wider uppercase">
                   <Shield className="h-4 w-4 mr-1" /> Admin
                 </Button>
               </Link>
             )}
-            <span className="text-sm text-muted-foreground hidden sm:block">{profile?.username}</span>
+            <span className="text-sm text-muted-foreground hidden sm:block font-display tracking-wider">{profile?.username}</span>
             <Button variant="ghost" size="icon" onClick={async () => { await signOut(); navigate('/'); }}>
               <LogOut className="h-4 w-4" />
             </Button>
@@ -48,14 +49,26 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
       </nav>
 
       {/* Bottom Nav (mobile) + Side Nav (desktop) */}
-      <div className="flex pt-16">
-        <aside className="hidden md:flex flex-col w-56 fixed left-0 top-16 bottom-0 bg-card border-r border-border p-4 gap-1">
-          {navItems.map(item => (
-            <Link key={item.to} to={item.to} className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${location.pathname === item.to ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}>
-              <item.icon className="h-5 w-5" />
-              <span className="text-sm font-medium">{item.label}</span>
-            </Link>
-          ))}
+      <div className="flex pt-16 relative">
+        <aside className="hidden md:flex flex-col w-56 fixed left-0 top-16 bottom-0 bg-card/60 backdrop-blur-xl border-r border-primary/20 p-4 gap-1">
+          {navItems.map(item => {
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-display tracking-wider uppercase text-xs ${
+                  active
+                    ? 'bg-primary/15 text-primary border border-primary/40'
+                    : 'text-muted-foreground hover:bg-primary/5 hover:text-primary border border-transparent'
+                }`}
+              >
+                {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r bg-primary shadow-[0_0_10px_hsl(var(--primary))]" />}
+                <item.icon className="h-5 w-5" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
           <div className="mt-auto">
             <PdfQuotaBadge variant="sidebar" />
           </div>
