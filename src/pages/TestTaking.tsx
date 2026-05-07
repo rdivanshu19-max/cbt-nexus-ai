@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle, LayoutGrid, Save } from 'lucide-react';
 import { MathText } from '@/components/MathText';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 
 interface Question {
   id: string;
@@ -40,8 +41,11 @@ const TestTaking = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const submittedRef = useRef(false);
   const questionStartTime = useRef(Date.now());
+
+  const storageKey = testId && user ? `cbt-autosave-${user.id}-${testId}` : null;
 
   useEffect(() => {
     if (!testId || !user) return;
@@ -49,20 +53,62 @@ const TestTaking = () => {
       const { data: testData } = await supabase.from('tests').select('*').eq('id', testId).single();
       if (!testData) { navigate('/tests'); return; }
       setTest(testData);
-      setTimeLeft(testData.duration_minutes * 60);
 
       const { data: qs } = await supabase.from('test_questions').select('*').eq('test_id', testId).order('question_number');
       if (qs) setQuestions(qs);
 
-      const { data: attempt } = await supabase.from('test_attempts').insert({
-        user_id: user.id, test_id: testId, status: 'in_progress',
-      }).select().single();
-      if (attempt) setAttemptId(attempt.id);
+      // Hydrate autosave
+      let initialTimeLeft = testData.duration_minutes * 60;
+      if (storageKey) {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (raw) {
+            const saved = JSON.parse(raw);
+            if (saved.responses) {
+              setResponses(new Map(Object.entries(saved.responses)) as Map<string, Response>);
+            }
+            if (typeof saved.currentQ === 'number') setCurrentQ(saved.currentQ);
+            if (typeof saved.timeLeft === 'number' && saved.timeLeft > 0 && saved.timeLeft < initialTimeLeft) {
+              initialTimeLeft = saved.timeLeft;
+            }
+            if (saved.attemptId) setAttemptId(saved.attemptId);
+          }
+        } catch {}
+      }
+      setTimeLeft(initialTimeLeft);
+
+      // Reuse attempt id if stored, else create
+      const stored = storageKey ? localStorage.getItem(storageKey) : null;
+      const parsed = stored ? JSON.parse(stored) : null;
+      if (!parsed?.attemptId) {
+        const { data: attempt } = await supabase.from('test_attempts').insert({
+          user_id: user.id, test_id: testId, status: 'in_progress',
+        }).select().single();
+        if (attempt) {
+          setAttemptId(attempt.id);
+          if (storageKey) localStorage.setItem(storageKey, JSON.stringify({ attemptId: attempt.id, responses: {}, currentQ: 0, timeLeft: initialTimeLeft }));
+        }
+      }
 
       setLoading(false);
     };
     init();
   }, [testId, user]);
+
+  // Autosave to localStorage on any change
+  useEffect(() => {
+    if (!storageKey || loading) return;
+    const obj = {
+      attemptId,
+      currentQ,
+      timeLeft,
+      responses: Object.fromEntries(responses),
+    };
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(obj));
+      setSavedAt(Date.now());
+    } catch {}
+  }, [responses, currentQ, timeLeft, attemptId, storageKey, loading]);
 
   // Timer
   useEffect(() => {
