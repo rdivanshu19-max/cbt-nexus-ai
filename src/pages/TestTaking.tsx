@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle, LayoutGrid, Save } from 'lucide-react';
 import { MathText } from '@/components/MathText';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 
 interface Question {
   id: string;
@@ -40,8 +41,11 @@ const TestTaking = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const submittedRef = useRef(false);
   const questionStartTime = useRef(Date.now());
+
+  const storageKey = testId && user ? `cbt-autosave-${user.id}-${testId}` : null;
 
   useEffect(() => {
     if (!testId || !user) return;
@@ -49,20 +53,62 @@ const TestTaking = () => {
       const { data: testData } = await supabase.from('tests').select('*').eq('id', testId).single();
       if (!testData) { navigate('/tests'); return; }
       setTest(testData);
-      setTimeLeft(testData.duration_minutes * 60);
 
       const { data: qs } = await supabase.from('test_questions').select('*').eq('test_id', testId).order('question_number');
       if (qs) setQuestions(qs);
 
-      const { data: attempt } = await supabase.from('test_attempts').insert({
-        user_id: user.id, test_id: testId, status: 'in_progress',
-      }).select().single();
-      if (attempt) setAttemptId(attempt.id);
+      // Hydrate autosave
+      let initialTimeLeft = testData.duration_minutes * 60;
+      if (storageKey) {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (raw) {
+            const saved = JSON.parse(raw);
+            if (saved.responses) {
+              setResponses(new Map(Object.entries(saved.responses)) as Map<string, Response>);
+            }
+            if (typeof saved.currentQ === 'number') setCurrentQ(saved.currentQ);
+            if (typeof saved.timeLeft === 'number' && saved.timeLeft > 0 && saved.timeLeft < initialTimeLeft) {
+              initialTimeLeft = saved.timeLeft;
+            }
+            if (saved.attemptId) setAttemptId(saved.attemptId);
+          }
+        } catch {}
+      }
+      setTimeLeft(initialTimeLeft);
+
+      // Reuse attempt id if stored, else create
+      const stored = storageKey ? localStorage.getItem(storageKey) : null;
+      const parsed = stored ? JSON.parse(stored) : null;
+      if (!parsed?.attemptId) {
+        const { data: attempt } = await supabase.from('test_attempts').insert({
+          user_id: user.id, test_id: testId, status: 'in_progress',
+        }).select().single();
+        if (attempt) {
+          setAttemptId(attempt.id);
+          if (storageKey) localStorage.setItem(storageKey, JSON.stringify({ attemptId: attempt.id, responses: {}, currentQ: 0, timeLeft: initialTimeLeft }));
+        }
+      }
 
       setLoading(false);
     };
     init();
   }, [testId, user]);
+
+  // Autosave to localStorage on any change
+  useEffect(() => {
+    if (!storageKey || loading) return;
+    const obj = {
+      attemptId,
+      currentQ,
+      timeLeft,
+      responses: Object.fromEntries(responses),
+    };
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(obj));
+      setSavedAt(Date.now());
+    } catch {}
+  }, [responses, currentQ, timeLeft, attemptId, storageKey, loading]);
 
   // Timer
   useEffect(() => {
@@ -195,6 +241,7 @@ const TestTaking = () => {
         }).eq('user_id', user.id);
       }
 
+      if (storageKey) localStorage.removeItem(storageKey);
       navigate(`/results/${attemptId}`);
     } catch (err: any) {
       console.error('Submit failed:', err);
@@ -249,6 +296,11 @@ const TestTaking = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {savedAt && (
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono-hud text-muted-foreground" title="Autosaved">
+              <Save className="h-3 w-3 text-success" /> Saved
+            </span>
+          )}
           {/* Glowing timer */}
           <div
             className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border font-mono-hud font-bold tabular-nums ${
@@ -262,6 +314,69 @@ const TestTaking = () => {
             <Clock className="h-4 w-4" />
             <span className="text-base sm:text-lg tracking-wider">{formatTime(timeLeft)}</span>
           </div>
+
+          {/* Mobile-only: open HUD drawer */}
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button size="sm" variant="outline" className="lg:hidden">
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="max-h-[85vh]">
+              <DrawerHeader>
+                <DrawerTitle className="font-mono-hud uppercase tracking-[0.18em] text-primary text-sm">Mission Console</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-6 overflow-y-auto">
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Done</p>
+                    <p className="text-base font-bold text-success font-mono-hud">{attemptedCount}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Left</p>
+                    <p className="text-base font-bold text-destructive font-mono-hud">{notAttempted}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Review</p>
+                    <p className="text-base font-bold text-warning font-mono-hud">{reviewCount}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Marks</p>
+                    <p className="text-base font-bold text-primary font-mono-hud">+{test.correct_marks}/{test.wrong_marks}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 mb-3 text-[11px]">
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-success" /> Attempted</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-warning" /> Review</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-destructive/80" /> Skipped</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-secondary border border-border" /> Pending</div>
+                </div>
+                <div className="grid grid-cols-6 gap-2">
+                  {questions.map((q, i) => {
+                    const resp = responses.get(q.id);
+                    const answered = !!resp?.selected_answer;
+                    const reviewed = !!resp?.is_marked_for_review;
+                    const visited = i < currentQ || responses.has(q.id);
+                    let cls = 'bg-secondary text-foreground border-border';
+                    if (answered && reviewed) cls = 'bg-warning text-warning-foreground border-warning';
+                    else if (answered) cls = 'bg-success text-success-foreground border-success';
+                    else if (reviewed) cls = 'bg-warning/30 text-warning border-warning/50';
+                    else if (visited) cls = 'bg-destructive/80 text-destructive-foreground border-destructive';
+                    const isCurrent = i === currentQ;
+                    return (
+                      <button
+                        key={q.id}
+                        onClick={() => goToQuestion(i)}
+                        className={`relative h-10 rounded-md text-xs font-bold font-mono-hud border transition-all ${cls} ${isCurrent ? 'ring-2 ring-primary' : ''}`}
+                      >
+                        {q.question_number}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
 
           <Button
             onClick={() => { if (!submitting && confirm('Submit and end the mission?')) handleSubmit(); }}

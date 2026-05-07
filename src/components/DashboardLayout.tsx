@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles, Bookmark } from 'lucide-react';
 import { PdfQuotaBadge } from '@/components/PdfQuotaBadge';
 
@@ -31,6 +32,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
             <span className="text-lg font-bold gradient-text hidden sm:block">CBT Nexus</span>
           </Link>
           <div className="flex items-center gap-2">
+            <UIIntensityToggle />
             <ThemeToggle />
             {isAdmin && (
               <Link to="/admin">
