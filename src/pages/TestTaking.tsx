@@ -296,6 +296,11 @@ const TestTaking = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {savedAt && (
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono-hud text-muted-foreground" title="Autosaved">
+              <Save className="h-3 w-3 text-success" /> Saved
+            </span>
+          )}
           {/* Glowing timer */}
           <div
             className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border font-mono-hud font-bold tabular-nums ${
@@ -309,6 +314,69 @@ const TestTaking = () => {
             <Clock className="h-4 w-4" />
             <span className="text-base sm:text-lg tracking-wider">{formatTime(timeLeft)}</span>
           </div>
+
+          {/* Mobile-only: open HUD drawer */}
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button size="sm" variant="outline" className="lg:hidden">
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="max-h-[85vh]">
+              <DrawerHeader>
+                <DrawerTitle className="font-mono-hud uppercase tracking-[0.18em] text-primary text-sm">Mission Console</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-6 overflow-y-auto">
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Done</p>
+                    <p className="text-base font-bold text-success font-mono-hud">{attemptedCount}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Left</p>
+                    <p className="text-base font-bold text-destructive font-mono-hud">{notAttempted}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Review</p>
+                    <p className="text-base font-bold text-warning font-mono-hud">{reviewCount}</p>
+                  </div>
+                  <div className="hud-panel px-2 py-2 text-center">
+                    <p className="text-[9px] font-mono-hud uppercase text-muted-foreground">Marks</p>
+                    <p className="text-base font-bold text-primary font-mono-hud">+{test.correct_marks}/{test.wrong_marks}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 mb-3 text-[11px]">
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-success" /> Attempted</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-warning" /> Review</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-destructive/80" /> Skipped</div>
+                  <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-secondary border border-border" /> Pending</div>
+                </div>
+                <div className="grid grid-cols-6 gap-2">
+                  {questions.map((q, i) => {
+                    const resp = responses.get(q.id);
+                    const answered = !!resp?.selected_answer;
+                    const reviewed = !!resp?.is_marked_for_review;
+                    const visited = i < currentQ || responses.has(q.id);
+                    let cls = 'bg-secondary text-foreground border-border';
+                    if (answered && reviewed) cls = 'bg-warning text-warning-foreground border-warning';
+                    else if (answered) cls = 'bg-success text-success-foreground border-success';
+                    else if (reviewed) cls = 'bg-warning/30 text-warning border-warning/50';
+                    else if (visited) cls = 'bg-destructive/80 text-destructive-foreground border-destructive';
+                    const isCurrent = i === currentQ;
+                    return (
+                      <button
+                        key={q.id}
+                        onClick={() => goToQuestion(i)}
+                        className={`relative h-10 rounded-md text-xs font-bold font-mono-hud border transition-all ${cls} ${isCurrent ? 'ring-2 ring-primary' : ''}`}
+                      >
+                        {q.question_number}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
 
           <Button
             onClick={() => { if (!submitting && confirm('Submit and end the mission?')) handleSubmit(); }}
