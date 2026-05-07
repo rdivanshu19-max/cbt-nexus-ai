@@ -241,6 +241,7 @@ const TestTaking = () => {
         }).eq('user_id', user.id);
       }
 
+      if (storageKey) localStorage.removeItem(storageKey);
       navigate(`/results/${attemptId}`);
     } catch (err: any) {
       console.error('Submit failed:', err);
