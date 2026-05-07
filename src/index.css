@@ -2,115 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === CBT NEXUS — Refined dark navy + gold, with subtle HUD touches === */
+/* === CBT NEXUS — Emerald + Teal, esports-clean, 3D-friendly === */
 
 @layer base {
   :root {
-    --background: 42 35% 97%;
-    --foreground: 222 39% 14%;
+    --background: 160 30% 97%;
+    --foreground: 175 60% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 39% 14%;
+    --card-foreground: 175 60% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 39% 14%;
+    --popover-foreground: 175 60% 8%;
 
-    --primary: 43 60% 50%;            /* gold */
-    --primary-foreground: 222 47% 8%;
-    --primary-glow: 43 75% 62%;
+    --primary: 160 84% 39%;            /* emerald */
+    --primary-foreground: 160 100% 6%;
+    --primary-glow: 168 76% 52%;       /* teal */
 
-    --secondary: 42 25% 92%;
-    --secondary-foreground: 222 39% 18%;
+    --secondary: 165 30% 92%;
+    --secondary-foreground: 175 50% 14%;
 
-    --muted: 38 24% 90%;
-    --muted-foreground: 220 14% 40%;
+    --muted: 165 25% 90%;
+    --muted-foreground: 175 14% 38%;
 
-    --accent: 43 60% 50%;
-    --accent-foreground: 222 47% 8%;
+    --accent: 178 82% 44%;
+    --accent-foreground: 175 60% 8%;
 
     --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 24% 82%;
-    --input: 35 24% 82%;
-    --ring: 43 60% 50%;
+    --border: 165 22% 84%;
+    --input: 165 22% 84%;
+    --ring: 160 84% 39%;
 
-    --radius: 0.75rem;
+    --radius: 0.85rem;
 
-    --success: 142 60% 38%;
+    --success: 152 70% 38%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 222 47% 6%;
-    --info: 217 75% 55%;
+    --info: 200 90% 50%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 45 32% 95%;
-    --sidebar-foreground: 222 39% 14%;
-    --sidebar-primary: 43 60% 50%;
-    --sidebar-primary-foreground: 222 47% 8%;
-    --sidebar-accent: 42 25% 90%;
-    --sidebar-accent-foreground: 222 39% 18%;
-    --sidebar-border: 35 24% 82%;
-    --sidebar-ring: 43 60% 50%;
+    --sidebar-background: 165 32% 96%;
+    --sidebar-foreground: 175 60% 8%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 165 25% 90%;
+    --sidebar-accent-foreground: 175 50% 14%;
+    --sidebar-border: 165 22% 84%;
+    --sidebar-ring: 160 84% 39%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-primary: linear-gradient(135deg, hsl(160 84% 39%), hsl(178 82% 44%));
+    --gradient-aurora: linear-gradient(135deg, hsl(160 84% 39% / 0.85) 0%, hsl(178 82% 44% / 0.85) 50%, hsl(200 90% 50% / 0.65) 100%);
     --gradient-surface: linear-gradient(180deg, hsl(var(--card) / 0.98), hsl(var(--secondary) / 0.92));
-    --hero-glow: radial-gradient(circle at top, hsl(var(--primary) / 0.18), transparent 55%);
-    --shadow-elegant: 0 20px 60px -30px hsl(var(--foreground) / 0.18);
-    --shadow-soft-glow: 0 0 18px hsl(var(--primary) / 0.18);
+    --hero-glow: radial-gradient(circle at 30% 0%, hsl(160 84% 39% / 0.18), transparent 50%),
+                 radial-gradient(circle at 80% 20%, hsl(178 82% 44% / 0.18), transparent 55%);
+    --shadow-elegant: 0 20px 60px -30px hsl(160 60% 20% / 0.18);
+    --shadow-soft-glow: 0 0 18px hsl(168 76% 52% / 0.22);
+
+    /* UI intensity (calmer when --ui-intensity is reduced) */
+    --ui-intensity: 1;
   }
 
   .dark {
-    --background: 222 47% 6%;          /* deep navy */
-    --foreground: 210 40% 96%;
+    --background: 180 35% 5%;          /* deep teal-black */
+    --foreground: 160 30% 96%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 96%;
+    --card: 180 30% 8%;
+    --card-foreground: 160 30% 96%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 180 30% 8%;
+    --popover-foreground: 160 30% 96%;
 
-    --primary: 43 70% 58%;             /* warm gold */
-    --primary-foreground: 222 47% 6%;
-    --primary-glow: 43 85% 70%;
+    --primary: 160 84% 48%;            /* vivid emerald */
+    --primary-foreground: 180 60% 6%;
+    --primary-glow: 168 84% 58%;       /* glowing teal */
 
-    --secondary: 222 30% 14%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 180 25% 13%;
+    --secondary-foreground: 160 30% 96%;
 
-    --muted: 222 30% 14%;
-    --muted-foreground: 215 20% 68%;
+    --muted: 180 25% 13%;
+    --muted-foreground: 165 18% 70%;
 
-    --accent: 43 70% 58%;
-    --accent-foreground: 222 47% 6%;
+    --accent: 178 82% 50%;
+    --accent-foreground: 180 60% 6%;
 
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 43 70% 58%;
+    --border: 180 25% 16%;
+    --input: 180 25% 16%;
+    --ring: 160 84% 48%;
 
-    --success: 142 60% 45%;
-    --success-foreground: 222 47% 6%;
+    --success: 152 70% 48%;
+    --success-foreground: 180 60% 6%;
     --warning: 38 92% 55%;
-    --warning-foreground: 222 47% 6%;
-    --info: 217 75% 60%;
+    --warning-foreground: 180 60% 6%;
+    --info: 200 90% 60%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 222 47% 7%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 43 70% 58%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 222 30% 14%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 43 70% 58%;
+    --sidebar-background: 180 35% 6%;
+    --sidebar-foreground: 160 30% 96%;
+    --sidebar-primary: 160 84% 48%;
+    --sidebar-primary-foreground: 180 60% 6%;
+    --sidebar-accent: 180 25% 12%;
+    --sidebar-accent-foreground: 160 30% 96%;
+    --sidebar-border: 180 25% 16%;
+    --sidebar-ring: 160 84% 48%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-primary: linear-gradient(135deg, hsl(160 84% 48%), hsl(178 82% 50%));
+    --gradient-aurora: linear-gradient(135deg, hsl(160 84% 48% / 0.95) 0%, hsl(178 82% 50% / 0.9) 50%, hsl(200 90% 60% / 0.7) 100%);
     --gradient-surface: linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(var(--secondary) / 0.94));
-    --hero-glow: radial-gradient(circle at top, hsl(var(--primary) / 0.15), transparent 55%);
-    --shadow-elegant: 0 24px 64px -32px hsl(var(--primary) / 0.25);
-    --shadow-soft-glow: 0 0 22px hsl(var(--primary) / 0.22);
+    --hero-glow: radial-gradient(circle at 25% 0%, hsl(160 84% 48% / 0.22), transparent 55%),
+                 radial-gradient(circle at 80% 15%, hsl(178 82% 50% / 0.18), transparent 55%);
+    --shadow-elegant: 0 24px 64px -32px hsl(168 84% 50% / 0.35);
+    --shadow-soft-glow: 0 0 22px hsl(168 84% 58% / 0.28);
+  }
+
+  /* UI intensity modifiers (set via data-ui-intensity on <html>) */
+  html[data-ui-intensity='calm'] {
+    --ui-intensity: 0.5;
+    --shadow-soft-glow: 0 0 10px hsl(var(--primary) / 0.12);
+  }
+  html[data-ui-intensity='minimal'] {
+    --ui-intensity: 0.15;
+    --shadow-soft-glow: none;
   }
 }
 
@@ -122,6 +139,7 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-image: var(--hero-glow);
     background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
   }
   #root { min-height: 100vh; }
   ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
@@ -140,7 +158,7 @@
   }
   .section-shell { @apply surface-elevated p-6 md:p-8; }
 
-  /* Subtle HUD panel — corner brackets, no flashing colors */
+  /* Subtle HUD panel — corner brackets */
   .hud-panel {
     position: relative;
     @apply bg-card/70 backdrop-blur-xl border border-border/70 rounded-xl;
@@ -152,7 +170,7 @@
     position: absolute;
     width: 12px;
     height: 12px;
-    border-color: hsl(var(--primary) / 0.7);
+    border-color: hsl(var(--primary) / calc(0.7 * var(--ui-intensity)));
     pointer-events: none;
   }
   .hud-panel::before {
@@ -168,40 +186,70 @@
 
   /* Gradients & text */
   .gradient-primary { background-image: var(--gradient-primary); }
+  .gradient-aurora { background-image: var(--gradient-aurora); }
   .gradient-text {
     background-image: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  .gradient-text-aurora {
+    background-image: var(--gradient-aurora);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-  /* Soft, tasteful glow (not neon) */
   .soft-glow { box-shadow: var(--shadow-soft-glow); }
   .glow-primary {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.25), 0 0 18px hsl(var(--primary) / 0.22);
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / calc(0.3 * var(--ui-intensity))),
+      0 0 24px hsl(var(--primary) / calc(0.28 * var(--ui-intensity)));
   }
   .text-glow {
-    text-shadow: 0 0 10px hsl(var(--primary) / 0.35);
+    text-shadow: 0 0 14px hsl(var(--primary) / calc(0.45 * var(--ui-intensity)));
   }
 
   .hero-mesh {
     background-image:
-      radial-gradient(circle at 15% 20%, hsl(var(--primary) / 0.18), transparent 28%),
-      radial-gradient(circle at 85% 12%, hsl(var(--info) / 0.12), transparent 28%);
+      radial-gradient(circle at 15% 20%, hsl(160 84% 48% / 0.18), transparent 28%),
+      radial-gradient(circle at 85% 12%, hsl(178 82% 50% / 0.16), transparent 30%),
+      radial-gradient(circle at 50% 80%, hsl(200 90% 60% / 0.10), transparent 35%);
   }
 
-  /* Very subtle grid (used inside test mission console) */
+  /* Subtle grid */
   .grid-overlay {
     background-image:
-      linear-gradient(hsl(var(--primary) / 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.05) 1px, transparent 1px);
+      linear-gradient(hsl(var(--primary) / calc(0.05 * var(--ui-intensity))) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / calc(0.05 * var(--ui-intensity))) 1px, transparent 1px);
     background-size: 40px 40px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 85%);
   }
 
+  /* 3D card depth utilities */
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 350ms cubic-bezier(.2,.7,.3,1), box-shadow 350ms;
+    will-change: transform;
+  }
+  .card-3d:hover {
+    transform: perspective(900px) rotateX(3deg) rotateY(-4deg) translateY(-4px);
+    box-shadow: 0 30px 60px -25px hsl(var(--primary) / 0.35);
+  }
+  .tilt-layer { transform: translateZ(40px); }
+
   /* Animations */
   .animate-float { animation: float 6s ease-in-out infinite; }
   .animate-pulse-soft { animation: pulse-soft 2.4s ease-in-out infinite; }
+  .animate-shimmer {
+    background: linear-gradient(110deg, transparent 30%, hsl(var(--primary) / 0.18) 50%, transparent 70%);
+    background-size: 200% 100%;
+    animation: shimmer 3.2s linear infinite;
+  }
+  .animate-aurora {
+    background-size: 300% 300%;
+    animation: aurora 14s ease infinite;
+  }
   .hover-lift { @apply transition-all duration-300; }
   .hover-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-elegant); }
 
@@ -211,18 +259,31 @@
   }
   @keyframes pulse-soft {
     0%, 100% { box-shadow: 0 0 12px hsl(var(--primary) / 0.25); }
-    50% { box-shadow: 0 0 22px hsl(var(--primary) / 0.45); }
+    50% { box-shadow: 0 0 24px hsl(var(--primary) / 0.5); }
   }
   @keyframes pulse-danger {
     0%, 100% { box-shadow: 0 0 12px hsl(var(--destructive) / 0.35); }
     50% { box-shadow: 0 0 22px hsl(var(--destructive) / 0.55); }
   }
   .animate-pulse-danger { animation: pulse-danger 1.2s ease-in-out infinite; }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @keyframes aurora {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
 
   .font-mono-hud { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 }
 
-/* Refined dark scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -231,4 +292,4 @@
   border: 2px solid transparent;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.6); background-clip: padding-box; border: 2px solid transparent; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.65); background-clip: padding-box; border: 2px solid transparent; }
