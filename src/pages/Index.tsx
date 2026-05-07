@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { Button } from '@/components/ui/button';
+import { Hero3D } from '@/components/Hero3D';
 import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy, Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target } from 'lucide-react';
 import rankersStarsLogo from '@/assets/rankers-stars-logo.jpg';
 
@@ -28,6 +30,7 @@ const Index = () => {
             <span className="text-xl font-bold gradient-text">CBT Nexus</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
+            <UIIntensityToggle />
             <ThemeToggle />
             <Link to="/auth" className="hidden sm:inline-flex">
               <Button variant="ghost">Log In</Button>
@@ -40,22 +43,27 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6">
-        <div className="container mx-auto grid gap-10 xl:grid-cols-[1.2fr_0.8fr] items-center">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 sm:mb-8">
+      <section className="relative pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden min-h-[88vh] flex items-center">
+        {/* 3D background */}
+        <div className="absolute inset-0">
+          <Hero3D />
+        </div>
+
+        <div className="container mx-auto grid gap-10 xl:grid-cols-[1.2fr_0.8fr] items-center relative">
+          <div className="max-w-3xl animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 sm:mb-8 backdrop-blur-md soft-glow">
               <Sparkles className="h-4 w-4 text-primary shrink-0" />
               <span className="text-xs sm:text-sm text-primary font-medium">AI-powered CBT for JEE / NEET prep</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Real exam pressure, <span className="gradient-text">smarter preparation</span>, better decisions.
+              Real exam pressure, <span className="gradient-text-aurora animate-aurora">smarter preparation</span>, better decisions.
             </h1>
             <p className="text-xl text-muted-foreground mb-10 max-w-2xl">
               CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a proper CBT workflow with analysis, revision insight, and a personal study copilot.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
               <Link to="/auth?mode=signup">
-                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold text-lg px-8 py-6">
+                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold text-lg px-8 py-6 soft-glow hover:scale-[1.03] transition-transform">
                   Start Preparing Free <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
@@ -101,7 +109,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="surface-elevated p-5 md:p-6 animate-float">
+          <div className="surface-elevated p-5 md:p-6 animate-float card-3d backdrop-blur-md bg-card/70">
             <div className="rounded-2xl border border-border/70 bg-background/60 p-5">
               <div className="flex items-center justify-between gap-3 mb-5">
                 <div>
@@ -158,7 +166,7 @@ const Index = () => {
           </div>
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
             {features.map((f) => (
-              <div key={f.title} className="section-shell group">
+              <div key={f.title} className="section-shell group card-3d">
                 <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-5">
                   <f.icon className="h-6 w-6 text-primary-foreground" />
                 </div>
