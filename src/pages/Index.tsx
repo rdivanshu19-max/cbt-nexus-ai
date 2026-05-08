@@ -3,293 +3,287 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { Button } from '@/components/ui/button';
 import { Hero3D } from '@/components/Hero3D';
-import { BookOpen, Brain, BarChart3, Zap, Shield, Users, ArrowRight, Sparkles, FileCheck2, Trophy, Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target } from 'lucide-react';
+import {
+  BookOpen, Brain, BarChart3, Zap, Shield, ArrowRight, Sparkles, FileCheck2, Trophy,
+  Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target,
+  Activity, Timer, Layers, Flag, Bookmark, Wand2,
+} from 'lucide-react';
 import rankersStarsLogo from '@/assets/rankers-stars-logo.jpg';
 
 const Index = () => {
-  const features = [
-    { icon: FileCheck2, title: 'Exact PDF to CBT conversion', desc: 'Upload papers, preserve the original question flow, and turn them into a real exam interface.' },
-    { icon: Brain, title: 'AI test generation', desc: 'Create JEE or NEET full tests, subject papers, and chapter drills in minutes.' },
-    { icon: BarChart3, title: 'Deep analysis', desc: 'Review score, accuracy, timing, weak topics, and every solved question in detail.' },
-    { icon: Zap, title: 'Nexus AI support', desc: 'Chat with an assistant that understands your attempts, pace, and study gaps.' },
+  const arsenal = [
+    { icon: FileCheck2, tag: 'PDF → CBT', title: 'Paper to mission', desc: 'Drop a PDF. Real exam interface. No retyping.', color: 'text-primary' },
+    { icon: Brain, tag: 'AI Tests', title: 'Generated drills', desc: 'JEE / NEET full mocks, subject papers, chapter raids.', color: 'text-accent' },
+    { icon: BarChart3, tag: 'Analytics', title: 'Brutal scoreboard', desc: 'Score, accuracy, timing, leaks. Zero sugar.', color: 'text-info' },
+    { icon: Zap, tag: 'Nexus AI', title: 'Always-on coach', desc: 'Ask. Plan. Recover. Trained on your attempts.', color: 'text-accent' },
+    { icon: Sparkles, tag: 'Short Notes', title: 'AI rapid notes', desc: 'Concise / descriptive notes + revision flashcards.', color: 'text-primary' },
+    { icon: Bookmark, tag: 'Save & Review', title: 'Personal vault', desc: 'Bookmark chapters, reopen any time, revise smarter.', color: 'text-accent' },
+    { icon: Timer, tag: 'Mission HUD', title: 'Real exam pressure', desc: 'Timer, navigator, marks, autosave. Like the real one.', color: 'text-warning' },
+    { icon: Trophy, tag: 'History', title: 'Every attempt logged', desc: 'A trackable record of every exam you faced.', color: 'text-success' },
   ];
 
-  const platformStats = [
-    { value: '3 modes', label: 'Official, AI, and custom CBT' },
-    { value: 'JEE + NEET', label: 'Built for competitive exam patterns' },
-    { value: 'Full analytics', label: 'Timing, accuracy, score, mistakes' },
+  const flow = [
+    { n: '01', tag: 'Drop', title: 'Bring your paper', desc: 'Upload PDF, generate with AI, or pick official.' },
+    { n: '02', tag: 'Fight', title: 'Sit the mission', desc: 'Real CBT console. Timer. Navigator. Autosave.' },
+    { n: '03', tag: 'Decode', title: 'Read the report', desc: 'Score, accuracy, time-per-question, weak topics.' },
   ];
 
   return (
-    <div className="min-h-screen bg-background hero-mesh">
+    <div className="min-h-screen bg-background">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-10 w-10 rounded-lg" />
-            <span className="text-xl font-bold gradient-text">CBT Nexus</span>
+        <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-border" />
+            <div className="leading-tight">
+              <p className="hidden sm:block text-[10px] font-mono-hud uppercase tracking-[0.32em] text-muted-foreground">// nexus</p>
+              <span className="text-base sm:text-lg font-display font-bold">CBT NEXUS</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2">
             <UIIntensityToggle />
             <ThemeToggle />
             <Link to="/auth" className="hidden sm:inline-flex">
-              <Button variant="ghost">Log In</Button>
+              <Button variant="ghost" size="sm">Log In</Button>
             </Link>
             <Link to="/auth?mode=signup">
-              <Button size="sm" className="gradient-primary text-primary-foreground font-semibold">Sign Up</Button>
+              <Button size="sm" className="gradient-primary text-primary-foreground font-semibold shadow-md">Sign Up</Button>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden min-h-[88vh] flex items-center">
-        {/* 3D background */}
-        <div className="absolute inset-0">
+      {/* HERO */}
+      <section className="relative pt-24 sm:pt-32 pb-14 sm:pb-20 overflow-hidden">
+        <div className="absolute inset-0 hero-mesh" />
+        <div className="absolute inset-0 grid-overlay opacity-60" />
+        <div className="absolute inset-0 hidden lg:block opacity-90">
           <Hero3D />
         </div>
 
-        <div className="container mx-auto grid gap-10 xl:grid-cols-[1.2fr_0.8fr] items-center relative">
-          <div className="max-w-3xl animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 sm:mb-8 backdrop-blur-md soft-glow">
-              <Sparkles className="h-4 w-4 text-primary shrink-0" />
-              <span className="text-xs sm:text-sm text-primary font-medium">AI-powered CBT for JEE / NEET prep</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Real exam pressure, <span className="gradient-text-aurora animate-aurora">smarter preparation</span>, better decisions.
+        <div className="container relative mx-auto px-4 sm:px-6">
+          <div className="max-w-5xl">
+            <p className="section-tag text-primary mb-5">CBT, REIMAGINED</p>
+            <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+              REAL EXAM
+              <br />
+              <span className="gradient-text-aurora animate-aurora">PRESSURE.</span>
+              <br />
+              SMARTER PREP.
             </h1>
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl">
-              CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a proper CBT workflow with analysis, revision insight, and a personal study copilot.
+            <p className="mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground">
+              CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a real mission console — with analytics, AI short notes, and a personal study copilot.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
-              <Link to="/auth?mode=signup">
-                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold text-lg px-8 py-6 soft-glow hover:scale-[1.03] transition-transform">
-                  Start Preparing Free <ArrowRight className="h-5 w-5 ml-2" />
+
+            <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <Link to="/auth?mode=signup" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto gradient-primary text-primary-foreground font-semibold text-base px-7 py-6 soft-glow">
+                  Start preparing free <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
-              <Link to="/auth">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-border">
-                  Already have an account
+              <Link to="/auth" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-7 py-6">
+                  I already have an account
                 </Button>
               </Link>
             </div>
 
-            {/* Partner callout (right under CTAs) */}
-            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-6 md:p-8 mb-10">
-              <div className="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
-              <div className="relative flex flex-col gap-6">
-                <div className="flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-primary" />
-                  <span className="text-xs uppercase tracking-[0.24em] text-primary font-semibold">Powered by free education</span>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold leading-tight">
-                  CBT Nexus is built by <span className="gradient-text">Rankers Stars</span>
-                </h3>
-                <p className="text-muted-foreground max-w-2xl">
-                  A student-first platform giving every aspirant <strong>free lectures, free tests, and free resources</strong> for JEE, NEET and other competitive exams — because every child deserves a fair shot at their dream rank.
-                </p>
-                <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="group surface-elevated p-5 flex items-center gap-4 hover:border-primary/40 transition-all max-w-md">
-                  <img src={rankersStarsLogo} alt="Rankers Stars" className="h-14 w-14 rounded-xl object-cover ring-2 ring-primary/20" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold flex items-center gap-2">Rankers Stars <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" /></p>
-                    <p className="text-xs text-muted-foreground mt-1">Free lectures, notes & mock tests for serious aspirants.</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {platformStats.map((item) => (
-                <div key={item.label} className="surface-elevated p-4">
-                  <p className="text-2xl font-bold gradient-text">{item.value}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{item.label}</p>
+            {/* Quick stat strip */}
+            <div className="mt-9 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl">
+              {[
+                { k: '3', l: 'Test modes' },
+                { k: 'JEE+NEET', l: 'Built for' },
+                { k: 'AI', l: 'Short notes' },
+                { k: '∞', l: 'Mock attempts' },
+              ].map((s) => (
+                <div key={s.l} className="ink-card px-3 py-3">
+                  <p className="font-display font-bold text-lg sm:text-2xl text-foreground">{s.k}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-mono-hud uppercase tracking-[0.18em] mt-1">{s.l}</p>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="surface-elevated p-5 md:p-6 animate-float card-3d backdrop-blur-md bg-card/70">
-            <div className="rounded-2xl border border-border/70 bg-background/60 p-5">
-              <div className="flex items-center justify-between gap-3 mb-5">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Today inside CBT Nexus</p>
-                  <h2 className="text-2xl font-semibold mt-1">Your prep cockpit</h2>
-                </div>
-                <img src="/logo.jpg" alt="CBT Nexus logo" className="h-12 w-12 rounded-xl" />
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl bg-secondary p-4">
-                  <p className="text-sm text-muted-foreground">Live exam simulation</p>
-                  <p className="text-lg font-semibold mt-2">Timer, panel, review flags, and final analysis</p>
-                </div>
-                <div className="rounded-2xl bg-secondary p-4">
-                  <p className="text-sm text-muted-foreground">Official paper pipeline</p>
-                  <p className="text-lg font-semibold mt-2">Upload PDF → extract questions → launch CBT</p>
-                </div>
-                <div className="rounded-2xl bg-secondary p-4 sm:col-span-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Nexus AI suggestion</p>
-                      <p className="font-semibold mt-2">Revisit Electrostatics and Organic Chemistry after your next attempt.</p>
-                    </div>
-                    <Brain className="h-10 w-10 text-primary shrink-0" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="pb-20 px-6">
-        <div className="container mx-auto grid gap-4 lg:grid-cols-3">
-          <div className="section-shell lg:col-span-2">
-            <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3">What makes it useful</p>
-            <h2 className="text-3xl font-bold mb-4">Built for the actual exam loop, not just practice questions.</h2>
-            <p className="text-muted-foreground max-w-2xl">From official paper conversion to daily AI guidance, everything is centered on realistic testing and clear post-test decisions.</p>
-          </div>
-          <div className="section-shell">
-            <p className="text-sm text-muted-foreground">Admin uploads official papers, students generate targeted mocks, and every attempt feeds back into better planning.</p>
-          </div>
+      {/* GOAL */}
+      <section className="py-14 sm:py-20 px-4 sm:px-6">
+        <div className="container mx-auto text-center max-w-4xl">
+          <p className="section-tag text-primary mb-4 justify-center inline-flex">OUR GOAL</p>
+          <h2 className="font-display font-black tracking-tight text-3xl sm:text-5xl md:text-6xl leading-[1.05] mb-6">
+            Preparation, <span className="gradient-text-aurora animate-aurora">re-engineered.</span>
+          </h2>
+          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
+            Other platforms give you content, tests and scores. CBT Nexus combines AI, real exam UI and behavior analytics — turning passive studying into an adaptive mission for the world's hardest exams.
+          </p>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="pb-20 px-6">
+      {/* ARSENAL */}
+      <section className="pb-14 sm:pb-20 px-4 sm:px-6">
         <div className="container mx-auto">
-          <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Why CBT Nexus?</h2>
-              <p className="text-muted-foreground max-w-2xl">A sharper stack for aspirants who want realistic practice and useful analysis.</p>
-            </div>
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="section-tag text-accent mb-3 justify-center inline-flex">THE ARSENAL</p>
+            <h2 className="font-display font-black tracking-tight text-3xl sm:text-5xl md:text-6xl leading-[1.05]">
+              8 weapons. <span className="text-foreground/70">One mission.</span>
+            </h2>
           </div>
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
-            {features.map((f) => (
-              <div key={f.title} className="section-shell group card-3d">
-                <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-5">
-                  <f.icon className="h-6 w-6 text-primary-foreground" />
+
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+            {arsenal.map((f) => (
+              <div key={f.title} className="ink-card p-4 sm:p-5 group hover-lift">
+                <div className={`h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 ${f.color}`}>
+                  <f.icon className="h-4 w-4" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{f.title}</h3>
-                <p className="text-muted-foreground">{f.desc}</p>
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-muted-foreground">// {f.tag}</p>
+                <h3 className="text-sm sm:text-base font-display font-bold mt-1">{f.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="pb-20 px-6">
-        <div className="container mx-auto grid gap-5 lg:grid-cols-3">
-          {[
-            { icon: Shield, title: 'Official tests', desc: 'Admin-uploaded papers are kept separate, clean, and easy to find.' },
-            { icon: BookOpen, title: 'Custom uploads', desc: 'Students can upload their own PDFs and optionally attach answer keys.' },
-            { icon: Trophy, title: 'History & progress', desc: 'Every attempt becomes a trackable record with dates, scores, and review access.' },
-          ].map((item) => (
-            <div key={item.title} className="section-shell">
-              <item.icon className="h-8 w-8 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-              <p className="text-muted-foreground">{item.desc}</p>
-            </div>
-          ))}
+      {/* FLOW */}
+      <section className="pb-14 sm:pb-20 px-4 sm:px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="section-tag text-primary mb-3 justify-center inline-flex">THE LOOP</p>
+            <h2 className="font-display font-black tracking-tight text-3xl sm:text-5xl md:text-6xl leading-[1.05]">
+              Drop. Fight. Decode.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+            {flow.map((s) => (
+              <div key={s.n} className="ink-card p-5 sm:p-6 relative overflow-hidden">
+                <div className="absolute -right-3 -top-3 font-display font-black text-7xl sm:text-8xl text-primary/10 select-none">{s.n}</div>
+                <p className="section-tag text-primary mb-3">{s.tag}</p>
+                <h3 className="font-display font-bold text-xl sm:text-2xl mb-2">{s.title}</h3>
+                <p className="text-sm text-muted-foreground">{s.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="pb-20 px-6">
-        <div className="container mx-auto section-shell text-center max-w-4xl">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to practice like the real thing?</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">Create your account once, stay signed in, and build your full CBT routine around official papers, AI tests, and revision analysis.</p>
-            <Link to="/auth?mode=signup">
-            <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8 py-6">
-              Create your CBT account
-            </Button>
-          </Link>
-        </div>
-      </section>
+      {/* ECOSYSTEM */}
+      <section className="pb-14 sm:pb-20 px-4 sm:px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <p className="section-tag text-accent mb-3 justify-center inline-flex">THE ECOSYSTEM</p>
+            <h2 className="font-display font-black tracking-tight text-3xl sm:text-5xl md:text-6xl leading-[1.05]">
+              Built alongside.
+            </h2>
+            <p className="text-muted-foreground mt-3">CBT Nexus is part of a wider system for serious aspirants.</p>
+          </div>
 
-      {/* About the Developer */}
-      <section id="about-developer" className="pb-24 px-4 sm:px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background p-6 sm:p-10 md:p-14">
-            <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
-
-            <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] items-start">
-              <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                  <Rocket className="h-4 w-4 text-primary" />
-                  <span className="text-xs sm:text-sm text-primary font-semibold uppercase tracking-[0.2em]">About the developer</span>
+          <div className="grid md:grid-cols-2 gap-4">
+            <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
+              <div className="flex items-center gap-3 mb-3">
+                <img src={rankersStarsLogo} alt="Rankers Stars" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
+                <div>
+                  <p className="section-tag text-primary">PARTNER</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Stars</h3>
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5">
-                  Hi, I'm <span className="gradient-text">GCD</span> — I build practical, high-impact digital products.
-                </h2>
-                <p className="text-base sm:text-lg text-muted-foreground mb-5">
-                  Not just websites that look good — ones that actually solve problems. I'm currently building <strong>Rankers Stars</strong>, an AI-powered platform for JEE aspirants focused on smarter preparation, better resources, and real usability.
-                </p>
-                <p className="text-base sm:text-lg text-muted-foreground mb-8">
-                  Alongside that, I work as a freelance developer helping clients turn ideas into real products — from simple landing pages to full platforms.
-                </p>
+              </div>
+              <p className="text-sm text-muted-foreground">Free lectures, 700+ JEE materials, AI tests, AI mentor — one structured ecosystem instead of 20 tabs.</p>
+              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Stars <ExternalLink className="h-3.5 w-3.5" /></div>
+            </a>
+            <div className="ink-card p-5 sm:p-6 hover-lift">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-primary-foreground">
+                  <Activity className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="section-tag text-accent">ENGINE</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Nexus CBT</h3>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">Real exam-like interface, timed tests, performance analytics, PDF → test converter, flashcards, AI doubt support and a special revision section.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* CTA */}
+      <section className="pb-16 sm:pb-24 px-4 sm:px-6">
+        <div className="container mx-auto">
+          <div className="ink-card relative overflow-hidden p-6 sm:p-10 md:p-14 text-center">
+            <div className="absolute inset-0 hero-mesh opacity-70" />
+            <div className="relative">
+              <p className="section-tag text-primary mb-4 justify-center inline-flex">READY?</p>
+              <h2 className="font-display font-black tracking-tight text-3xl sm:text-5xl md:text-6xl leading-[1.05] mb-4">
+                Practice like the <span className="gradient-text">real thing.</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-7 text-sm sm:text-base">
+                Create your account once. Build a full CBT routine around official papers, AI tests and revision insight.
+              </p>
+              <Link to="/auth?mode=signup">
+                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8 py-6">
+                  Create your CBT account
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About developer */}
+      <section id="about-developer" className="pb-20 px-4 sm:px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="ink-card p-6 sm:p-10 md:p-14 relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 h-60 w-60 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl pointer-events-none" />
+
+            <div className="relative grid gap-8 lg:grid-cols-[1.1fr_1fr] items-start">
+              <div>
+                <p className="section-tag text-primary mb-4">BUILT BY</p>
+                <h2 className="font-display font-black tracking-tight text-3xl sm:text-4xl md:text-5xl leading-[1.05] mb-5">
+                  Hi, I'm <span className="gradient-text">GCD</span>.
+                </h2>
+                <p className="text-base text-muted-foreground mb-4">
+                  I build practical, high-impact digital products. Currently building <strong>Rankers Stars</strong>, an AI platform for JEE aspirants.
+                </p>
+                <p className="text-base text-muted-foreground mb-7">
+                  I also freelance — turning ideas into real products from landing pages to full platforms.
+                </p>
                 <div className="flex flex-wrap gap-3">
                   <a href="mailto:studyspacerankers@gmail.com">
-                    <Button size="lg" className="gradient-primary text-primary-foreground font-semibold">
+                    <Button className="gradient-primary text-primary-foreground font-semibold">
                       <Mail className="h-4 w-4 mr-2" /> Work with me
                     </Button>
                   </a>
                   <a href="https://divyanshuportfolio-beta.vercel.app/" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" variant="outline">
-                      <Globe className="h-4 w-4 mr-2" /> View portfolio
+                    <Button variant="outline">
+                      <Globe className="h-4 w-4 mr-2" /> Portfolio
                     </Button>
                   </a>
                 </div>
-
-                <p className="text-xs text-muted-foreground mt-5 break-all">
-                  📩 studyspacerankers@gmail.com
-                </p>
+                <p className="text-xs text-muted-foreground mt-4 break-all">📩 studyspacerankers@gmail.com</p>
               </div>
 
-              <div className="grid gap-4">
-                <div className="surface-elevated p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
-                      <Briefcase className="h-5 w-5 text-primary-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold">Freelance work</h3>
-                  </div>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
+              <div className="grid gap-3">
+                <div className="ink-card p-5">
+                  <p className="section-tag text-accent mb-2">FREELANCE</p>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
                     <li>• Coaching institute websites</li>
                     <li>• Restaurant websites with modern UI</li>
                     <li>• Full coaching platforms & apps</li>
-                    <li>• High-end 3D animated websites with smooth interactions</li>
+                    <li>• High-end 3D animated experiences</li>
                   </ul>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   {[
                     { icon: Code2, label: 'Full-stack web' },
                     { icon: Cpu, label: 'AI & automation' },
                     { icon: Palette, label: '3D & animation' },
                     { icon: BookOpen, label: 'EdTech platforms' },
                   ].map((s) => (
-                    <div key={s.label} className="surface-elevated p-4 flex items-center gap-3">
-                      <s.icon className="h-5 w-5 text-primary shrink-0" />
-                      <span className="text-sm font-medium">{s.label}</span>
+                    <div key={s.label} className="ink-card p-3 flex items-center gap-2.5">
+                      <s.icon className="h-4 w-4 text-primary shrink-0" />
+                      <span className="text-xs sm:text-sm font-medium">{s.label}</span>
                     </div>
                   ))}
-                </div>
-
-                <div className="surface-elevated p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
-                      <Target className="h-5 w-5 text-primary-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold">My approach</h3>
-                  </div>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Clean UI that actually converts</li>
-                    <li>• Fast performance — no laggy nonsense</li>
-                    <li>• Practical features users will actually use</li>
-                    <li>• If it doesn't add value, I don't build it</li>
-                  </ul>
                 </div>
               </div>
             </div>
@@ -298,13 +292,13 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="py-10 px-4 sm:px-6 border-t border-border">
+        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <img src="/logo.jpg" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
-            <span className="font-bold gradient-text">CBT Nexus</span>
+            <span className="font-display font-bold">CBT NEXUS</span>
           </div>
-          <p className="text-muted-foreground text-sm">© 2026 CBT Nexus. All rights reserved.</p>
+          <p className="text-muted-foreground text-xs font-mono-hud uppercase tracking-[0.2em]">© 2026 // CBT NEXUS</p>
         </div>
       </footer>
     </div>

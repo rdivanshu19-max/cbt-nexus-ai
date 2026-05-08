@@ -108,10 +108,13 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       {showTutorial && <TutorialPopup onClose={closeTutorial} />}
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <h1 className="text-3xl font-bold">Welcome back, <span className="gradient-text">{profile?.username || 'Student'}</span>!</h1>
-          <p className="text-muted-foreground mt-1">Here's your preparation overview</p>
+          <p className="section-tag text-primary mb-2">COMMAND CENTER</p>
+          <h1 className="font-display font-black tracking-tight text-3xl sm:text-4xl md:text-5xl leading-tight">
+            Welcome back, <span className="gradient-text-aurora animate-aurora">{profile?.username || 'Student'}</span>
+          </h1>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">Here's your preparation overview.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

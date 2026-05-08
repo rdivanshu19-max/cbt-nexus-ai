@@ -5,9 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, ChevronLeft, ChevronRight, Flag, Check, AlertTriangle, LayoutGrid, Save } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Flag, LayoutGrid } from 'lucide-react';
 import { MathText } from '@/components/MathText';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { useAutosave } from '@/contexts/AutosaveContext';
+import { AutosaveBadge } from '@/components/AutosaveBadge';
 
 interface Question {
   id: string;
@@ -41,9 +43,9 @@ const TestTaking = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [savedAt, setSavedAt] = useState<number | null>(null);
   const submittedRef = useRef(false);
   const questionStartTime = useRef(Date.now());
+  const { setStatus: setAutosaveStatus, reset: resetAutosave } = useAutosave();
 
   const storageKey = testId && user ? `cbt-autosave-${user.id}-${testId}` : null;
 
@@ -98,6 +100,7 @@ const TestTaking = () => {
   // Autosave to localStorage on any change
   useEffect(() => {
     if (!storageKey || loading) return;
+    setAutosaveStatus('saving');
     const obj = {
       attemptId,
       currentQ,
@@ -106,9 +109,15 @@ const TestTaking = () => {
     };
     try {
       localStorage.setItem(storageKey, JSON.stringify(obj));
-      setSavedAt(Date.now());
-    } catch {}
-  }, [responses, currentQ, timeLeft, attemptId, storageKey, loading]);
+      const t = setTimeout(() => setAutosaveStatus('saved', Date.now()), 250);
+      return () => clearTimeout(t);
+    } catch {
+      setAutosaveStatus('error');
+    }
+  }, [responses, currentQ, timeLeft, attemptId, storageKey, loading, setAutosaveStatus]);
+
+  // Reset autosave badge when leaving test
+  useEffect(() => () => resetAutosave(), [resetAutosave]);
 
   // Timer
   useEffect(() => {
@@ -296,11 +305,7 @@ const TestTaking = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {savedAt && (
-            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono-hud text-muted-foreground" title="Autosaved">
-              <Save className="h-3 w-3 text-success" /> Saved
-            </span>
-          )}
+          <AutosaveBadge compact />
           {/* Glowing timer */}
           <div
             className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border font-mono-hud font-bold tabular-nums ${
