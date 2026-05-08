@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AutosaveProvider } from "@/contexts/AutosaveContext";
 import { ProtectedRoute, AdminRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -30,23 +31,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/tests" element={<ProtectedRoute><Tests /></ProtectedRoute>} />
-            <Route path="/history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
-            <Route path="/test/:testId" element={<ProtectedRoute><TestTaking /></ProtectedRoute>} />
-            <Route path="/results/:attemptId" element={<ProtectedRoute><Results /></ProtectedRoute>} />
-            <Route path="/generate-test" element={<ProtectedRoute><GenerateTest /></ProtectedRoute>} />
-            <Route path="/custom-test" element={<ProtectedRoute><CustomTest /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/short-notes" element={<ProtectedRoute><ShortNotes /></ProtectedRoute>} />
-            <Route path="/saved-notes" element={<ProtectedRoute><SavedNotes /></ProtectedRoute>} />
-            <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AutosaveProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/tests" element={<ProtectedRoute><Tests /></ProtectedRoute>} />
+              <Route path="/history" element={<ProtectedRoute><TestHistory /></ProtectedRoute>} />
+              <Route path="/test/:testId" element={<ProtectedRoute><TestTaking /></ProtectedRoute>} />
+              <Route path="/results/:attemptId" element={<ProtectedRoute><Results /></ProtectedRoute>} />
+              <Route path="/generate-test" element={<ProtectedRoute><GenerateTest /></ProtectedRoute>} />
+              <Route path="/custom-test" element={<ProtectedRoute><CustomTest /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/short-notes" element={<ProtectedRoute><ShortNotes /></ProtectedRoute>} />
+              <Route path="/saved-notes" element={<ProtectedRoute><SavedNotes /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AutosaveProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
