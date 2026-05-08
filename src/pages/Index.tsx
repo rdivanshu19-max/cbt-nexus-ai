@@ -15,7 +15,7 @@ const Index = () => {
     { icon: FileCheck2, tag: 'PDF → CBT', title: 'Paper to mission', desc: 'Drop a PDF. Real exam interface. No retyping.', color: 'text-primary' },
     { icon: Brain, tag: 'AI Tests', title: 'Generated drills', desc: 'JEE / NEET full mocks, subject papers, chapter raids.', color: 'text-accent' },
     { icon: BarChart3, tag: 'Analytics', title: 'Brutal scoreboard', desc: 'Score, accuracy, timing, leaks. Zero sugar.', color: 'text-info' },
-    { icon: Zap, tag: 'Nexus AI', title: 'Always-on coach', desc: 'Ask. Plan. Recover. Trained on your attempts.', color: 'text-magenta' },
+    { icon: Zap, tag: 'Nexus AI', title: 'Always-on coach', desc: 'Ask. Plan. Recover. Trained on your attempts.', color: 'text-accent' },
     { icon: Sparkles, tag: 'Short Notes', title: 'AI rapid notes', desc: 'Concise / descriptive notes + revision flashcards.', color: 'text-primary' },
     { icon: Bookmark, tag: 'Save & Review', title: 'Personal vault', desc: 'Bookmark chapters, reopen any time, revise smarter.', color: 'text-accent' },
     { icon: Timer, tag: 'Mission HUD', title: 'Real exam pressure', desc: 'Timer, navigator, marks, autosave. Like the real one.', color: 'text-warning' },
@@ -64,7 +64,7 @@ const Index = () => {
         <div className="container relative mx-auto px-4 sm:px-6">
           <div className="max-w-5xl">
             <p className="section-tag text-primary mb-5">CBT, REIMAGINED</p>
-            <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.4rem] xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+            <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
               REAL EXAM
               <br />
               <span className="gradient-text-aurora animate-aurora">PRESSURE.</span>
