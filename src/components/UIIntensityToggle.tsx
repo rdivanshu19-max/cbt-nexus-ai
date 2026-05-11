@@ -5,6 +5,7 @@ import { Sliders } from 'lucide-react';
 
 type Intensity = 'full' | 'calm' | 'minimal';
 const KEY = 'cbt-ui-intensity';
+const ORDER: Intensity[] = ['full', 'calm', 'minimal'];
 
 export function applyIntensity(level: Intensity) {
   const html = document.documentElement;
@@ -20,6 +21,12 @@ export function useStoredIntensity() {
   }, []);
 }
 
+const META: Record<Intensity, { label: string; desc: string }> = {
+  full: { label: 'Normal', desc: 'Full glow, animations and HUD highlights' },
+  calm: { label: 'Calm', desc: 'Reduced glow and softer accents' },
+  minimal: { label: 'Minimal', desc: 'No glow, no animations — flat surfaces' },
+};
+
 export const UIIntensityToggle = () => {
   const [level, setLevel] = useState<Intensity>('full');
   useEffect(() => {
@@ -31,11 +38,7 @@ export const UIIntensityToggle = () => {
     applyIntensity(l);
   };
 
-  const options: { v: Intensity; label: string; desc: string }[] = [
-    { v: 'full', label: 'Vivid', desc: 'Full glow + HUD highlights' },
-    { v: 'calm', label: 'Calm', desc: 'Reduced glow, softer accents' },
-    { v: 'minimal', label: 'Minimal', desc: 'No glow, flat surfaces' },
-  ];
+  const idx = ORDER.indexOf(level);
 
   return (
     <Popover>
@@ -44,19 +47,31 @@ export const UIIntensityToggle = () => {
           <Sliders className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-60 p-2">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground px-2 py-1">UI Intensity</p>
-        <div className="flex flex-col gap-1 mt-1">
-          {options.map((o) => (
+      <PopoverContent align="end" className="w-72 p-3">
+        <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-muted-foreground mb-1">// UI Intensity</p>
+        <p className="text-sm font-semibold mb-3">{META[level].label} <span className="text-muted-foreground font-normal text-xs">— {META[level].desc}</span></p>
+
+        {/* Slider */}
+        <input
+          type="range"
+          min={0}
+          max={2}
+          step={1}
+          value={idx}
+          onChange={(e) => choose(ORDER[Number(e.target.value)])}
+          className="w-full accent-primary"
+          aria-label="UI intensity slider"
+        />
+        <div className="grid grid-cols-3 gap-1 mt-2 text-[10px] font-mono-hud uppercase tracking-wider">
+          {ORDER.map((l) => (
             <button
-              key={o.v}
-              onClick={() => choose(o.v)}
-              className={`text-left px-2 py-2 rounded-md transition-colors ${
-                level === o.v ? 'bg-primary/15 text-primary' : 'hover:bg-secondary'
+              key={l}
+              onClick={() => choose(l)}
+              className={`py-1.5 rounded-md border transition-colors ${
+                level === l ? 'bg-primary/15 text-primary border-primary/40' : 'border-border text-muted-foreground hover:bg-secondary'
               }`}
             >
-              <p className="text-sm font-medium">{o.label}</p>
-              <p className="text-[11px] text-muted-foreground">{o.desc}</p>
+              {META[l].label}
             </button>
           ))}
         </div>

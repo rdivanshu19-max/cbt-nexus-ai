@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { examType, testScope, classLevel, subject, chapter, userId, questions: numQuestions, marks, duration, title } = await req.json();
+    const { examType, testScope, classLevel, subject, chapter, topics, userId, questions: numQuestions, marks, duration, title } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -20,11 +20,18 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    const topicLine =
+      Array.isArray(topics) && topics.length > 0
+        ? `Restrict questions STRICTLY to these micro-topics from ${subject} > ${chapter}:\n${topics.map((t: string, i: number) => `  ${i + 1}. ${t}`).join("\n")}\nDistribute questions roughly evenly across the listed topics. Tag each question's "topic" field with the matching micro-topic.`
+        : "";
+
     const prompt = `Generate exactly ${numQuestions} unique MCQ questions for ${examType} exam preparation.
 ${testScope === 'subject' ? `Subject: ${subject}` : ''}
 ${testScope === 'chapter' ? `Subject: ${subject}, Chapter: ${chapter}` : ''}
+${testScope === 'topic' ? `Subject: ${subject}, Chapter: ${chapter}` : ''}
 ${testScope === 'class' ? `Class: ${classLevel}` : ''}
 ${testScope === 'full' ? `Full syllabus covering all subjects equally` : ''}
+${topicLine}
 
 Each question must have exactly 4 options (A, B, C, D), one correct answer, and a brief explanation.
 The questions should be at JEE/NEET competitive exam level - challenging but fair.

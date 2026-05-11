@@ -12,9 +12,9 @@ const navItems = [
   { to: '/tests', icon: BookOpen, label: 'Tests' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/generate-test', icon: Brain, label: 'AI Test' },
-  { to: '/custom-test', icon: Plus, label: 'Custom Test' },
-  { to: '/short-notes', icon: Sparkles, label: 'Short Notes' },
-  { to: '/saved-notes', icon: Bookmark, label: 'Saved Notes' },
+  { to: '/custom-test', icon: Plus, label: 'Custom' },
+  { to: '/short-notes', icon: Sparkles, label: 'Notes' },
+  { to: '/saved-notes', icon: Bookmark, label: 'Saved' },
   { to: '/profile', icon: User, label: 'Profile' },
 ];
 
@@ -79,11 +79,17 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
         </div>
         <div className="flex gap-1 overflow-x-auto px-2 py-1.5">
           {navItems.map(item => (
-            <Link key={item.to} to={item.to} className={`min-w-[64px] flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg ${location.pathname === item.to ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
+            <Link key={item.to} to={item.to} className={`min-w-[60px] flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg ${location.pathname === item.to ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
               <item.icon className="h-4 w-4" />
               <span className="text-[10px] font-medium">{item.label}</span>
             </Link>
           ))}
+          {isAdmin && (
+            <Link to="/admin" className={`min-w-[60px] flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg ${location.pathname === '/admin' ? 'bg-primary/10 text-primary' : 'text-primary/80'}`}>
+              <Shield className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Admin</span>
+            </Link>
+          )}
         </div>
       </nav>
     </div>

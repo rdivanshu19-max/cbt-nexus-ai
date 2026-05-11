@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown } from 'lucide-react';
+import { generateReportCard } from '@/lib/reportPdf';
+import { useToast } from '@/hooks/use-toast';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -49,14 +52,110 @@ const Results = () => {
       <div className="space-y-6 max-w-5xl mx-auto">
         <div className="flex items-center justify-between">
           <div>
+  const handleDownload = async () => {
+    if (!attempt || !test) return;
+    setDownloading(true);
+    try {
+      // Subject stats
+      const bySubject: Record<string, { correct: number; wrong: number; unattempted: number; total: number }> = {};
+      const byTopic: Record<string, { correct: number; wrong: number; total: number; subject?: string }> = {};
+      for (const q of questions) {
+        const subj = q.subject || 'General';
+        bySubject[subj] = bySubject[subj] || { correct: 0, wrong: 0, unattempted: 0, total: 0 };
+        bySubject[subj].total++;
+        const r = responses.find((x) => x.question_id === q.id);
+        if (!r?.selected_answer) bySubject[subj].unattempted++;
+        else if (r.selected_answer === q.correct_answer) bySubject[subj].correct++;
+        else bySubject[subj].wrong++;
+        if (q.topic) {
+          byTopic[q.topic] = byTopic[q.topic] || { correct: 0, wrong: 0, total: 0, subject: subj };
+          byTopic[q.topic].total++;
+          if (r?.selected_answer === q.correct_answer) byTopic[q.topic].correct++;
+          else if (r?.selected_answer) byTopic[q.topic].wrong++;
+        }
+      }
+      const subjectStats = Object.entries(bySubject).map(([subject, s]) => ({
+        subject, correct: s.correct, wrong: s.wrong, unattempted: s.unattempted,
+        accuracy: s.correct + s.wrong > 0 ? (s.correct / (s.correct + s.wrong)) * 100 : 0,
+      }));
+      const weakTopics = Object.entries(byTopic)
+        .map(([topic, t]) => ({ topic, subject: t.subject, accuracy: (t.correct / Math.max(t.total, 1)) * 100, total: t.total }))
+        .filter((t) => t.accuracy < 70).sort((a, b) => a.accuracy - b.accuracy).slice(0, 6);
+      const doc = generateReportCard({
+        studentName: profile?.username || 'Student',
+        testTitle: test.title,
+        examType: test.exam_type,
+        attemptDate: attempt.completed_at || attempt.created_at,
+        totalScore: attempt.total_score, maxMarks: test.total_marks,
+        accuracy: attempt.accuracy_percentage || 0,
+        positive: attempt.positive_marks || 0, negative: attempt.negative_marks || 0,
+        correct: attempt.correct_count || 0, wrong: attempt.wrong_count || 0, unattempted: attempt.unattempted_count || 0,
+        timeTakenSec: attempt.time_taken_seconds || 0,
+        subjectStats, weakTopics,
+      });
+      doc.save(`CBT-Nexus-Report-${test.title.replace(/[^\w]+/g, '-')}.pdf`);
+      toast({ title: 'Report downloaded', description: 'Share it on Instagram/WhatsApp!' });
+    } catch (e: any) {
+      toast({ title: 'Failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const previousAttempt = otherAttempts[0];
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-6 max-w-5xl mx-auto">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
             <Link to="/tests" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 mb-2"><ArrowLeft className="h-4 w-4" /> Back to tests</Link>
-            <h1 className="text-3xl font-bold">Test Results</h1>
-            <p className="text-muted-foreground">{test.title}</p>
+            <p className="section-tag text-primary mb-1">// REPORT</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-black">Test Results</h1>
+            <p className="text-muted-foreground text-sm">{test.title}</p>
           </div>
-          <Badge className="text-lg px-4 py-2 gradient-primary text-primary-foreground border-0">
-            {attempt.total_score} / {test.total_marks}
-          </Badge>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge className="text-base px-3 py-1.5 gradient-primary text-primary-foreground border-0">
+              {attempt.total_score} / {test.total_marks}
+            </Badge>
+            <Button onClick={handleDownload} disabled={downloading} size="sm" className="gradient-primary text-primary-foreground">
+              <Download className="h-4 w-4 mr-1" /> {downloading ? 'Generating…' : 'Report Card PDF'}
+            </Button>
+          </div>
         </div>
+
+        {previousAttempt && (
+          <Card className="ink-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base"><GitCompare className="h-4 w-4 text-primary" /> Vs your last attempt</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                {[
+                  { k: 'Score', cur: attempt.total_score, prev: previousAttempt.total_score },
+                  { k: 'Accuracy', cur: attempt.accuracy_percentage || 0, prev: previousAttempt.accuracy_percentage || 0, suffix: '%' },
+                  { k: 'Correct', cur: attempt.correct_count, prev: previousAttempt.correct_count },
+                  { k: 'Wrong', cur: attempt.wrong_count, prev: previousAttempt.wrong_count, lowerBetter: true },
+                ].map((m) => {
+                  const delta = (m.cur as number) - (m.prev as number);
+                  const better = m.lowerBetter ? delta < 0 : delta > 0;
+                  const same = delta === 0;
+                  return (
+                    <div key={m.k} className="rounded-xl bg-secondary p-3">
+                      <p className="text-[10px] font-mono-hud uppercase tracking-wider text-muted-foreground">{m.k}</p>
+                      <p className="text-lg font-bold font-mono-hud">{m.cur}{m.suffix || ''}</p>
+                      <p className={`text-[11px] flex items-center gap-1 ${same ? 'text-muted-foreground' : better ? 'text-success' : 'text-destructive'}`}>
+                        {!same && (better ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
+                        {same ? 'no change' : `${delta > 0 ? '+' : ''}${delta}${m.suffix || ''} vs prev`}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">{otherAttempts.length} previous attempt{otherAttempts.length > 1 ? 's' : ''} • Last on {new Date(previousAttempt.completed_at).toLocaleDateString()}</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Score overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
