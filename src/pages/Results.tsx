@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown } from 'lucide-react';
+import { generateReportCard } from '@/lib/reportPdf';
+import { useToast } from '@/hooks/use-toast';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();

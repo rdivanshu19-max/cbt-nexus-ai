@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Clock, ChevronLeft, ChevronRight, Flag, LayoutGrid } from 'lucide-react';
 import { MathText } from '@/components/MathText';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from '@/components/ui/drawer';
 import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
 
@@ -328,8 +328,11 @@ const TestTaking = () => {
               </Button>
             </DrawerTrigger>
             <DrawerContent className="max-h-[85vh]">
-              <DrawerHeader>
+              <DrawerHeader className="flex flex-row items-center justify-between gap-2">
                 <DrawerTitle className="font-mono-hud uppercase tracking-[0.18em] text-primary text-sm">Mission Console</DrawerTitle>
+                <DrawerClose asChild>
+                  <Button size="sm" variant="ghost" className="h-8">Close</Button>
+                </DrawerClose>
               </DrawerHeader>
               <div className="px-4 pb-6 overflow-y-auto">
                 <div className="grid grid-cols-4 gap-2 mb-4">
@@ -369,16 +372,20 @@ const TestTaking = () => {
                     else if (visited) cls = 'bg-destructive/80 text-destructive-foreground border-destructive';
                     const isCurrent = i === currentQ;
                     return (
-                      <button
-                        key={q.id}
-                        onClick={() => goToQuestion(i)}
-                        className={`relative h-10 rounded-md text-xs font-bold font-mono-hud border transition-all ${cls} ${isCurrent ? 'ring-2 ring-primary' : ''}`}
-                      >
-                        {q.question_number}
-                      </button>
+                      <DrawerClose asChild key={q.id}>
+                        <button
+                          onClick={() => goToQuestion(i)}
+                          className={`relative h-10 rounded-md text-xs font-bold font-mono-hud border transition-all ${cls} ${isCurrent ? 'ring-2 ring-primary' : ''}`}
+                        >
+                          {q.question_number}
+                        </button>
+                      </DrawerClose>
                     );
                   })}
                 </div>
+                <DrawerClose asChild>
+                  <Button variant="outline" className="w-full mt-4">Close console</Button>
+                </DrawerClose>
               </div>
             </DrawerContent>
           </Drawer>
