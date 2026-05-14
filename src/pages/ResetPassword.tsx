@@ -43,7 +43,7 @@ const ResetPassword = () => {
     <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <Card className="w-full max-w-md glass-card">
         <CardHeader className="text-center">
-          <img src="/logo.jpg" alt="CBT Nexus" className="h-16 w-16 rounded-xl mx-auto mb-4" />
+          <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-16 w-16 rounded-xl mx-auto mb-4" />
           <CardTitle className="text-2xl gradient-text">Set New Password</CardTitle>
         </CardHeader>
         <CardContent>

@@ -34,7 +34,7 @@ const Index = () => {
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-border" />
+            <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-border" />
             <div className="leading-tight">
               <p className="hidden sm:block text-[10px] font-mono-hud uppercase tracking-[0.32em] text-muted-foreground">// nexus</p>
               <span className="text-base sm:text-lg font-display font-bold">CBT NEXUS</span>
@@ -295,7 +295,7 @@ const Index = () => {
       <footer className="py-10 px-4 sm:px-6 border-t border-border">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
+            <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
             <span className="font-display font-bold">CBT NEXUS</span>
           </div>
           <p className="text-muted-foreground text-xs font-mono-hud uppercase tracking-[0.2em]">© 2026 // CBT NEXUS</p>
