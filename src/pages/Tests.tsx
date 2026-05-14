@@ -48,7 +48,7 @@ const Tests = () => {
   const renderTestGrid = (items: Test[], emptyTitle: string, emptyDescription: string) => {
     if (items.length === 0) {
       return (
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardContent className="p-10 text-center">
             <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">{emptyTitle}</h3>
@@ -61,7 +61,7 @@ const Tests = () => {
     return (
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
         {items.map(test => (
-          <Card key={test.id} className="glass-card hover:border-primary/30 transition-all">
+          <Card key={test.id} className="ink-card hover:border-primary/30 transition-all">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-3 gap-3">
                 <div className="flex gap-2 flex-wrap">
@@ -105,7 +105,7 @@ const Tests = () => {
           </div>
         </div>
 
-        <Card className="glass-card border-primary/20">
+        <Card className="ink-card border-primary/20">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -132,10 +132,10 @@ const Tests = () => {
 
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1,2,3].map(i => <div key={i} className="glass-card h-48 animate-pulse" />)}
+            {[1,2,3].map(i => <div key={i} className="ink-card h-48 animate-pulse" />)}
           </div>
         ) : tests.length === 0 ? (
-          <Card className="glass-card">
+          <Card className="ink-card">
             <CardContent className="p-12 text-center">
               <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">No tests available yet</h3>

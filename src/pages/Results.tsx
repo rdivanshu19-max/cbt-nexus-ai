@@ -174,7 +174,7 @@ const Results = () => {
             { icon: TrendingUp, label: 'Positive', value: `+${attempt.positive_marks}`, color: 'text-success' },
             { icon: Clock, label: 'Time', value: formatTime(attempt.time_taken_seconds || 0), color: 'text-info' },
           ].map((s, i) => (
-            <Card key={i} className="glass-card">
+            <Card key={i} className="ink-card">
               <CardContent className="p-4 flex items-center gap-3">
                 <s.icon className={`h-8 w-8 ${s.color}`} />
                 <div>
@@ -187,7 +187,7 @@ const Results = () => {
         </div>
 
         {/* Breakdown */}
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardHeader><CardTitle>Score Breakdown</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
@@ -215,7 +215,7 @@ const Results = () => {
         </Card>
 
         {/* Question-wise analysis */}
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardHeader><CardTitle>Question-wise Analysis</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {questions.map(q => {

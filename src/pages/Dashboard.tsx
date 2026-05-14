@@ -119,7 +119,7 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {statCards.map((s, i) => (
-            <Card key={i} className="glass-card">
+            <Card key={i} className="ink-card">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg bg-secondary ${s.color}`}>
@@ -136,7 +136,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="glass-card border-primary/20">
+          <Card className="ink-card border-primary/20">
             <CardContent className="p-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Need a full record?</p>
@@ -147,7 +147,7 @@ const Dashboard = () => {
               </Link>
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="ink-card">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground mb-1">Nexus AI next step</p>
               <p className="font-medium">Ask Nexus AI for a plan based on your latest weak areas and score trend.</p>
@@ -160,7 +160,7 @@ const Dashboard = () => {
         <MyTestsPanel userId={user?.id} />
 
         {stats.totalTests === 0 && (
-          <Card className="glass-card border-primary/20">
+          <Card className="ink-card border-primary/20">
             <CardContent className="p-8 text-center">
               <Brain className="h-12 w-12 text-primary mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Ready to start?</h3>
@@ -174,7 +174,7 @@ const Dashboard = () => {
 
         {stats.totalTests > 0 && (
           <div className="grid md:grid-cols-2 gap-6">
-            <Card className="glass-card">
+            <Card className="ink-card">
               <CardHeader><CardTitle className="text-lg">Performance Summary</CardTitle></CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -193,7 +193,7 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card className="glass-card">
+            <Card className="ink-card">
               <CardHeader><CardTitle className="text-lg">Today's Plan</CardTitle></CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">Chat with Nexus AI to get a personalized study plan for today based on your performance.</p>
