@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useAutosave } from '@/contexts/AutosaveContext';
 
 interface Profile {
   id: string;
@@ -37,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { setStatus: setAutosaveStatus } = useAutosave();
 
   const fetchProfile = async (userId: string) => {
     const { data } = await supabase.from('profiles').select('*').eq('user_id', userId).single();
@@ -112,9 +114,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return;
+    setAutosaveStatus('saving');
     const { error } = await supabase.from('profiles').update(updates).eq('user_id', user.id);
-    if (error) throw error;
+    if (error) {
+      setAutosaveStatus('error');
+      throw error;
+    }
     await fetchProfile(user.id);
+    setAutosaveStatus('saved', Date.now());
   };
 
   const deleteAccount = async () => {
