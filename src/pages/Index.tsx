@@ -54,14 +54,14 @@ const Index = () => {
       </nav>
 
       {/* HERO */}
-      <section className="relative pt-24 sm:pt-32 pb-14 sm:pb-20 overflow-hidden">
+      <section className="relative pt-24 sm:pt-32 pb-10 sm:pb-20 overflow-hidden min-h-[calc(100svh-4rem)] sm:min-h-[760px] flex items-center">
         <div className="absolute inset-0 hero-mesh" />
         <div className="absolute inset-0 grid-overlay opacity-60" />
         <div className="absolute inset-0 hidden lg:block opacity-90">
           <Hero3D />
         </div>
 
-        <div className="container relative mx-auto px-4 sm:px-6">
+        <div className="container relative mx-auto px-4 sm:px-6 w-full">
           <div className="max-w-5xl">
             <p className="section-tag text-primary mb-5">CBT, REIMAGINED</p>
             <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
@@ -75,15 +75,15 @@ const Index = () => {
               CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a real mission console — with analytics, AI short notes, and a personal study copilot.
             </p>
 
-            <div className="mt-7 flex flex-col sm:flex-row gap-3">
+             <div className="mt-7 grid grid-cols-2 sm:flex sm:flex-row gap-3">
               <Link to="/auth?mode=signup" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto gradient-primary text-primary-foreground font-semibold text-base px-7 py-6 soft-glow">
-                  Start preparing free <ArrowRight className="h-4 w-4 ml-2" />
+                 <Button size="lg" className="w-full sm:w-auto gradient-primary text-primary-foreground font-semibold text-sm sm:text-base px-3 sm:px-7 py-5 sm:py-6 soft-glow">
+                   Start free <ArrowRight className="h-4 w-4 ml-1.5 sm:ml-2" />
                 </Button>
               </Link>
               <Link to="/auth" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-7 py-6">
-                  I already have an account
+                 <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base px-3 sm:px-7 py-5 sm:py-6">
+                   Log in
                 </Button>
               </Link>
             </div>
@@ -153,13 +153,13 @@ const Index = () => {
               Drop. Fight. Decode.
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-5">
             {flow.map((s) => (
-              <div key={s.n} className="ink-card p-5 sm:p-6 relative overflow-hidden">
-                <div className="absolute -right-3 -top-3 font-display font-black text-7xl sm:text-8xl text-primary/10 select-none">{s.n}</div>
-                <p className="section-tag text-primary mb-3">{s.tag}</p>
-                <h3 className="font-display font-bold text-xl sm:text-2xl mb-2">{s.title}</h3>
-                <p className="text-sm text-muted-foreground">{s.desc}</p>
+              <div key={s.n} className="ink-card p-3 sm:p-6 relative overflow-hidden min-h-[132px] sm:min-h-0">
+                <div className="absolute -right-2 -top-2 font-display font-black text-5xl sm:text-8xl text-primary/10 select-none">{s.n}</div>
+                <p className="text-[9px] sm:text-xs font-mono-hud uppercase tracking-[0.18em] sm:tracking-[0.32em] text-primary mb-2 sm:mb-3">// {s.tag}</p>
+                <h3 className="font-display font-bold text-sm sm:text-2xl mb-1 sm:mb-2 leading-tight">{s.title}</h3>
+                <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug">{s.desc}</p>
               </div>
             ))}
           </div>
