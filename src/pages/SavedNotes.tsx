@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Bookmark, Trash2, Sparkles, RotateCcw, Eye, Loader2 } from 'lucide-react';
 import { NotesView, type Notes } from '@/components/short-notes/NotesView';
 import { RevisionMode } from '@/components/short-notes/RevisionMode';
+import { useAutosave } from '@/contexts/AutosaveContext';
 
 interface SavedNoteRow {
   id: string;
@@ -30,6 +31,7 @@ const SavedNotes = () => {
   const [rows, setRows] = useState<SavedNoteRow[] | null>(null);
   const [active, setActive] = useState<SavedNoteRow | null>(null);
   const [reviewing, setReviewing] = useState<SavedNoteRow | null>(null);
+  const { setStatus: setAutosaveStatus } = useAutosave();
 
   const load = async () => {
     if (!user) return;
@@ -49,15 +51,19 @@ const SavedNotes = () => {
   useEffect(() => { load(); }, [user]);
 
   const remove = async (id: string) => {
+    setAutosaveStatus('saving');
     const { error } = await supabase.from('saved_notes').delete().eq('id', id);
-    if (error) { toast({ title: 'Delete failed', description: error.message, variant: 'destructive' }); return; }
+    if (error) { setAutosaveStatus('error'); toast({ title: 'Delete failed', description: error.message, variant: 'destructive' }); return; }
+    setAutosaveStatus('saved', Date.now());
     toast({ title: 'Deleted', description: 'Saved note removed.' });
     setActive((a) => (a?.id === id ? null : a));
     load();
   };
 
   const updateFinished = async (id: string, finished: number[]) => {
-    await supabase.from('saved_notes').update({ finished_card_indices: finished }).eq('id', id);
+    setAutosaveStatus('saving');
+    const { error } = await supabase.from('saved_notes').update({ finished_card_indices: finished }).eq('id', id);
+    setAutosaveStatus(error ? 'error' : 'saved', Date.now());
     setRows((rs) => rs?.map((r) => (r.id === id ? { ...r, finished_card_indices: finished } : r)) || rs);
   };
 
