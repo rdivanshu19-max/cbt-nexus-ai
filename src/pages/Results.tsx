@@ -14,22 +14,36 @@ import { useToast } from '@/hooks/use-toast';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const { toast } = useToast();
   const [attempt, setAttempt] = useState<any>(null);
   const [test, setTest] = useState<any>(null);
   const [responses, setResponses] = useState<any[]>([]);
   const [questions, setQuestions] = useState<any[]>([]);
+  const [otherAttempts, setOtherAttempts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (!attemptId || !user) return;
     const fetchResults = async () => {
       const { data: att } = await supabase.from('test_attempts').select('*').eq('id', attemptId).single();
-      if (!att) return;
+      if (!att) { setLoading(false); return; }
       setAttempt(att);
 
       const { data: t } = await supabase.from('tests').select('*').eq('id', att.test_id).single();
       setTest(t);
+
+      const { data: attempts } = await supabase
+        .from('test_attempts')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('test_id', att.test_id)
+        .eq('status', 'completed')
+        .neq('id', attemptId)
+        .order('completed_at', { ascending: false })
+        .limit(5);
+      setOtherAttempts(attempts || []);
 
       const { data: resps } = await supabase.from('test_responses').select('*').eq('attempt_id', attemptId);
       setResponses(resps || []);
@@ -42,16 +56,8 @@ const Results = () => {
     fetchResults();
   }, [attemptId, user]);
 
-  if (loading) return <DashboardLayout><div className="flex items-center justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div></DashboardLayout>;
-  if (!attempt || !test) return <DashboardLayout><p>Results not found</p></DashboardLayout>;
-
   const formatTime = (s: number) => `${Math.floor(s / 60)}m ${s % 60}s`;
 
-  return (
-    <DashboardLayout>
-      <div className="space-y-6 max-w-5xl mx-auto">
-        <div className="flex items-center justify-between">
-          <div>
   const handleDownload = async () => {
     if (!attempt || !test) return;
     setDownloading(true);
@@ -103,6 +109,9 @@ const Results = () => {
   };
 
   const previousAttempt = otherAttempts[0];
+
+  if (loading) return <DashboardLayout><div className="flex items-center justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div></DashboardLayout>;
+  if (!attempt || !test) return <DashboardLayout><p>Results not found</p></DashboardLayout>;
 
   return (
     <DashboardLayout>
