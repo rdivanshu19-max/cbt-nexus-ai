@@ -29,7 +29,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
       <nav className="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
           <Link to="/dashboard" className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-border" />
+            <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-border" />
             <div className="hidden sm:block leading-tight">
               <p className="text-[10px] font-mono-hud uppercase tracking-[0.32em] text-muted-foreground">// nexus</p>
               <span className="text-base font-display font-bold">CBT NEXUS</span>

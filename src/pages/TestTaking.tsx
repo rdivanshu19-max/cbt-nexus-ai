@@ -293,7 +293,7 @@ const TestTaking = () => {
       {/* Mission HUD header */}
       <div className="relative bg-card/80 backdrop-blur-xl border-b border-border px-3 sm:px-5 py-3 flex items-center justify-between sticky top-0 z-40 gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <img src="/logo.jpg" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-primary/40" />
+          <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-primary/40" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary/80">Mission</span>

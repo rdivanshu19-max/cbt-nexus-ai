@@ -30,8 +30,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <AutosaveProvider>
+        <AutosaveProvider>
+          <AuthProvider>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -49,8 +49,8 @@ const App = () => (
               <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </AutosaveProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </AutosaveProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

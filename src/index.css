@@ -129,6 +129,11 @@
     --shadow-soft-glow: 0 0 6px hsl(var(--primary) / 0.10);
     --shadow-elegant: 0 6px 18px -12px hsl(220 25% 10% / 0.10);
   }
+  html[data-ui-intensity='calm'] .soft-glow,
+  html[data-ui-intensity='calm'] .glow-primary {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.16) !important;
+  }
+  html[data-ui-intensity='calm'] .hover-lift:hover { transform: translateY(-1px); }
   html[data-ui-intensity='calm'] .animate-aurora,
   html[data-ui-intensity='calm'] .animate-shimmer,
   html[data-ui-intensity='calm'] .animate-marquee { animation-duration: 60s; }
@@ -156,6 +161,14 @@
   html[data-ui-intensity='minimal'] .hero-mesh { background-image: none; }
   html[data-ui-intensity='minimal'] .hud-panel::before,
   html[data-ui-intensity='minimal'] .hud-panel::after { display: none; }
+  html[data-ui-intensity='minimal'] .soft-glow,
+  html[data-ui-intensity='minimal'] .glow-primary,
+  html[data-ui-intensity='minimal'] .glass-card,
+  html[data-ui-intensity='minimal'] .ink-card,
+  html[data-ui-intensity='minimal'] .hud-panel,
+  html[data-ui-intensity='minimal'] .surface-elevated {
+    box-shadow: 0 1px 0 hsl(var(--border)) !important;
+  }
 }
 
 @layer base {

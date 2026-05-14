@@ -1,66 +1,99 @@
 import { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Icosahedron, MeshDistortMaterial, Sparkles, Stars, OrbitControls } from '@react-three/drei';
+import { Float, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Knot() {
-  const ref = useRef<THREE.Mesh>(null!);
+function ConsoleModel() {
+  const group = useRef<THREE.Group>(null!);
+
   useFrame((_, delta) => {
-    ref.current.rotation.x += delta * 0.15;
-    ref.current.rotation.y += delta * 0.2;
+    group.current.rotation.y += delta * 0.08;
+    group.current.rotation.x = Math.sin(Date.now() * 0.0006) * 0.04;
   });
+
   return (
-    <mesh ref={ref} scale={1.15}>
-      <torusKnotGeometry args={[1, 0.32, 220, 32]} />
-      <MeshDistortMaterial
-        color="#10b981"
-        emissive="#0ea5a5"
-        emissiveIntensity={0.55}
-        roughness={0.18}
-        metalness={0.85}
-        distort={0.32}
-        speed={1.4}
-      />
-    </mesh>
+    <group ref={group} rotation={[0.08, -0.42, 0]} position={[1.55, -0.05, -0.2]}>
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[3.8, 2.35, 0.18]} />
+        <meshStandardMaterial color="#111827" roughness={0.32} metalness={0.45} />
+      </mesh>
+      <mesh position={[0, 0, 0.105]}>
+        <boxGeometry args={[3.45, 1.95, 0.035]} />
+        <meshStandardMaterial color="#f8fafc" roughness={0.55} metalness={0.08} />
+      </mesh>
+
+      {[-1.25, -0.45, 0.35, 1.15].map((x, i) => (
+        <mesh key={x} position={[x, 0.52, 0.16]}>
+          <boxGeometry args={[0.46, 0.28 + i * 0.1, 0.05]} />
+          <meshStandardMaterial color={i % 2 ? '#f97316' : '#4f46e5'} roughness={0.35} metalness={0.2} />
+        </mesh>
+      ))}
+
+      {Array.from({ length: 20 }).map((_, i) => {
+        const row = Math.floor(i / 5);
+        const col = i % 5;
+        const color = i % 7 === 0 ? '#f97316' : i % 3 === 0 ? '#16a34a' : '#4f46e5';
+        return (
+          <mesh key={i} position={[-1.32 + col * 0.48, -0.52 - row * 0.28, 0.17]}>
+            <circleGeometry args={[0.085, 28]} />
+            <meshStandardMaterial color={color} roughness={0.45} metalness={0.1} />
+          </mesh>
+        );
+      })}
+
+      <mesh position={[1.15, 0.72, 0.18]}>
+        <torusGeometry args={[0.24, 0.018, 16, 64]} />
+        <meshStandardMaterial color="#4f46e5" roughness={0.25} metalness={0.35} />
+      </mesh>
+      <mesh position={[1.15, 0.72, 0.205]} rotation={[0, 0, -0.85]}>
+        <boxGeometry args={[0.02, 0.22, 0.02]} />
+        <meshStandardMaterial color="#111827" />
+      </mesh>
+
+      <mesh position={[0.9, -0.98, -0.22]} rotation={[0.3, 0.1, 0]}>
+        <boxGeometry args={[2.7, 0.08, 0.7]} />
+        <meshStandardMaterial color="#0f172a" roughness={0.4} metalness={0.65} />
+      </mesh>
+    </group>
   );
 }
 
-function FloatingShard({ position, color }: { position: [number, number, number]; color: string }) {
+function OrbitingDots() {
+  const ref = useRef<THREE.Group>(null!);
+  useFrame((_, delta) => { ref.current.rotation.z += delta * 0.12; });
   return (
-    <Float speed={2} rotationIntensity={1.2} floatIntensity={1.6}>
-      <Icosahedron args={[0.42, 0]} position={position}>
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} roughness={0.2} metalness={0.7} />
-      </Icosahedron>
-    </Float>
+    <group ref={ref} position={[1.45, -0.05, -0.7]}>
+      {Array.from({ length: 18 }).map((_, i) => {
+        const angle = (i / 18) * Math.PI * 2;
+        const radius = 2.45 + (i % 2) * 0.22;
+        return (
+          <mesh key={i} position={[Math.cos(angle) * radius, Math.sin(angle) * radius * 0.58, 0]}>
+            <sphereGeometry args={[0.025 + (i % 3) * 0.01, 12, 12]} />
+            <meshStandardMaterial color={i % 4 === 0 ? '#f97316' : '#4f46e5'} emissive={i % 4 === 0 ? '#f97316' : '#4f46e5'} emissiveIntensity={0.18} />
+          </mesh>
+        );
+      })}
+    </group>
   );
 }
 
 export const Hero3D = () => {
   return (
-    <div className="absolute inset-0 -z-10">
-      <Canvas
-        dpr={[1, 1.6]}
-        camera={{ position: [0, 0, 5], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
-      >
-        <color attach="background" args={[0, 0, 0]} />
-        <ambientLight intensity={0.45} />
-        <pointLight position={[5, 5, 5]} intensity={1.4} color="#34d399" />
-        <pointLight position={[-5, -3, -3]} intensity={1.0} color="#22d3ee" />
+    <div className="absolute inset-0 -z-10 pointer-events-none opacity-80">
+      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 6.2], fov: 42 }} gl={{ antialias: true, alpha: true }}>
+        <ambientLight intensity={0.82} />
+        <directionalLight position={[3, 4, 5]} intensity={1.2} color="#ffffff" />
+        <pointLight position={[4, 1, 3]} intensity={0.75} color="#f97316" />
+        <pointLight position={[-4, -2, 2]} intensity={0.55} color="#4f46e5" />
         <Suspense fallback={null}>
-          <Float speed={1.2} rotationIntensity={0.6} floatIntensity={1.1}>
-            <Knot />
+          <Float speed={0.85} rotationIntensity={0.18} floatIntensity={0.45}>
+            <ConsoleModel />
           </Float>
-          <FloatingShard position={[-2.6, 1.4, -1]} color="#22d3ee" />
-          <FloatingShard position={[2.4, -1.2, -0.5]} color="#10b981" />
-          <FloatingShard position={[1.8, 1.6, -2]} color="#06b6d4" />
-          <Sparkles count={70} scale={[8, 5, 4]} size={3} speed={0.5} color="#5eead4" />
-          <Stars radius={45} depth={40} count={1500} factor={3} fade speed={0.6} />
+          <OrbitingDots />
         </Suspense>
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} enableRotate={false} />
+        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
-      {/* soft vignette so foreground text remains readable */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-background/10" />
     </div>
   );
 };

@@ -12,6 +12,7 @@ import { Sparkles, Loader2, Bookmark, BookmarkCheck, RotateCcw } from 'lucide-re
 import { ChapterAutocomplete } from '@/components/short-notes/ChapterAutocomplete';
 import { NotesView, type Notes } from '@/components/short-notes/NotesView';
 import { RevisionMode } from '@/components/short-notes/RevisionMode';
+import { useAutosave } from '@/contexts/AutosaveContext';
 
 const SUBJECTS_BY_EXAM: Record<string, string[]> = {
   JEE: ['Physics', 'Chemistry', 'Mathematics'],
@@ -32,6 +33,7 @@ const ShortNotes = () => {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [reviewing, setReviewing] = useState(false);
+  const { setStatus: setAutosaveStatus } = useAutosave();
 
   const handleGenerate = async () => {
     if (!chapter.trim()) {
@@ -58,6 +60,7 @@ const ShortNotes = () => {
   const handleSave = async () => {
     if (!user || !notes) return;
     setSaving(true);
+    setAutosaveStatus('saving');
     try {
       const { data, error } = await supabase
         .from('saved_notes')
@@ -70,8 +73,10 @@ const ShortNotes = () => {
         .single();
       if (error) throw error;
       setSavedId(data.id);
+      setAutosaveStatus('saved', Date.now());
       toast({ title: 'Saved', description: 'Note bookmarked. Open it anytime from "Saved Notes".' });
     } catch (e: any) {
+      setAutosaveStatus('error');
       toast({ title: 'Save failed', description: e?.message || 'Try again.', variant: 'destructive' });
     } finally {
       setSaving(false);
@@ -80,7 +85,9 @@ const ShortNotes = () => {
 
   const updateFinished = async (finished: number[]) => {
     if (!savedId) return;
-    await supabase.from('saved_notes').update({ finished_card_indices: finished }).eq('id', savedId);
+    setAutosaveStatus('saving');
+    const { error } = await supabase.from('saved_notes').update({ finished_card_indices: finished }).eq('id', savedId);
+    setAutosaveStatus(error ? 'error' : 'saved', Date.now());
   };
 
   if (reviewing && notes) {

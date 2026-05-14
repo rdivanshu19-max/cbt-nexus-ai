@@ -81,7 +81,7 @@ const TestHistory = () => {
           </div>
         </div>
 
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><HistoryIcon className="h-5 w-5 text-primary" /> Past Attempts</CardTitle>
           </CardHeader>

@@ -47,7 +47,7 @@ const Profile = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Profile Settings</h1>
 
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><User className="h-5 w-5 text-primary" /> Edit Profile</CardTitle>
           </CardHeader>
@@ -66,7 +66,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-destructive/20">
+        <Card className="ink-card border-destructive/20">
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2"><Trash2 className="h-5 w-5" /> Danger Zone</CardTitle>
           </CardHeader>

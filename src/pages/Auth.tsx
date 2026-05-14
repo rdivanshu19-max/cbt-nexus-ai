@@ -57,10 +57,10 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-      <Card className="w-full max-w-md glass-card">
+      <Card className="w-full max-w-md ink-card">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <img src="/logo.jpg" alt="CBT Nexus" className="h-16 w-16 rounded-xl" />
+            <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-16 w-16 rounded-xl" />
           </div>
           <CardTitle className="text-2xl gradient-text">
             {mode === 'login' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : 'Reset Password'}

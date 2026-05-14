@@ -162,7 +162,7 @@ const CustomTest = () => {
           );
         })()}
 
-        <Card className="glass-card">
+        <Card className="ink-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Upload className="h-5 w-5 text-primary" /> Upload Test PDF</CardTitle>
             <CardDescription>AI will extract questions and generate answer keys automatically</CardDescription>

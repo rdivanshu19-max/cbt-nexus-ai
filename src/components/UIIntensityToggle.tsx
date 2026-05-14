@@ -5,7 +5,7 @@ import { Sliders } from 'lucide-react';
 
 type Intensity = 'full' | 'calm' | 'minimal';
 const KEY = 'cbt-ui-intensity';
-const ORDER: Intensity[] = ['full', 'calm', 'minimal'];
+const ORDER: Intensity[] = ['calm', 'full', 'minimal'];
 
 export function applyIntensity(level: Intensity) {
   const html = document.documentElement;
@@ -22,8 +22,8 @@ export function useStoredIntensity() {
 }
 
 const META: Record<Intensity, { label: string; desc: string }> = {
-  full: { label: 'Normal', desc: 'Full glow, animations and HUD highlights' },
   calm: { label: 'Calm', desc: 'Reduced glow and softer accents' },
+  full: { label: 'Normal', desc: 'Balanced shadows, motion and HUD highlights' },
   minimal: { label: 'Minimal', desc: 'No glow, no animations — flat surfaces' },
 };
 
