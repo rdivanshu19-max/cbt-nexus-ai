@@ -14,11 +14,12 @@ const Ctx = createContext<AutosaveCtx | null>(null);
 export const AutosaveProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatusRaw] = useState<AutosaveStatus>('idle');
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [lastActiveStatus, setLastActiveStatus] = useState<Exclude<AutosaveStatus, 'offline'>>('idle');
 
   // Track online/offline globally
   useEffect(() => {
     const onOff = () => setStatusRaw('offline');
-    const onOn = () => setStatusRaw((s) => (s === 'offline' ? 'idle' : s));
+    const onOn = () => setStatusRaw(lastActiveStatus);
     window.addEventListener('offline', onOff);
     window.addEventListener('online', onOn);
     if (typeof navigator !== 'undefined' && navigator.onLine === false) setStatusRaw('offline');
@@ -26,15 +27,17 @@ export const AutosaveProvider = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('offline', onOff);
       window.removeEventListener('online', onOn);
     };
-  }, []);
+  }, [lastActiveStatus]);
 
   const setStatus = useCallback((s: AutosaveStatus, savedAt?: number | null) => {
-    setStatusRaw(s);
+    if (s !== 'offline') setLastActiveStatus(s);
+    setStatusRaw(typeof navigator !== 'undefined' && navigator.onLine === false && s !== 'offline' ? 'offline' : s);
     if (s === 'saved') setLastSavedAt(savedAt ?? Date.now());
   }, []);
 
   const reset = useCallback(() => {
     setStatusRaw('idle');
+    setLastActiveStatus('idle');
     setLastSavedAt(null);
   }, []);
 
