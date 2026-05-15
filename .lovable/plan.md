@@ -1,73 +1,101 @@
-# Implementation Plan
+# Plan — Rankers Star branding + PDF overhaul + landing polish
 
-This is a large multi-feature request. To keep diffs reviewable, I'll group it into 4 phases. You can approve all at once, or tell me to pause after any phase.
+This is a large multi-area request. Breaking it into 5 focused workstreams.
 
 ---
 
-## Phase 1 — UI/UX foundations
+## 1. Rankers Star branding (cross-app promotion)
 
-1. **Logo + favicon swap**
-   - I need you to attach the CBT Nexus logo image (it isn't in this message). Once attached, I'll copy it to `public/favicon.png` + `public/logo.png`, update `index.html` `<link rel="icon">`, OG/twitter image, and replace the `/logo.jpg` reference in `DashboardLayout`, landing nav, and auth pages.
+Add a reusable promo component for your sister app **Rankers Star** (https://rankers-stars.vercel.app/).
 
-2. **Autosave badge accuracy**
-   - Wrap `App.tsx` in `AutosaveProvider` (verify it's mounted globally).
-   - In `TestTaking.tsx`, set `setStatus('saving')` before each localStorage/Supabase write and `setStatus('saved', Date.now())` on success, `setStatus('error')` on failure.
-   - Add the same wiring to Short Notes generate/save and Profile updates.
-   - Show the badge in mobile header (currently `compact` only) and in CBT mission console header.
+- New file `src/components/RankersStarPromo.tsx` — compact + full variants. Copy: "Continue your prep on Rankers Star — 700+ JEE resources, all coaching tests, mentors & tracking. Free forever."
+- Mount in:
+  - `Results.tsx` (full card, after score breakdown)
+  - `Dashboard.tsx` (compact strip in sidebar/below widgets)
+  - `SavedNotes.tsx` (compact footer)
+  - `TestHistory.tsx` (compact footer)
+- Same promo block embedded in every generated PDF (Result / Notes / Test).
 
-3. **UI intensity slider (Calm / Normal / Minimal)**
-   - Replace current `UIIntensityToggle` with a 3-stop slider/segmented control.
-   - In `index.css`, expand `[data-ui-intensity="calm"]` and `="minimal"` rules to dampen `--shadow-*`, glow utilities, and disable `animate-*` keyframes (`.no-anim *` style override).
-   - Persist to `localStorage` key `cbt-ui-intensity` (already in core memory).
+---
 
-## Phase 2 — Mobile + ink-card restyle
+## 2. Result PDF overhaul (`src/lib/reportPdf.ts`)
 
-4. **Landing page mobile redesign** (`src/pages/Index.tsx`)
-   - Hero: stack tighter, shrink 3D scene height on `<sm`, CTAs full-width side-by-side (grid-cols-2).
-   - Arsenal/Loop sections: 2-col grid on mobile (already partially), reduce vertical padding, smaller card heights.
-   - Add sticky mobile bottom CTA bar.
+Switch from sparse jspdf-only layout to **html2canvas + jsPDF** rendering of an off-screen styled HTML report so text never overlaps and the design is rich.
 
-5. **Apply `// TAG` + `ink-card` to**:
-   - `src/pages/Tests.tsx`
-   - `src/pages/TestHistory.tsx`
-   - `src/pages/ShortNotes.tsx` + `SavedNotes.tsx`
-   - `src/pages/TestTaking.tsx` (mission console body — question card, options, footer)
+Sections (in order):
+1. Branded header (CBT Nexus logo + gradient band, correct link `https://nexuscbt.vercel.app/`)
+2. Student card — name, exam, date, attempt #
+3. **Big score hero** — fixed grid layout (no overlap), `Score / Max` with proper line-height
+4. Stats grid — Accuracy, +marks, −marks, Time, Avg time/Q
+5. **AIR Prediction** — heuristic from accuracy + score percentile:
+   - `predictedAIR = round( (1 - scorePct) * 250000 + (1-accuracy)*50000 )` clamped 1…1,000,000
+   - Show predicted AIR range, percentile, "ahead of X% of attempters"
+6. **Performance graph** — last 5 attempts of same test as inline SVG line chart (rendered in HTML, captured)
+7. Subject-wise breakdown table with accuracy bars
+8. **Badges earned** — render badge chips (Sharpshooter ≥80% acc, Speedster avg<45s/Q, Marathon ≥60Q, Comeback +20% vs prev, Topper score ≥90%, Consistency 3+ attempts)
+9. Weak topics + coach notes
+10. **Rankers Star promo banner** with link
+11. Footer with **shareable links** (Instagram story / Telegram / WhatsApp via `https://wa.me/?text=...`, `https://t.me/share/url?...`, copy link button on the page itself — Instagram doesn't support direct share, so we show "Copy & Share to Instagram Story" caption)
 
-6. **Mission console fixes**
-   - Mobile drawer (HUD): currently can open but not close — add explicit close button + ensure `Drawer` `onOpenChange` is wired and the trigger toggles.
-   - Admin panel mobile: `AdminPanel.tsx` Tabs are `<TabsList>` row that overflows. Make tabs scrollable, add mobile padding, and surface the Admin link in the mobile bottom nav (currently desktop-only via `hidden sm:inline-flex`).
+Fix the "0 / 60" overlap bug — render score and `/max` in separate flex children with explicit gap, not absolute-positioned text.
 
-## Phase 3 — Results upgrades
+Share buttons go on the **Results page** itself (not inside the PDF — links inside a PDF can't pre-fill native share sheets reliably). Add a `<ShareResultBar />` row above the PDF download button.
 
-7. **Attempt Comparison**
-   - On `Results.tsx`, query `test_attempts` for same `(user_id, test_id)` ordered by `completed_at`. If ≥2, show a "Compare attempts" tab with side-by-side: per-question (improved/worse/same), score delta, time delta, accuracy delta.
-   - Pure read — no schema change.
+---
 
-8. **PDF Report Card**
-   - Add a "Download Report Card" button on `Results.tsx`.
-   - Use `jspdf` + `jspdf-autotable` (client-side, no edge function needed) to render: header with logo, score summary, subject-wise breakdown, weak topics (lowest accuracy), suggestions (template based on accuracy buckets), shareable footer with brand URL.
-   - Save as `CBT-Nexus-Report-{testTitle}.pdf`.
+## 3. New: AI Short-Notes PDF export
 
-## Phase 4 — Topic-wise AI test generator
+In `src/components/short-notes/NotesView.tsx` add **"Download as PDF"** button.
 
-9. **Topic-wise scope** in `GenerateTest.tsx`
-   - Add new `testScope` value `'topic'`.
-   - Build `src/lib/syllabus.ts` mapping `subject → chapter → string[] of topics` from your provided syllabus list (Physics 11 + Chemistry + Math + Biology + Modern Physics/Electronic Devices). I'll seed with what you pasted; gaps (Class 12 Physics topics) flagged as TODO with placeholders so you can extend later.
-   - UI: after picking subject + chapter, show a multi-select chips panel of topics. Auto-pick test size: 5 questions × number of topics selected (capped 30), `+4/-1/0`.
-   - Pass `topics: string[]` to the `generate-test` edge function. Edit `supabase/functions/generate-test/index.ts` to include topics in the Gemini prompt and `tests.title` ("JEE Physics — Kinematics: Projectile Motion, Relative velocity").
+- New `src/lib/notesPdf.ts` — builds an HTML "handwritten-style" notes layout (Caveat / Patrick Hand Google Font already loaded), pastel paper background, color-coded headings, ruled lines, sticky-note key-points, simple SVG diagrams placeholders, Rankers Star footer.
+- Multi-page via html2canvas slicing.
+- Filename: `CBT-Nexus-Notes-{subject}-{chapter}.pdf`
+
+---
+
+## 4. New: AI Test paper PDF export
+
+In `src/pages/TestTaking.tsx` (after submit) and `Results.tsx`, add **"Download Test Paper PDF"**.
+
+- New `src/lib/testPdf.ts` — branded cover (logo, test name, exam, total Qs, marks scheme), then questions grouped by subject with options, correct answer + explanation in muted box, Rankers Star footer.
+- Math rendering: reuse `MathText` rendered to HTML before capture.
+
+---
+
+## 5. JEE syllabus expansion (`src/lib/syllabus.ts`)
+
+Replace the JEE branch with the full NTA 2025 syllabus from your attached PDF:
+- **Math** 14 units (Sets…Trigonometry) — each with 4-6 sub-topics
+- **Physics** 20 units (Units & Measurements…Experimental Skills)
+- **Chemistry — Physical** 8, **Inorganic** 4, **Organic** 8 units
+
+Keep existing NEET/Boards branches intact. `GenerateTest.tsx` already consumes the structure — no UI change needed beyond longer scroll.
+
+---
+
+## 6. Landing page finishing pass (`src/pages/Index.tsx`)
+
+- Audit each section against new emerald/teal theme — replace any leftover yellow/old-tokens
+- Ensure all CTAs route correctly (`/auth`, `/dashboard`, `/short-notes`)
+- Mobile: confirm hero stack, 3-column arsenal grid, sticky CTA bar render at 360–430px
+- Add "Powered with Rankers Star" subtle footer strip linking to https://rankers-stars.vercel.app/
 
 ---
 
 ## Tech notes
 
-- No new database schema needed.
-- New deps: `jspdf`, `jspdf-autotable`.
-- Edge function change: `generate-test` prompt only.
-- Memory updates: bump `mem://index.md` core to note ink-card styling is project-wide and intensity is a 3-stop slider.
+- New deps: `html2canvas` (~50KB gz). Already have `jspdf` + `jspdf-autotable`.
+- No DB migration. No edge function changes (syllabus is client-side).
+- No new secrets.
+- Badges & AIR prediction are pure client-side heuristics from existing `test_attempts` data — no schema change.
 
-## What I need from you before starting
+## Risks
 
-- **The CBT Nexus logo file** (attach it to the next message). Without it I'll skip the favicon/logo swap and do everything else.
-- Confirm you're OK with `jspdf` (client-side, ~150KB gzipped) for the report card. Alternative: server-side via edge function (slower, but smaller bundle).
+- html2canvas font rendering: ensure Google Fonts (Caveat, Patrick Hand, Inter) are loaded *before* capture (preload + `document.fonts.ready`).
+- Large notes PDFs may be slow on mobile — show a progress dialog (reuse `ProcessingDialog`).
 
-Reply "go" to start Phase 1, or tell me to reorder/skip anything.
+## Out of scope (ask before doing)
+
+- Real AIR prediction ML model — using transparent heuristic for now
+- Server-side PDF rendering / shareable public result URLs (would need new table + edge fn)
+- Custom Instagram API integration (not possible without business API)

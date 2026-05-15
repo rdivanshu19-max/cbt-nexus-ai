@@ -9,6 +9,7 @@ import { MyTestsPanel } from '@/components/dashboard/MyTestsPanel';
 import { RecentNotesWidget } from '@/components/dashboard/RecentNotesWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
+import { RankersStarPromo } from '@/components/RankersStarPromo';
 
 interface DashboardStats {
   totalTests: number;
@@ -154,6 +155,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        <RankersStarPromo variant="strip" />
 
         <RecentNotesWidget />
 

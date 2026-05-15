@@ -293,12 +293,29 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="py-10 px-4 sm:px-6 border-t border-border">
-        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
-            <span className="font-display font-bold">CBT NEXUS</span>
+        <div className="container mx-auto space-y-6">
+          <a
+            href="https://rankers-stars.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block ink-card p-4 sm:p-5 hover-lift group"
+          >
+            <div className="flex items-center gap-3">
+              <img src={rankersStarsLogo} alt="Rankers Stars" className="h-10 w-10 rounded-lg ring-1 ring-border" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// POWERED ALONGSIDE RANKERS STAR</p>
+                <p className="text-sm font-semibold truncate">700+ JEE resources, all coaching tests, mentors — completely free.</p>
+              </div>
+              <span className="text-xs font-semibold text-primary group-hover:gap-2 inline-flex items-center gap-1 shrink-0">Open <ExternalLink className="h-3 w-3" /></span>
+            </div>
+          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
+              <span className="font-display font-bold">CBT NEXUS</span>
+            </div>
+            <p className="text-muted-foreground text-xs font-mono-hud uppercase tracking-[0.2em]">© 2026 // CBT NEXUS</p>
           </div>
-          <p className="text-muted-foreground text-xs font-mono-hud uppercase tracking-[0.2em]">© 2026 // CBT NEXUS</p>
         </div>
       </footer>
     </div>

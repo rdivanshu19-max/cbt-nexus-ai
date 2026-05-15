@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { MathText } from '@/components/MathText';
-import { BookOpen, Lightbulb, RotateCcw, AlertTriangle, FileText, Sparkles } from 'lucide-react';
+import { BookOpen, Lightbulb, RotateCcw, AlertTriangle, FileText, Sparkles, Download } from 'lucide-react';
+import { generateNotesPdf } from '@/lib/notesPdf';
+import { useToast } from '@/hooks/use-toast';
+import { RankersStarPromo } from '@/components/RankersStarPromo';
 
 export interface Notes {
   title: string;
@@ -33,8 +38,28 @@ const CARD_GRADIENTS = [
 ];
 
 export const NotesView = ({ notes, exam, classLevel, subject, style }: Props) => {
+  const { toast } = useToast();
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await generateNotesPdf({ notes, exam, classLevel, subject, chapter: notes.title || subject });
+      toast({ title: 'Notes downloaded', description: 'Print, share, revise — anytime.' });
+    } catch (e: any) {
+      toast({ title: 'Download failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
+      <div className="flex justify-end">
+        <Button onClick={handleDownload} disabled={downloading} className="gradient-primary text-primary-foreground">
+          <Download className="h-4 w-4 mr-2" /> {downloading ? 'Building handwritten PDF…' : 'Download as PDF'}
+        </Button>
+      </div>
       {/* Hero header */}
       <Card className="relative overflow-hidden p-6 sm:p-8 border-primary/30">
         <div className="absolute inset-0 gradient-primary opacity-10 pointer-events-none" />
@@ -213,6 +238,8 @@ export const NotesView = ({ notes, exam, classLevel, subject, style }: Props) =>
           </ul>
         </Card>
       )}
+
+      <RankersStarPromo variant="compact" />
     </div>
   );
 };

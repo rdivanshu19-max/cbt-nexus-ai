@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown } from 'lucide-react';
+import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown, Share2, FileText } from 'lucide-react';
 import { generateReportCard } from '@/lib/reportPdf';
+import { generateTestPaperPdf } from '@/lib/testPdf';
+import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { useToast } from '@/hooks/use-toast';
 
 const Results = () => {
@@ -23,6 +25,7 @@ const Results = () => {
   const [otherAttempts, setOtherAttempts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [downloadingTest, setDownloadingTest] = useState(false);
 
   useEffect(() => {
     if (!attemptId || !user) return;
@@ -87,7 +90,7 @@ const Results = () => {
       const weakTopics = Object.entries(byTopic)
         .map(([topic, t]) => ({ topic, subject: t.subject, accuracy: (t.correct / Math.max(t.total, 1)) * 100, total: t.total }))
         .filter((t) => t.accuracy < 70).sort((a, b) => a.accuracy - b.accuracy).slice(0, 6);
-      const doc = generateReportCard({
+      await generateReportCard({
         studentName: profile?.username || 'Student',
         testTitle: test.title,
         examType: test.exam_type,
@@ -98,13 +101,68 @@ const Results = () => {
         correct: attempt.correct_count || 0, wrong: attempt.wrong_count || 0, unattempted: attempt.unattempted_count || 0,
         timeTakenSec: attempt.time_taken_seconds || 0,
         subjectStats, weakTopics,
+        pastAttempts: otherAttempts.map((a) => ({
+          totalScore: a.total_score || 0,
+          accuracy: a.accuracy_percentage || 0,
+          date: a.completed_at || a.created_at,
+        })),
       });
-      doc.save(`CBT-Nexus-Report-${test.title.replace(/[^\w]+/g, '-')}.pdf`);
       toast({ title: 'Report downloaded', description: 'Share it on Instagram/WhatsApp!' });
     } catch (e: any) {
       toast({ title: 'Failed', description: e?.message || 'Try again', variant: 'destructive' });
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadTestPaper = async () => {
+    if (!test || !questions.length) return;
+    setDownloadingTest(true);
+    try {
+      await generateTestPaperPdf({
+        testTitle: test.title,
+        examType: test.exam_type,
+        durationMinutes: test.duration_minutes,
+        totalMarks: test.total_marks,
+        correctMarks: test.correct_marks,
+        wrongMarks: test.wrong_marks,
+        studentName: profile?.username,
+        includeAnswers: true,
+        questions: questions.map((q) => {
+          const r = responses.find((x) => x.question_id === q.id);
+          return {
+            question_number: q.question_number,
+            question_text: q.question_text,
+            option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
+            correct_answer: q.correct_answer,
+            explanation: q.explanation,
+            subject: q.subject, topic: q.topic,
+            user_answer: r?.selected_answer,
+            is_correct: r?.is_correct,
+          };
+        }),
+      });
+      toast({ title: 'Test paper downloaded', description: 'Solved version with answers & explanations.' });
+    } catch (e: any) {
+      toast({ title: 'Failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } finally {
+      setDownloadingTest(false);
+    }
+  };
+
+  const shareText = test ? `I scored ${attempt?.total_score}/${test.total_marks} on "${test.title}" via CBT Nexus 🚀 Try it free →` : '';
+  const shareUrl = 'https://nexuscbt.vercel.app/';
+  const shareLinks = {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`,
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+  };
+  const handleCopyShare = async () => {
+    try {
+      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      toast({ title: 'Copied!', description: 'Now paste it on Instagram Story or any chat.' });
+    } catch {
+      toast({ title: 'Could not copy', variant: 'destructive' });
     }
   };
 
@@ -130,8 +188,34 @@ const Results = () => {
             <Button onClick={handleDownload} disabled={downloading} size="sm" className="gradient-primary text-primary-foreground">
               <Download className="h-4 w-4 mr-1" /> {downloading ? 'Generating…' : 'Report Card PDF'}
             </Button>
+            <Button onClick={handleDownloadTestPaper} disabled={downloadingTest} size="sm" variant="outline">
+              <FileText className="h-4 w-4 mr-1" /> {downloadingTest ? 'Generating…' : 'Test Paper PDF'}
+            </Button>
           </div>
         </div>
+
+        {/* Share bar */}
+        <Card className="ink-card border-primary/30">
+          <CardContent className="p-4 flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 mr-auto">
+              <div className="h-9 w-9 rounded-lg gradient-primary text-primary-foreground flex items-center justify-center"><Share2 className="h-4 w-4" /></div>
+              <div>
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// SHARE YOUR SCORE</p>
+                <p className="text-sm font-semibold">Flex on the timeline. Tag #CBTNexus.</p>
+              </div>
+            </div>
+            <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" className="bg-[#25D366] hover:bg-[#1ebd5b] text-white border-0">WhatsApp</Button>
+            </a>
+            <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" className="bg-[#229ED9] hover:bg-[#1d89bb] text-white border-0">Telegram</Button>
+            </a>
+            <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline">Twitter / X</Button>
+            </a>
+            <Button size="sm" variant="outline" onClick={handleCopyShare}>Copy for Instagram</Button>
+          </CardContent>
+        </Card>
 
         {previousAttempt && (
           <Card className="ink-card">
@@ -264,6 +348,8 @@ const Results = () => {
             })}
           </CardContent>
         </Card>
+
+        <RankersStarPromo variant="full" />
 
         <div className="flex justify-center">
           <Link to="/tests"><Button className="gradient-primary text-primary-foreground">Take Another Test</Button></Link>
