@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown } from 'lucide-react';
+import { Check, X, Minus, Clock, Target, TrendingUp, Award, ArrowLeft, Download, GitCompare, ArrowUp, ArrowDown, Share2, FileText } from 'lucide-react';
 import { generateReportCard } from '@/lib/reportPdf';
+import { generateTestPaperPdf } from '@/lib/testPdf';
+import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { useToast } from '@/hooks/use-toast';
 
 const Results = () => {
