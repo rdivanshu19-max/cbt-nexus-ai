@@ -188,8 +188,34 @@ const Results = () => {
             <Button onClick={handleDownload} disabled={downloading} size="sm" className="gradient-primary text-primary-foreground">
               <Download className="h-4 w-4 mr-1" /> {downloading ? 'Generating…' : 'Report Card PDF'}
             </Button>
+            <Button onClick={handleDownloadTestPaper} disabled={downloadingTest} size="sm" variant="outline">
+              <FileText className="h-4 w-4 mr-1" /> {downloadingTest ? 'Generating…' : 'Test Paper PDF'}
+            </Button>
           </div>
         </div>
+
+        {/* Share bar */}
+        <Card className="ink-card border-primary/30">
+          <CardContent className="p-4 flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 mr-auto">
+              <div className="h-9 w-9 rounded-lg gradient-primary text-primary-foreground flex items-center justify-center"><Share2 className="h-4 w-4" /></div>
+              <div>
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// SHARE YOUR SCORE</p>
+                <p className="text-sm font-semibold">Flex on the timeline. Tag #CBTNexus.</p>
+              </div>
+            </div>
+            <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" className="bg-[#25D366] hover:bg-[#1ebd5b] text-white border-0">WhatsApp</Button>
+            </a>
+            <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" className="bg-[#229ED9] hover:bg-[#1d89bb] text-white border-0">Telegram</Button>
+            </a>
+            <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline">Twitter / X</Button>
+            </a>
+            <Button size="sm" variant="outline" onClick={handleCopyShare}>Copy for Instagram</Button>
+          </CardContent>
+        </Card>
 
         {previousAttempt && (
           <Card className="ink-card">
