@@ -238,6 +238,8 @@ export const NotesView = ({ notes, exam, classLevel, subject, style }: Props) =>
           </ul>
         </Card>
       )}
+
+      <RankersStarPromo variant="compact" />
     </div>
   );
 };
