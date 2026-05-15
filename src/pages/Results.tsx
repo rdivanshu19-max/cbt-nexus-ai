@@ -349,6 +349,8 @@ const Results = () => {
           </CardContent>
         </Card>
 
+        <RankersStarPromo variant="full" />
+
         <div className="flex justify-center">
           <Link to="/tests"><Button className="gradient-primary text-primary-foreground">Take Another Test</Button></Link>
         </div>
