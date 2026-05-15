@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { MathText } from '@/components/MathText';
-import { BookOpen, Lightbulb, RotateCcw, AlertTriangle, FileText, Sparkles } from 'lucide-react';
+import { BookOpen, Lightbulb, RotateCcw, AlertTriangle, FileText, Sparkles, Download } from 'lucide-react';
+import { generateNotesPdf } from '@/lib/notesPdf';
+import { useToast } from '@/hooks/use-toast';
+import { RankersStarPromo } from '@/components/RankersStarPromo';
 
 export interface Notes {
   title: string;
