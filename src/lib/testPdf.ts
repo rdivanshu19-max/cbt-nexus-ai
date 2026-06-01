@@ -40,18 +40,31 @@ function stripMath(s: string): string {
 function eM(s: any): string { return esc(stripMath(String(s ?? ''))); }
 
 export async function generateTestPaperPdf(input: TestPdfInput): Promise<void> {
-  const grouped: Record<string, TestPdfQuestion[]> = {};
-  for (const q of input.questions) {
-    const key = q.subject || 'Questions';
-    (grouped[key] = grouped[key] || []).push(q);
-  }
-  const subjects = Object.keys(grouped);
+  // 1) Normalize question_number: ensure unique & sequential numbering.
+  //    AI-generated tests sometimes have duplicate / out-of-order numbers.
+  //    We sort by original question_number ascending first, then renumber 1..N.
+  const sorted = [...input.questions].sort(
+    (a, b) => (a.question_number ?? 0) - (b.question_number ?? 0),
+  );
+  const renumbered = sorted.map((q, i) => ({ ...q, question_number: i + 1 }));
 
-  const subjectsHtml = subjects.map((subj) => `
-    <div style="margin:18px 28px 8px;">
-      <div style="display:inline-block;background:#0a5c4a;color:#fff;padding:6px 14px;border-radius:999px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">${eM(subj)}</div>
+  // 2) Group by subject WHILE preserving the first-occurrence order in the
+  //    sorted list, and keep questions inside each group in question_number order.
+  const groups = new Map<string, TestPdfQuestion[]>();
+  for (const q of renumbered) {
+    const key = q.subject || 'Questions';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(q);
+  }
+  for (const arr of groups.values()) {
+    arr.sort((a, b) => a.question_number - b.question_number);
+  }
+
+  const subjectsHtml = Array.from(groups.entries()).map(([subj, qs]) => `
+    <div data-pdf-section style="margin:18px 28px 4px;">
+      <div style="display:inline-block;background:#0a5c4a;color:#fff;padding:6px 14px;border-radius:999px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">${eM(subj)} · ${qs.length} Q</div>
     </div>
-    ${grouped[subj].map((q) => {
+    ${qs.map((q) => {
       const opts = ['A', 'B', 'C', 'D'] as const;
       const optsHtml = opts.map((o) => {
         const text = (q as any)[`option_${o.toLowerCase()}`];
@@ -69,9 +82,9 @@ export async function generateTestPaperPdf(input: TestPdfInput): Promise<void> {
         `;
       }).join('');
       return `
-        <div style="margin:8px 28px 14px;padding:14px 18px;background:#fff;border:1px solid #e4e4e7;border-radius:10px;">
+        <div data-pdf-section style="margin:8px 28px 14px;padding:14px 18px;background:#fff;border:1px solid #e4e4e7;border-radius:10px;">
           <div style="display:flex;align-items:start;gap:10px;margin-bottom:8px;">
-            <span style="background:#0a5c4a;color:#fff;min-width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">${q.question_number}</span>
+            <span style="background:#0a5c4a;color:#fff;min-width:34px;height:30px;padding:0 8px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">Q${q.question_number}</span>
             <p style="margin:0;font-size:13.5px;line-height:1.55;color:#18181b;flex:1;">${eM(q.question_text)}</p>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">${optsHtml}</div>
@@ -90,8 +103,8 @@ export async function generateTestPaperPdf(input: TestPdfInput): Promise<void> {
     ${pdfHeader(input.testTitle, `${input.examType || 'Practice Test'}${input.studentName ? ' · ' + esc(input.studentName) : ''}`)}
 
     <!-- Cover meta strip -->
-    <div style="margin:18px 28px;padding:14px 18px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;display:flex;gap:18px;flex-wrap:wrap;">
-      <div><div style="font-size:10px;color:#15803d;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">Questions</div><div style="font-size:18px;font-weight:800;color:#14532d;">${input.questions.length}</div></div>
+    <div data-pdf-section style="margin:18px 28px;padding:14px 18px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;display:flex;gap:18px;flex-wrap:wrap;">
+      <div><div style="font-size:10px;color:#15803d;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">Questions</div><div style="font-size:18px;font-weight:800;color:#14532d;">${renumbered.length}</div></div>
       ${input.totalMarks != null ? `<div><div style="font-size:10px;color:#15803d;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">Total Marks</div><div style="font-size:18px;font-weight:800;color:#14532d;">${input.totalMarks}</div></div>` : ''}
       ${input.durationMinutes != null ? `<div><div style="font-size:10px;color:#15803d;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">Duration</div><div style="font-size:18px;font-weight:800;color:#14532d;">${input.durationMinutes} min</div></div>` : ''}
       ${input.correctMarks != null && input.wrongMarks != null ? `<div><div style="font-size:10px;color:#15803d;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">Marking</div><div style="font-size:18px;font-weight:800;color:#14532d;">+${input.correctMarks} / −${Math.abs(input.wrongMarks)}</div></div>` : ''}
