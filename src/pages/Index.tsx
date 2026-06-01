@@ -8,7 +8,8 @@ import {
   Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target,
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
-import rankersStarsLogo from '@/assets/rankers-stars-logo.jpg';
+import rankersStarsLogoAsset from '@/assets/rankers-star-logo.jpg.asset.json';
+const rankersStarsLogo = rankersStarsLogoAsset.url;
 
 const Index = () => {
   const arsenal = [
