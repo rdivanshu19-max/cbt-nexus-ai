@@ -38,7 +38,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
   const sectionsHtml = (notes.sections || []).map((s, i) => {
     const c = HEADING_COLORS[i % HEADING_COLORS.length];
     return `
-      <div style="margin:14px 28px;padding:14px 18px;background:#fff;border-left:5px solid ${c};border-radius:8px;box-shadow:0 1px 0 rgba(0,0,0,0.03);">
+      <div data-pdf-section style="margin:14px 28px;padding:14px 18px;background:#fff;border-left:5px solid ${c};border-radius:8px;box-shadow:0 1px 0 rgba(0,0,0,0.03);">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
           <span style="background:${c};color:#fff;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'Patrick Hand',cursive;font-weight:700;font-size:14px;">${i + 1}</span>
           <h3 style="margin:0;font-family:'Caveat',cursive;font-size:24px;color:${c};font-weight:700;line-height:1.1;">${escMath(s.heading)}</h3>
@@ -49,7 +49,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
   }).join('');
 
   const importantHtml = (notes.important_points || []).length ? `
-    <div style="margin:14px 28px;padding:16px 20px;background:#fef3c7;border:2px dashed #f59e0b;border-radius:10px;">
+    <div data-pdf-section style="margin:14px 28px;padding:16px 20px;background:#fef3c7;border:2px dashed #f59e0b;border-radius:10px;">
       <h3 style="margin:0 0 10px;font-family:'Caveat',cursive;font-size:26px;color:#b45309;font-weight:700;">★ Important Points</h3>
       <ul style="margin:0;padding-left:22px;font-family:'Patrick Hand',cursive;font-size:15px;line-height:1.7;color:#3f2d12;">
         ${notes.important_points.map((p) => `<li style="margin-bottom:4px;">${escMath(p)}</li>`).join('')}
@@ -58,7 +58,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
   ` : '';
 
   const formulasHtml = (notes.formulas || []).length ? `
-    <div style="margin:14px 28px;padding:16px 20px;background:#ecfeff;border:2px solid #06b6d4;border-radius:10px;">
+    <div data-pdf-section style="margin:14px 28px;padding:16px 20px;background:#ecfeff;border:2px solid #06b6d4;border-radius:10px;">
       <h3 style="margin:0 0 12px;font-family:'Caveat',cursive;font-size:26px;color:#0e7490;font-weight:700;">∑ Key Formulas</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         ${(notes.formulas || []).map((f) => `
@@ -73,7 +73,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
   ` : '';
 
   const cardsHtml = (notes.revision_cards || []).length ? `
-    <div style="margin:14px 28px;padding:16px 20px;background:#fdf2f8;border:2px solid #ec4899;border-radius:10px;">
+    <div data-pdf-section style="margin:14px 28px;padding:16px 20px;background:#fdf2f8;border:2px solid #ec4899;border-radius:10px;">
       <h3 style="margin:0 0 12px;font-family:'Caveat',cursive;font-size:26px;color:#be185d;font-weight:700;">⟳ Revision Flashcards</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         ${notes.revision_cards.map((c, i) => `
@@ -88,7 +88,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
   ` : '';
 
   const mistakesHtml = (notes.common_mistakes || []).length ? `
-    <div style="margin:14px 28px;padding:16px 20px;background:#fef2f2;border:2px dashed #dc2626;border-radius:10px;">
+    <div data-pdf-section style="margin:14px 28px;padding:16px 20px;background:#fef2f2;border:2px dashed #dc2626;border-radius:10px;">
       <h3 style="margin:0 0 10px;font-family:'Caveat',cursive;font-size:26px;color:#b91c1c;font-weight:700;">⚠ Avoid These Mistakes</h3>
       <ul style="margin:0;padding-left:22px;font-family:'Patrick Hand',cursive;font-size:15px;line-height:1.7;color:#7f1d1d;">
         ${notes.common_mistakes.map((m) => `<li style="margin-bottom:4px;">${escMath(m)}</li>`).join('')}
@@ -98,7 +98,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
 
   const html = `
     <!-- Notebook spine header -->
-    <div style="background:linear-gradient(135deg,${headColor},#1f2937);color:#fff;padding:24px 32px;position:relative;">
+    <div data-pdf-section style="background:linear-gradient(135deg,${headColor},#1f2937);color:#fff;padding:24px 32px;position:relative;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
         <div>
           <div style="font-family:'Patrick Hand',cursive;font-size:13px;letter-spacing:0.16em;opacity:0.85;">CBT NEXUS · AI SHORT NOTES</div>
@@ -113,7 +113,7 @@ export async function generateNotesPdf({ notes, exam, classLevel, subject, chapt
     </div>
 
     <!-- Summary as a sticky note -->
-    <div style="margin:18px 28px 6px;padding:16px 20px;background:#fef9c3;border-radius:4px;border-left:6px solid #eab308;transform:rotate(-0.4deg);box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+    <div data-pdf-section style="margin:18px 28px 6px;padding:16px 20px;background:#fef9c3;border-radius:4px;border-left:6px solid #eab308;transform:rotate(-0.4deg);box-shadow:0 2px 6px rgba(0,0,0,0.06);">
       <div style="font-family:'Patrick Hand',cursive;font-size:13px;color:#854d0e;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;">Summary</div>
       <p style="margin:6px 0 0;font-family:'Patrick Hand',cursive;font-size:16px;color:#3f2d04;line-height:1.55;">${escMath(notes.summary)}</p>
     </div>
