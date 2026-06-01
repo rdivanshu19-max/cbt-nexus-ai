@@ -8,7 +8,8 @@ import {
   Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target,
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
-import rankersStarsLogo from '@/assets/rankers-stars-logo.jpg';
+import rankersStarsLogoAsset from '@/assets/rankers-star-logo.jpg.asset.json';
+const rankersStarsLogo = rankersStarsLogoAsset.url;
 
 const Index = () => {
   const arsenal = [
@@ -29,7 +30,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
@@ -54,24 +55,27 @@ const Index = () => {
       </nav>
 
       {/* HERO */}
-      <section className="relative pt-24 sm:pt-32 pb-10 sm:pb-20 overflow-hidden min-h-[calc(100svh-4rem)] sm:min-h-[760px] flex items-center">
+      <section className="relative pt-24 sm:pt-32 pb-12 sm:pb-20 overflow-hidden min-h-[auto] sm:min-h-[760px] sm:flex sm:items-center">
         <div className="absolute inset-0 hero-mesh" />
-        <div className="absolute inset-0 grid-overlay opacity-60" />
+        <div className="absolute inset-0 grid-overlay opacity-60 animate-grid-drift" />
+        {/* Mobile-only ambient orbs */}
+        <div className="lg:hidden pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-primary/25 blur-3xl animate-float" />
+        <div className="lg:hidden pointer-events-none absolute top-40 -left-16 h-56 w-56 rounded-full bg-accent/20 blur-3xl animate-pulse-soft" />
         <div className="absolute inset-0 hidden lg:block opacity-90">
           <Hero3D />
         </div>
 
         <div className="container relative mx-auto px-4 sm:px-6 w-full">
           <div className="max-w-5xl">
-            <p className="section-tag text-primary mb-5">CBT, REIMAGINED</p>
-            <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+            <p className="section-tag text-primary mb-5 animate-fade-in-up">CBT, REIMAGINED</p>
+            <h1 className="font-display font-black leading-[0.95] tracking-tight text-[2.2rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] animate-fade-in-up" style={{ animationDelay: '60ms' }}>
               REAL EXAM
               <br />
               <span className="gradient-text-aurora animate-aurora">PRESSURE.</span>
               <br />
               SMARTER PREP.
             </h1>
-            <p className="mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground">
+            <p className="mt-5 max-w-2xl text-sm sm:text-lg text-muted-foreground animate-fade-in-up" style={{ animationDelay: '140ms' }}>
               CBT Nexus turns official PDFs, custom papers, and AI-generated exams into a real mission console — with analytics, AI short notes, and a personal study copilot.
             </p>
 
@@ -130,9 +134,13 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            {arsenal.map((f) => (
-              <div key={f.title} className="ink-card p-4 sm:p-5 group hover-lift">
-                <div className={`h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 ${f.color}`}>
+            {arsenal.map((f, i) => (
+              <div
+                key={f.title}
+                className="ink-card p-4 sm:p-5 group hover-lift animate-fade-in-up"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className={`h-9 w-9 rounded-lg bg-secondary flex items-center justify-center mb-3 ${f.color} group-hover:scale-110 transition-transform`}>
                   <f.icon className="h-4 w-4" />
                 </div>
                 <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-muted-foreground">// {f.tag}</p>
@@ -154,9 +162,13 @@ const Index = () => {
             </h2>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:gap-5">
-            {flow.map((s) => (
-              <div key={s.n} className="ink-card p-3 sm:p-6 relative overflow-hidden min-h-[132px] sm:min-h-0">
-                <div className="absolute -right-2 -top-2 font-display font-black text-5xl sm:text-8xl text-primary/10 select-none">{s.n}</div>
+            {flow.map((s, i) => (
+              <div
+                key={s.n}
+                className="ink-card p-3 sm:p-6 relative overflow-hidden min-h-[140px] sm:min-h-0 animate-fade-in-up hover-lift"
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                <div className="absolute -right-2 -top-2 font-display font-black text-5xl sm:text-8xl text-primary/10 select-none animate-pulse-soft">{s.n}</div>
                 <p className="text-[9px] sm:text-xs font-mono-hud uppercase tracking-[0.18em] sm:tracking-[0.32em] text-primary mb-2 sm:mb-3">// {s.tag}</p>
                 <h3 className="font-display font-bold text-sm sm:text-2xl mb-1 sm:mb-2 leading-tight">{s.title}</h3>
                 <p className="text-[11px] sm:text-sm text-muted-foreground leading-snug">{s.desc}</p>
