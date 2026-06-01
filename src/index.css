@@ -320,6 +320,16 @@
   .animate-fade-in-up { animation: fade-in-up 0.55s ease-out both; }
   @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
   .animate-marquee { animation: marquee 28s linear infinite; }
+  @keyframes grid-drift { 0%{background-position:0 0} 100%{background-position:44px 44px} }
+  .animate-grid-drift { animation: grid-drift 22s linear infinite; }
+  /* Calm/minimal intensity respects the new animations */
+  html[data-ui-intensity='minimal'] .animate-grid-drift,
+  html[data-ui-intensity='minimal'] .animate-fade-in-up,
+  html[data-ui-intensity='minimal'] .animate-pulse-soft,
+  html[data-ui-intensity='minimal'] .animate-float { animation: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-grid-drift, .animate-fade-in-up, .animate-pulse-soft, .animate-float, .animate-aurora, .animate-shimmer { animation: none !important; }
+  }
 }
 
 /* Scrollbars */
