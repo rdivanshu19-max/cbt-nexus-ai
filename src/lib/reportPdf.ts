@@ -141,14 +141,14 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
   const html = `
     ${pdfHeader('Performance Report Card', `${esc(r.testTitle)}${r.examType ? ' · ' + esc(r.examType) : ''}`)}
 
-    <div style="padding:22px 32px 0;">
+    <div data-pdf-section style="padding:22px 32px 0 32px;margin-bottom:6px;">
       <div style="font-size:11px;color:#71717a;letter-spacing:0.18em;text-transform:uppercase;">// STUDENT</div>
       <div style="font-size:18px;font-weight:800;color:#18181b;margin-top:2px;">${esc(r.studentName)}</div>
       <div style="font-size:11px;color:#71717a;margin-top:2px;">Attempted on ${new Date(r.attemptDate).toLocaleString()}</div>
     </div>
 
     <!-- Score Hero (fixed flex layout — no overlap) -->
-    <div style="margin:18px 32px;padding:22px 26px;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;">
+    <div data-pdf-section style="margin:18px 32px;padding:22px 26px;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
         <div style="display:flex;align-items:baseline;gap:10px;line-height:1;">
           <span style="font-size:64px;font-weight:900;color:#0a5c4a;letter-spacing:-0.02em;">${r.totalScore}</span>
@@ -177,7 +177,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     </div>
 
     <!-- AIR Prediction -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;">
       <div style="display:flex;justify-content:space-between;align-items:start;gap:18px;flex-wrap:wrap;">
         <div>
           <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.7;">// PROJECTED PERFORMANCE</div>
@@ -194,7 +194,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     </div>
 
     <!-- Performance graph -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fff;border:1px solid #e4e4e7;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fff;border:1px solid #e4e4e7;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <div>
           <div style="font-size:10px;color:#71717a;letter-spacing:0.18em;text-transform:uppercase;">// PROGRESS GRAPH</div>
@@ -206,7 +206,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     </div>
 
     <!-- Badges -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;">
       <div style="font-size:10px;color:#92400e;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">// BADGES UNLOCKED</div>
       <div style="font-size:15px;font-weight:800;color:#18181b;margin-top:2px;margin-bottom:10px;">${badges.length} reward${badges.length > 1 ? 's' : ''} earned this attempt</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;">
@@ -218,7 +218,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
 
     ${r.subjectStats.length ? `
     <!-- Subject breakdown -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fff;border:1px solid #e4e4e7;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fff;border:1px solid #e4e4e7;">
       <div style="font-size:10px;color:#71717a;letter-spacing:0.18em;text-transform:uppercase;">// SUBJECT BREAKDOWN</div>
       <div style="font-size:15px;font-weight:800;color:#18181b;margin-top:2px;margin-bottom:10px;">Where the marks came from</div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
@@ -237,7 +237,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     ` : ''}
 
     <!-- Weak areas -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fef2f2;border:1px solid #fecaca;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#fef2f2;border:1px solid #fecaca;">
       <div style="font-size:10px;color:#b91c1c;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">// WEAK AREAS — FOCUS NEXT</div>
       <table style="width:100%;border-collapse:collapse;margin-top:8px;">
         <thead>
@@ -248,7 +248,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     </div>
 
     <!-- Coach notes -->
-    <div style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#f0f9ff;border:1px solid #bae6fd;">
+    <div data-pdf-section style="margin:0 32px 18px;padding:18px 22px;border-radius:14px;background:#f0f9ff;border:1px solid #bae6fd;">
       <div style="font-size:10px;color:#0369a1;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">// COACH NOTES</div>
       <ul style="margin:8px 0 0;padding-left:20px;color:#0c4a6e;font-size:12.5px;line-height:1.7;">
         ${suggestions.map((s) => `<li style="margin-bottom:4px;">${esc(s)}</li>`).join('')}
@@ -257,7 +257,7 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
 
     ${RANKERS_STAR_PROMO_HTML}
 
-    <div style="margin:0 32px 8px;padding:14px 18px;border-radius:12px;background:#fafafa;border:1px dashed #d4d4d8;text-align:center;">
+    <div data-pdf-section style="margin:0 32px 8px;padding:14px 18px;border-radius:12px;background:#fafafa;border:1px dashed #d4d4d8;text-align:center;">
       <div style="font-size:11px;color:#71717a;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">SHARE YOUR SCORECARD</div>
       <div style="font-size:12.5px;color:#3f3f46;">📸 Instagram Story · 💬 WhatsApp · ✈️ Telegram &nbsp;—&nbsp; Use the share buttons on the result page.</div>
       <div style="font-size:11px;color:#71717a;margin-top:6px;">Tag <b>#CBTNexus</b> · #${esc((r.examType || 'JEE'))}Prep</div>
