@@ -150,9 +150,10 @@ export async function generateReportCard(r: ReportInput): Promise<void> {
     <!-- Score Hero (fixed flex layout — no overlap) -->
     <div data-pdf-section style="margin:18px 32px;padding:22px 26px;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #a7f3d0;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:baseline;gap:10px;line-height:1;">
-          <span style="font-size:64px;font-weight:900;color:#0a5c4a;letter-spacing:-0.02em;">${r.totalScore}</span>
-          <span style="font-size:22px;font-weight:600;color:#16a34a;">/&nbsp;${r.maxMarks}</span>
+        <div style="display:inline-flex;align-items:baseline;gap:8px;line-height:1;white-space:nowrap;">
+          <span style="font-size:60px;font-weight:900;color:#0a5c4a;letter-spacing:-0.02em;">${r.totalScore}</span>
+          <span style="font-size:30px;font-weight:700;color:#16a34a;">/</span>
+          <span style="font-size:30px;font-weight:700;color:#16a34a;">${r.maxMarks}</span>
         </div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1;min-width:300px;">
           ${[
