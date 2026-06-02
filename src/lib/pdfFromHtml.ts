@@ -4,7 +4,7 @@
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import rankersStarAsset from '@/assets/rankers-star-logo.jpg.asset.json';
+import rankersEdgeAsset from '@/assets/rankers-edge-logo.png.asset.json';
 
 const A4_WIDTH_PX = 794;   // 210mm @ 96dpi
 const A4_HEIGHT_PX = 1123; // 297mm @ 96dpi
@@ -18,9 +18,9 @@ export interface RenderOptions {
   extraHead?: string;
 }
 
-/** Absolute URL for the Rankers Star logo (works inside generated PDFs). */
+/** Absolute URL for the Rankers Edge logo (works inside generated PDFs). */
 export const RANKERS_STAR_LOGO_URL: string =
-  (typeof window !== 'undefined' ? window.location.origin : '') + rankersStarAsset.url;
+  (typeof window !== 'undefined' ? window.location.origin : '') + rankersEdgeAsset.url;
 
 /**
  * Render the provided HTML string into an A4 PDF and trigger download.
@@ -170,23 +170,23 @@ async function placeOversizedCanvas(
   }
 }
 
-/** Rankers Star promo banner (uses official logo). */
+/** Rankers Edge promo banner (uses official logo). */
 export const RANKERS_STAR_PROMO_HTML = `
-  <div data-pdf-section style="margin:18px 32px;padding:20px 22px;border-radius:14px;background:linear-gradient(135deg,#0a1233,#1a2752);color:#fff;border:1px solid rgba(255,255,255,0.1);">
+  <div data-pdf-section style="margin:18px 32px;padding:20px 22px;border-radius:14px;background:linear-gradient(135deg,#070a18,#101a3a);color:#fff;border:1px solid rgba(255,255,255,0.1);">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
-      <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Star" crossorigin="anonymous" style="width:54px;height:54px;border-radius:14px;object-fit:cover;flex-shrink:0;background:#0a1233;" />
+      <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:54px;height:54px;border-radius:14px;object-fit:contain;background:#070a18;flex-shrink:0;padding:4px;" />
       <div>
-        <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.7;">// CONTINUE YOUR PREP</div>
-        <div style="font-size:18px;font-weight:800;line-height:1.2;margin-top:2px;">
-          <span style="color:#fff;">Rankers</span> <span style="color:#f59e0b;">Star</span> — everything for JEE / NEET, free.
+        <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.7;">// PART OF THE ECOSYSTEM</div>
+        <div style="font-size:18px;font-weight:800;line-height:1.2;margin-top:2px;color:#e5e7eb;">
+          Rankers <span style="color:#cbd5e1;">Edge</span> — sharpen your JEE prep.
         </div>
       </div>
     </div>
     <p style="margin:6px 0 12px;font-size:12.5px;line-height:1.55;opacity:0.92;">
-      700+ JEE resources · all major coaching test series · full lecture libraries · personal mentor · habit & study tracking — one ecosystem, completely free.
+      PYQ banks · JEE Main + Advanced full mocks · chapter-wise tests & PYQ · infinite question practice · AI voice tutor · word-by-word chapter teaching by AI.
     </p>
-    <div style="font-size:13px;font-weight:700;background:#f59e0b;color:#1a1208;display:inline-block;padding:8px 14px;border-radius:8px;">
-      Open → rankers-stars.vercel.app
+    <div style="font-size:13px;font-weight:700;background:#e5e7eb;color:#0a0f1f;display:inline-block;padding:8px 14px;border-radius:8px;">
+      Open → rankersedge.vercel.app
     </div>
   </div>
 `;
@@ -204,9 +204,9 @@ export function pdfHeader(title: string, subtitle?: string): string {
         <div>
           <div style="font-weight:700;">nexuscbt.vercel.app</div>
           <div style="margin-top:2px;opacity:0.85;">${new Date().toLocaleDateString()}</div>
-          <div style="margin-top:6px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;">in partnership with</div>
+          <div style="margin-top:6px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;">in ecosystem with</div>
         </div>
-        <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Star" crossorigin="anonymous" style="width:46px;height:46px;border-radius:12px;object-fit:cover;background:#0a1233;flex-shrink:0;" />
+        <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:46px;height:46px;border-radius:12px;object-fit:contain;background:#070a18;flex-shrink:0;padding:3px;" />
       </div>
     </div>
   `;

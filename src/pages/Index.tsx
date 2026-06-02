@@ -8,8 +8,8 @@ import {
   Heart, ExternalLink, Code2, Rocket, Briefcase, Mail, Globe, Cpu, Palette, Target,
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
-import rankersStarsLogoAsset from '@/assets/rankers-star-logo.jpg.asset.json';
-const rankersStarsLogo = rankersStarsLogoAsset.url;
+import rankersEdgeLogoAsset from '@/assets/rankers-edge-logo.png.asset.json';
+const rankersEdgeLogo = rankersEdgeLogoAsset.url;
 
 const Index = () => {
   const arsenal = [
@@ -190,16 +190,16 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
+            <a href="https://rankersedge.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
               <div className="flex items-center gap-3 mb-3">
-                <img src={rankersStarsLogo} alt="Rankers Stars" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
+                <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-12 w-12 rounded-xl object-contain ring-1 ring-border bg-[#0a1024] p-1" />
                 <div>
-                  <p className="section-tag text-primary">PARTNER</p>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Stars</h3>
+                  <p className="section-tag text-primary">PARTNER · OUR ECOSYSTEM</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Edge</h3>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">Free lectures, 700+ JEE materials, AI tests, AI mentor — one structured ecosystem instead of 20 tabs.</p>
-              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Stars <ExternalLink className="h-3.5 w-3.5" /></div>
+              <p className="text-sm text-muted-foreground">PYQ banks, JEE Main + Advanced full mocks, chapter-wise tests & PYQ, infinite question practice, AI voice tutor, and word-by-word chapter teaching by AI — built for serious JEE prep.</p>
+              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Edge <ExternalLink className="h-3.5 w-3.5" /></div>
             </a>
             <div className="ink-card p-5 sm:p-6 hover-lift">
               <div className="flex items-center gap-3 mb-3">
@@ -254,7 +254,7 @@ const Index = () => {
                   Hi, I'm <span className="gradient-text">GCD</span>.
                 </h2>
                 <p className="text-base text-muted-foreground mb-4">
-                  I build practical, high-impact digital products. Currently building <strong>Rankers Stars</strong>, an AI platform for JEE aspirants.
+                  I build practical, high-impact digital products. Currently building <strong>Rankers Edge</strong> and <strong>CBT Nexus</strong> — an AI ecosystem for JEE aspirants.
                 </p>
                 <p className="text-base text-muted-foreground mb-7">
                   I also freelance — turning ideas into real products from landing pages to full platforms.
@@ -307,16 +307,16 @@ const Index = () => {
       <footer className="py-10 px-4 sm:px-6 border-t border-border">
         <div className="container mx-auto space-y-6">
           <a
-            href="https://rankers-stars.vercel.app/"
+            href="https://rankersedge.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="block ink-card p-4 sm:p-5 hover-lift group"
           >
             <div className="flex items-center gap-3">
-              <img src={rankersStarsLogo} alt="Rankers Stars" className="h-10 w-10 rounded-lg ring-1 ring-border" />
+              <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-10 w-10 rounded-lg ring-1 ring-border object-contain bg-[#0a1024] p-1" />
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// POWERED ALONGSIDE RANKERS STAR</p>
-                <p className="text-sm font-semibold truncate">700+ JEE resources, all coaching tests, mentors — completely free.</p>
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// PART OF THE ECOSYSTEM · RANKERS EDGE</p>
+                <p className="text-sm font-semibold truncate">PYQ · Main+Adv mocks · chapter tests · AI voice tutor · infinite practice.</p>
               </div>
               <span className="text-xs font-semibold text-primary group-hover:gap-2 inline-flex items-center gap-1 shrink-0">Open <ExternalLink className="h-3 w-3" /></span>
             </div>
