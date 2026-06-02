@@ -190,16 +190,16 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
+            <a href="https://rankersedge.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
               <div className="flex items-center gap-3 mb-3">
-                <img src={rankersStarsLogo} alt="Rankers Stars" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
+                <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-12 w-12 rounded-xl object-contain ring-1 ring-border bg-[#0a1024] p-1" />
                 <div>
-                  <p className="section-tag text-primary">PARTNER</p>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Stars</h3>
+                  <p className="section-tag text-primary">PARTNER · OUR ECOSYSTEM</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Edge</h3>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">Free lectures, 700+ JEE materials, AI tests, AI mentor — one structured ecosystem instead of 20 tabs.</p>
-              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Stars <ExternalLink className="h-3.5 w-3.5" /></div>
+              <p className="text-sm text-muted-foreground">PYQ banks, JEE Main + Advanced full mocks, chapter-wise tests & PYQ, infinite question practice, AI voice tutor, and word-by-word chapter teaching by AI — built for serious JEE prep.</p>
+              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Edge <ExternalLink className="h-3.5 w-3.5" /></div>
             </a>
             <div className="ink-card p-5 sm:p-6 hover-lift">
               <div className="flex items-center gap-3 mb-3">
