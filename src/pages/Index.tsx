@@ -191,30 +191,43 @@ const Index = () => {
             <p className="text-muted-foreground mt-3">CBT Nexus is part of a wider system for serious aspirants.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <a href="https://rankersedge.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
-              <div className="flex items-center gap-3 mb-3">
-                <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-12 w-12 rounded-xl object-contain ring-1 ring-border bg-[#0a1024] p-1" />
-                <div>
-                  <p className="section-tag text-primary">PARTNER · OUR ECOSYSTEM</p>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Edge</h3>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">PYQ banks, JEE Main + Advanced full mocks, chapter-wise tests & PYQ, infinite question practice, AI voice tutor, and word-by-word chapter teaching by AI — built for serious JEE prep.</p>
-              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Edge <ExternalLink className="h-3.5 w-3.5" /></div>
-            </a>
+          <div className="grid md:grid-cols-3 gap-4">
             <div className="ink-card p-5 sm:p-6 hover-lift">
               <div className="flex items-center gap-3 mb-3">
                 <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-primary-foreground">
                   <Activity className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="section-tag text-accent">ENGINE</p>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl">Nexus CBT</h3>
+                  <p className="section-tag text-accent">ENGINE · YOU ARE HERE</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">CBT Nexus</h3>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">Real exam-like interface, timed tests, performance analytics, PDF → test converter, flashcards, AI doubt support and a special revision section.</p>
             </div>
+
+            <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
+              <div className="flex items-center gap-3 mb-3">
+                <img src={rankersStarLogo} alt="Rankers Star" className="h-12 w-12 rounded-xl object-contain ring-1 ring-border bg-[#0a1024] p-0.5" />
+                <div>
+                  <p className="section-tag text-primary">SISTER APP · FREE</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Star</h3>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">700+ JEE resources, full coaching test series, all major edtech lectures, AI mentor, personal tracking — one structured ecosystem instead of 20 tabs. Completely free.</p>
+              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Star <ExternalLink className="h-3.5 w-3.5" /></div>
+            </a>
+
+            <a href="https://rankersedge.vercel.app/" target="_blank" rel="noopener noreferrer" className="ink-card p-5 sm:p-6 group hover-lift">
+              <div className="flex items-center gap-3 mb-3">
+                <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-12 w-12 rounded-xl object-contain ring-1 ring-border bg-[#0a0f1f] p-1" />
+                <div>
+                  <p className="section-tag text-primary">SISTER APP · PRO</p>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl">Rankers Edge</h3>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">PYQ banks, JEE Main + Advanced full mocks, chapter-wise tests & PYQ, infinite question practice, AI voice tutor, and word-by-word chapter teaching by AI — built for serious JEE prep.</p>
+              <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Open Rankers Edge <ExternalLink className="h-3.5 w-3.5" /></div>
+            </a>
           </div>
         </div>
       </section>
