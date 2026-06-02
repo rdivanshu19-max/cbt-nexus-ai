@@ -9,7 +9,9 @@ import {
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
 import rankersEdgeLogoAsset from '@/assets/rankers-edge-logo.png.asset.json';
+import rankersStarLogoAsset from '@/assets/rankers-star-logo.jpg.asset.json';
 const rankersEdgeLogo = rankersEdgeLogoAsset.url;
+const rankersStarLogo = rankersStarLogoAsset.url;
 
 const Index = () => {
   const arsenal = [
