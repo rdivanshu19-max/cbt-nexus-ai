@@ -307,16 +307,16 @@ const Index = () => {
       <footer className="py-10 px-4 sm:px-6 border-t border-border">
         <div className="container mx-auto space-y-6">
           <a
-            href="https://rankers-stars.vercel.app/"
+            href="https://rankersedge.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="block ink-card p-4 sm:p-5 hover-lift group"
           >
             <div className="flex items-center gap-3">
-              <img src={rankersStarsLogo} alt="Rankers Stars" className="h-10 w-10 rounded-lg ring-1 ring-border" />
+              <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-10 w-10 rounded-lg ring-1 ring-border object-contain bg-[#0a1024] p-1" />
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// POWERED ALONGSIDE RANKERS STAR</p>
-                <p className="text-sm font-semibold truncate">700+ JEE resources, all coaching tests, mentors — completely free.</p>
+                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// PART OF THE ECOSYSTEM · RANKERS EDGE</p>
+                <p className="text-sm font-semibold truncate">PYQ · Main+Adv mocks · chapter tests · AI voice tutor · infinite practice.</p>
               </div>
               <span className="text-xs font-semibold text-primary group-hover:gap-2 inline-flex items-center gap-1 shrink-0">Open <ExternalLink className="h-3 w-3" /></span>
             </div>
