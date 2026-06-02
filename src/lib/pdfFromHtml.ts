@@ -173,44 +173,63 @@ async function placeOversizedCanvas(
   }
 }
 
-/** Rankers Edge promo banner (uses official logo). */
+/** Ecosystem promo banner — features BOTH Rankers Star and Rankers Edge. */
 export const RANKERS_STAR_PROMO_HTML = `
-  <div data-pdf-section style="margin:18px 32px;padding:20px 22px;border-radius:14px;background:linear-gradient(135deg,#070a18,#101a3a);color:#fff;border:1px solid rgba(255,255,255,0.1);">
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
-      <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:54px;height:54px;border-radius:14px;object-fit:contain;background:#070a18;flex-shrink:0;padding:4px;" />
-      <div>
-        <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.7;">// PART OF THE ECOSYSTEM</div>
-        <div style="font-size:18px;font-weight:800;line-height:1.2;margin-top:2px;color:#e5e7eb;">
-          Rankers <span style="color:#cbd5e1;">Edge</span> — sharpen your JEE prep.
-        </div>
-      </div>
-    </div>
-    <p style="margin:6px 0 12px;font-size:12.5px;line-height:1.55;opacity:0.92;">
-      PYQ banks · JEE Main + Advanced full mocks · chapter-wise tests & PYQ · infinite question practice · AI voice tutor · word-by-word chapter teaching by AI.
-    </p>
-    <div style="font-size:13px;font-weight:700;background:#e5e7eb;color:#0a0f1f;display:inline-block;padding:8px 14px;border-radius:8px;">
-      Open → rankersedge.vercel.app
-    </div>
+  <div data-pdf-section style="margin:18px 32px;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,#070a18,#101a3a);color:#fff;border:1px solid rgba(255,255,255,0.1);">
+    <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;opacity:0.7;margin-bottom:10px;font-weight:700;">// CONTINUE INSIDE OUR ECOSYSTEM</div>
+    <table style="width:100%;border-collapse:separate;border-spacing:10px 0;">
+      <tr>
+        <td style="width:50%;vertical-align:top;background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;">
+          <table style="width:100%;border-collapse:collapse;"><tr>
+            <td style="width:48px;vertical-align:middle;">
+              <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Star" crossorigin="anonymous" style="width:42px;height:42px;border-radius:10px;object-fit:contain;background:#0a1024;display:block;" />
+            </td>
+            <td style="vertical-align:middle;padding-left:10px;">
+              <div style="font-size:13px;font-weight:800;color:#ffffff;line-height:1.15;">Rankers <span style="color:#f59e0b;">Star</span></div>
+              <div style="font-size:9.5px;opacity:0.7;margin-top:1px;letter-spacing:0.14em;text-transform:uppercase;">Free ecosystem</div>
+            </td>
+          </tr></table>
+          <p style="margin:8px 0 8px;font-size:10.5px;line-height:1.5;opacity:0.92;">700+ JEE resources · coaching tests · lecture libraries · AI mentor · habit tracker — completely free.</p>
+          <div style="font-size:10.5px;font-weight:700;background:#f59e0b;color:#1a1208;display:inline-block;padding:6px 10px;border-radius:6px;">rankers-stars.vercel.app</div>
+        </td>
+        <td style="width:50%;vertical-align:top;background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;">
+          <table style="width:100%;border-collapse:collapse;"><tr>
+            <td style="width:48px;vertical-align:middle;">
+              <img src="${RANKERS_EDGE_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:42px;height:42px;border-radius:10px;object-fit:contain;background:#0a0f1f;display:block;padding:3px;" />
+            </td>
+            <td style="vertical-align:middle;padding-left:10px;">
+              <div style="font-size:13px;font-weight:800;color:#ffffff;line-height:1.15;">Rankers <span style="color:#cbd5e1;">Edge</span></div>
+              <div style="font-size:9.5px;opacity:0.7;margin-top:1px;letter-spacing:0.14em;text-transform:uppercase;">Pro JEE prep</div>
+            </td>
+          </tr></table>
+          <p style="margin:8px 0 8px;font-size:10.5px;line-height:1.5;opacity:0.92;">PYQ · Main+Advanced mocks · chapter tests · infinite practice · AI voice tutor · word-by-word AI teaching.</p>
+          <div style="font-size:10.5px;font-weight:700;background:#e5e7eb;color:#0a0f1f;display:inline-block;padding:6px 10px;border-radius:6px;">rankersedge.vercel.app</div>
+        </td>
+      </tr>
+    </table>
   </div>
 `;
 
-/** Shared header band with brand + partner logo. */
+/** Shared header band with brand + partner logos (Rankers Star + Edge). */
 export function pdfHeader(title: string, subtitle?: string): string {
   return `
-    <div data-pdf-section style="background:linear-gradient(135deg,#0a5c4a,#118a6e 60%,#1aa37e);color:#fff;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:11px;letter-spacing:0.32em;text-transform:uppercase;opacity:0.85;">// CBT NEXUS</div>
-        <div style="font-size:22px;font-weight:900;letter-spacing:-0.01em;margin-top:2px;line-height:1.2;">${title}</div>
-        ${subtitle ? `<div style="font-size:12px;opacity:0.85;margin-top:4px;">${subtitle}</div>` : ''}
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;text-align:right;font-size:10.5px;opacity:0.95;">
-        <div>
-          <div style="font-weight:700;">nexuscbt.vercel.app</div>
-          <div style="margin-top:2px;opacity:0.85;">${new Date().toLocaleDateString()}</div>
-          <div style="margin-top:6px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;">in ecosystem with</div>
-        </div>
-        <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:46px;height:46px;border-radius:12px;object-fit:contain;background:#070a18;flex-shrink:0;padding:3px;" />
-      </div>
+    <div data-pdf-section style="background:linear-gradient(135deg,#0a5c4a,#118a6e 60%,#1aa37e);color:#fff;padding:22px 28px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="vertical-align:middle;padding-right:14px;">
+            <div style="font-size:11px;letter-spacing:0.32em;text-transform:uppercase;opacity:0.85;font-weight:700;">// CBT NEXUS</div>
+            <div style="font-size:22px;font-weight:900;letter-spacing:-0.01em;margin-top:3px;line-height:1.2;word-wrap:break-word;">${title}</div>
+            ${subtitle ? `<div style="font-size:12px;opacity:0.9;margin-top:4px;line-height:1.3;">${subtitle}</div>` : ''}
+          </td>
+          <td style="vertical-align:middle;text-align:right;width:200px;white-space:nowrap;">
+            <div style="font-size:10.5px;font-weight:700;line-height:1.3;">nexuscbt.vercel.app</div>
+            <div style="font-size:10px;opacity:0.85;margin-top:2px;">${new Date().toLocaleDateString()}</div>
+            <div style="font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-top:6px;margin-bottom:4px;">in ecosystem with</div>
+            <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Star" crossorigin="anonymous" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:#0a1024;display:inline-block;vertical-align:middle;margin-right:4px;" />
+            <img src="${RANKERS_EDGE_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:#0a0f1f;display:inline-block;vertical-align:middle;padding:2px;" />
+          </td>
+        </tr>
+      </table>
     </div>
   `;
 }
