@@ -269,7 +269,7 @@ const Index = () => {
                   Hi, I'm <span className="gradient-text">GCD</span>.
                 </h2>
                 <p className="text-base text-muted-foreground mb-4">
-                  I build practical, high-impact digital products. Currently building <strong>Rankers Edge</strong> and <strong>CBT Nexus</strong> — an AI ecosystem for JEE aspirants.
+                  I build practical, high-impact digital products. Currently building <strong>CBT Nexus</strong>, <strong>Rankers Star</strong> and <strong>Rankers Edge</strong> — a connected AI ecosystem for JEE / NEET aspirants.
                 </p>
                 <p className="text-base text-muted-foreground mb-7">
                   I also freelance — turning ideas into real products from landing pages to full platforms.
