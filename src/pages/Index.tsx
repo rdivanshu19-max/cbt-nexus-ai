@@ -321,21 +321,28 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-10 px-4 sm:px-6 border-t border-border">
         <div className="container mx-auto space-y-6">
-          <a
-            href="https://rankersedge.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block ink-card p-4 sm:p-5 hover-lift group"
-          >
-            <div className="flex items-center gap-3">
-              <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-10 w-10 rounded-lg ring-1 ring-border object-contain bg-[#0a1024] p-1" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// PART OF THE ECOSYSTEM · RANKERS EDGE</p>
-                <p className="text-sm font-semibold truncate">PYQ · Main+Adv mocks · chapter tests · AI voice tutor · infinite practice.</p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <a href="https://rankers-stars.vercel.app/" target="_blank" rel="noopener noreferrer" className="block ink-card p-4 hover-lift group">
+              <div className="flex items-center gap-3">
+                <img src={rankersStarLogo} alt="Rankers Star" className="h-10 w-10 rounded-lg ring-1 ring-border object-contain bg-[#0a1024] p-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// ECOSYSTEM · RANKERS STAR</p>
+                  <p className="text-sm font-semibold truncate">700+ JEE resources, coaching tests, AI mentor — free.</p>
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-primary shrink-0" />
               </div>
-              <span className="text-xs font-semibold text-primary group-hover:gap-2 inline-flex items-center gap-1 shrink-0">Open <ExternalLink className="h-3 w-3" /></span>
-            </div>
-          </a>
+            </a>
+            <a href="https://rankersedge.vercel.app/" target="_blank" rel="noopener noreferrer" className="block ink-card p-4 hover-lift group">
+              <div className="flex items-center gap-3">
+                <img src={rankersEdgeLogo} alt="Rankers Edge" className="h-10 w-10 rounded-lg ring-1 ring-border object-contain bg-[#0a0f1f] p-1" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary">// ECOSYSTEM · RANKERS EDGE</p>
+                  <p className="text-sm font-semibold truncate">PYQ · Main+Adv mocks · AI voice tutor · infinite practice.</p>
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-primary shrink-0" />
+              </div>
+            </a>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-8 w-8 rounded-lg" />
