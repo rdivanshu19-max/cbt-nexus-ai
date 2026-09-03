@@ -4,8 +4,7 @@
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import rankersEdgeAsset from '@/assets/rankers-edge-logo.png.asset.json';
-import rankersStarAsset from '@/assets/rankers-star-logo.jpg.asset.json';
+import { rankersEdgeLogo, rankersStarLogo } from '@/lib/brandLogos';
 
 const A4_WIDTH_PX = 794;   // 210mm @ 96dpi
 const A4_HEIGHT_PX = 1123; // 297mm @ 96dpi
@@ -21,9 +20,9 @@ export interface RenderOptions {
 
 const ORIGIN = typeof window !== 'undefined' ? window.location.origin : '';
 /** Absolute URL for the Rankers Edge logo (works inside generated PDFs). */
-export const RANKERS_EDGE_LOGO_URL: string = ORIGIN + rankersEdgeAsset.url;
+export const RANKERS_EDGE_LOGO_URL: string = new URL(rankersEdgeLogo, ORIGIN || 'http://localhost').href;
 /** Absolute URL for the Rankers Star logo (works inside generated PDFs). */
-export const RANKERS_STAR_LOGO_URL: string = ORIGIN + rankersStarAsset.url;
+export const RANKERS_STAR_LOGO_URL: string = new URL(rankersStarLogo, ORIGIN || 'http://localhost').href;
 
 /**
  * Render the provided HTML string into an A4 PDF and trigger download.
