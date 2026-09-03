@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, FileText, BookOpen } from 'lucide-react';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 interface Test {
   id: string;
@@ -59,7 +60,7 @@ const Tests = () => {
     }
 
     return (
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {items.map(test => (
           <Card key={test.id} className="ink-card hover:border-primary/30 transition-all">
             <CardContent className="p-6">
@@ -94,22 +95,20 @@ const Tests = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Available Tests</h1>
-            <p className="text-muted-foreground mt-1">Official papers stay separate from AI and custom practice sets.</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
+        <PageHeader
+          chip="TEST LIBRARY"
+          title={<>Available <span className="headline-dim">tests.</span></>}
+          subtitle="Official papers stay separate from AI and custom practice sets."
+          actions={<>
             <Link to="/generate-test"><Button variant="outline">AI Generate</Button></Link>
             <Link to="/custom-test"><Button className="gradient-primary text-primary-foreground">Custom Test</Button></Link>
-          </div>
-        </div>
+          </>}
+        />
 
-        <Card className="ink-card border-primary/20">
-          <CardContent className="p-6">
+        <WindowCard title="marking-scheme.cbt">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <h2 className="text-xl font-semibold">CBT marking & question status</h2>
+                <h2 className="text-lg sm:text-xl font-display font-bold">CBT marking & question status</h2>
                 <p className="text-sm text-muted-foreground mt-1">This scheme now lives inside the test area, exactly where students need it.</p>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center text-sm w-full lg:w-auto lg:min-w-[420px]">
@@ -127,8 +126,7 @@ const Tests = () => {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </WindowCard>
 
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -151,7 +149,7 @@ const Tests = () => {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-semibold">Official Tests</h2>
+                  <h2 className="text-xl sm:text-2xl font-display font-bold">Official Tests</h2>
                   <p className="text-sm text-muted-foreground">Uploaded by admin and kept in a dedicated section.</p>
                 </div>
                 <Badge variant="secondary">{officialTests.length}</Badge>
@@ -162,7 +160,7 @@ const Tests = () => {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-semibold">AI & Custom Practice</h2>
+                  <h2 className="text-xl sm:text-2xl font-display font-bold">AI &amp; Custom Practice</h2>
                   <p className="text-sm text-muted-foreground">Your generated practice sets live here.</p>
                 </div>
                 <Badge variant="outline">{generatedTests.length}</Badge>
