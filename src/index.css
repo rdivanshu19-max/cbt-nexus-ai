@@ -325,6 +325,9 @@
     .animate-grid-drift, .animate-fade-in-up, .animate-pulse-soft, .animate-float, .animate-aurora, .animate-shimmer { animation: none !important; }
   }
 
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
   /* Never let a horizontal scroller leak on phones */
   .no-x-scroll { max-width: 100%; overflow-x: hidden; }
 }

@@ -1,6 +1,5 @@
 import { ExternalLink, Mic, BookOpen, Infinity as InfinityIcon, GraduationCap, Library, Users, Sparkles } from 'lucide-react';
-import rankersEdgeLogo from '@/assets/rankers-edge-logo.png.asset.json';
-import rankersStarLogo from '@/assets/rankers-star-logo.jpg.asset.json';
+import { rankersEdgeLogo, rankersStarLogo } from '@/lib/brandLogos';
 
 interface Props {
   variant?: 'full' | 'compact' | 'strip';
@@ -25,7 +24,7 @@ interface BrandCard {
 const STAR: BrandCard = {
   href: STAR_URL,
   name: 'Rankers Star',
-  logo: rankersStarLogo.url,
+  logo: rankersStarLogo,
   tag: '// FREE ECOSYSTEM',
   tagline: 'All JEE / NEET resources, free.',
   desc: '700+ JEE resources · all major coaching test series · full lecture libraries · AI mentor · habit & study tracker — one structured ecosystem.',
@@ -42,7 +41,7 @@ const STAR: BrandCard = {
 const EDGE: BrandCard = {
   href: EDGE_URL,
   name: 'Rankers Edge',
-  logo: rankersEdgeLogo.url,
+  logo: rankersEdgeLogo,
   tag: '// PRO JEE PREP',
   tagline: 'Sharpen your edge.',
   desc: 'PYQ banks · JEE Main + Advanced full mocks · chapter-wise tests & PYQ · infinite question practice · AI voice tutor · word-by-word chapter teaching by AI.',

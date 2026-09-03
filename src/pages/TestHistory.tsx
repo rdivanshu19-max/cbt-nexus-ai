@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, FileText, History as HistoryIcon } from 'lucide-react';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 type AttemptRow = {
   id: string;
@@ -64,28 +65,23 @@ const TestHistory = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Test History</h1>
-            <p className="text-muted-foreground mt-1">Review every attempt with score, date, and direct access to results.</p>
-          </div>
-          <div className="flex gap-3 text-sm">
-            <div className="surface-elevated px-4 py-3">
-              <p className="text-muted-foreground">Total attempts</p>
-              <p className="text-xl font-semibold">{attempts.length}</p>
+        <PageHeader
+          chip="ATTEMPT LOG"
+          title={<>Test <span className="headline-dim">history.</span></>}
+          subtitle="Review every attempt with score, date, and direct access to results."
+          actions={<>
+            <div className="ink-card px-4 py-3 rounded-full text-center">
+              <p className="text-[11px] text-muted-foreground">Total</p>
+              <p className="text-lg font-bold">{attempts.length}</p>
             </div>
-            <div className="surface-elevated px-4 py-3">
-              <p className="text-muted-foreground">Completed</p>
-              <p className="text-xl font-semibold">{completedCount}</p>
+            <div className="ink-card px-4 py-3 rounded-full text-center">
+              <p className="text-[11px] text-muted-foreground">Completed</p>
+              <p className="text-lg font-bold text-primary">{completedCount}</p>
             </div>
-          </div>
-        </div>
+          </>}
+        />
 
-        <Card className="ink-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2"><HistoryIcon className="h-5 w-5 text-primary" /> Past Attempts</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <WindowCard title="past-attempts.log" bodyClassName="p-3 sm:p-5 space-y-4">
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map((row) => <div key={row} className="h-24 rounded-xl bg-secondary animate-pulse" />)}
@@ -103,7 +99,7 @@ const TestHistory = () => {
                 const attemptDate = new Date(attempt.completed_at || attempt.created_at);
 
                 return (
-                  <div key={attempt.id} className="surface-elevated p-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div key={attempt.id} className="ink-card p-4 sm:p-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <h2 className="text-lg font-semibold">{relatedTest?.title || 'Test'}</h2>
@@ -116,7 +112,7 @@ const TestHistory = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <div className="rounded-xl bg-primary/10 px-4 py-3 text-center min-w-[110px]">
                         <p className="text-xs text-muted-foreground">Score</p>
                         <p className="text-xl font-bold text-primary">{attempt.total_score ?? '—'}</p>
@@ -131,8 +127,7 @@ const TestHistory = () => {
                 );
               })
             )}
-          </CardContent>
-        </Card>
+        </WindowCard>
       </div>
     </DashboardLayout>
   );
