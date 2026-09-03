@@ -512,10 +512,227 @@ export const SYLLABUS: SyllabusMap = {
   },
 };
 
+/* ============================================================
+   OFFICIAL NTA JEE (Main + Advanced) COVERAGE — remaining chapters
+   Merged into SYLLABUS so topic-wise tests & PDFs match the real syllabus.
+   ============================================================ */
+const ADDITIONAL: SyllabusMap = {
+  Physics: {
+    'Gravitation': [
+      'Universal law of gravitation and gravitational constant',
+      'Variation of g with altitude, depth and rotation of earth',
+      'Gravitational potential energy and potential',
+      'Escape velocity and orbital velocity',
+      'Satellites — time period, energy, binding energy',
+      'Geostationary and polar satellites',
+      "Kepler's three laws of planetary motion",
+    ],
+    'Thermodynamics (Physics)': [
+      'Zeroth law and concept of temperature',
+      'First law of thermodynamics and internal energy',
+      'Isothermal, adiabatic, isobaric and isochoric processes',
+      'Work done in P-V diagrams and cyclic processes',
+      'Specific heat capacities Cp, Cv and Mayer relation',
+      'Second law, heat engines, efficiency and refrigerators',
+      'Carnot engine and coefficient of performance',
+    ],
+    'Oscillations': [
+      'SHM — displacement, velocity, acceleration equations',
+      'Energy in SHM (kinetic, potential, total)',
+      'Simple pendulum and time period variations',
+      'Spring-mass systems — series and parallel springs',
+      'Damped, forced oscillations and resonance',
+    ],
+    'Waves': [
+      'Transverse and longitudinal wave equations',
+      'Speed of wave on a string and in a gas (Newton-Laplace)',
+      'Superposition, interference and beats',
+      'Standing waves in strings and organ pipes',
+      'Harmonics, overtones and end correction',
+      'Doppler effect in sound',
+    ],
+    'Atoms': [
+      'Rutherford scattering and distance of closest approach',
+      'Bohr model — radius, velocity, energy of orbits',
+      'Hydrogen spectral series (Lyman, Balmer, Paschen)',
+      'de Broglie explanation of Bohr quantisation',
+    ],
+    'Nuclei': [
+      'Composition, size and density of nucleus',
+      'Mass defect and binding energy per nucleon curve',
+      'Radioactivity — alpha, beta, gamma decay',
+      'Law of radioactive decay, half-life and mean life',
+      'Nuclear fission and fusion, energy release',
+    ],
+    'Experimental Skills': [
+      'Vernier callipers and screw gauge measurements',
+      'Simple pendulum — determination of g',
+      'Metre scale — mass by principle of moments',
+      'Youngs modulus by Searles apparatus',
+      'Surface tension and viscosity by terminal velocity',
+      'Resistivity by metre bridge and Ohms law',
+      'Potentiometer — comparison of EMF and internal resistance',
+      'Focal length of concave mirror and convex lens',
+      'Refractive index using glass slab and prism',
+      'Characteristic curves of p-n junction diode and Zener diode',
+      'Identification of components using multimeter',
+    ],
+  },
+  Chemistry: {
+    'Chemical Thermodynamics': [
+      'System, surroundings, state functions and extensive/intensive properties',
+      'First law — internal energy, enthalpy, heat capacity',
+      'Hess law and enthalpies of formation, combustion, neutralisation',
+      'Bond enthalpy and lattice enthalpy (Born-Haber)',
+      'Entropy, spontaneity and second law',
+      'Gibbs energy change and equilibrium constant relation',
+    ],
+    'Equilibrium': [
+      'Law of mass action, Kp and Kc relations',
+      'Le Chateliers principle and factors affecting equilibrium',
+      'Ionic equilibrium — strong and weak electrolytes',
+      'Ostwald dilution law and degree of ionisation',
+      'pH, pOH and pKa calculations',
+      'Common ion effect and solubility product',
+      'Buffer solutions and Henderson equation',
+      'Salt hydrolysis and pH of salt solutions',
+    ],
+    'Solutions': [
+      'Concentration terms — molarity, molality, mole fraction, ppm',
+      'Raoults law for volatile and non-volatile solutes',
+      'Ideal and non-ideal solutions, azeotropes',
+      'Colligative properties — RLVP, elevation in Tb, depression in Tf',
+      'Osmotic pressure and reverse osmosis',
+      "van't Hoff factor, association and dissociation",
+    ],
+    'Electrochemistry': [
+      'Electrolytic and galvanic cells, cell notation',
+      'Standard electrode potential and electrochemical series',
+      'Nernst equation and EMF of cell',
+      'Relation between Gibbs energy, EMF and equilibrium constant',
+      'Conductance, molar conductivity and Kohlrausch law',
+      'Faradays laws of electrolysis',
+      'Batteries, fuel cells and corrosion',
+    ],
+    'The p-Block Elements (Group 13-14)': [
+      'Group trends in electronic configuration and oxidation states',
+      'Inert pair effect and anomalous behaviour of B and C',
+      'Boron compounds — borax, boric acid, diborane',
+      'Allotropes of carbon and catenation',
+      'Silicones, silicates and zeolites',
+    ],
+    'Hydrocarbons': [
+      'Alkanes — conformations, preparation and halogenation',
+      'Alkenes — addition reactions, Markovnikov and peroxide effect',
+      'Alkynes — acidic nature, addition and polymerisation',
+      'Aromaticity and Huckel rule',
+      'Electrophilic substitution in benzene and directive influence',
+      'Ozonolysis and oxidation reactions',
+    ],
+    'Amines': [
+      'Classification, structure and basicity of amines',
+      'Preparation — Gabriel phthalimide, Hoffmann bromamide',
+      'Reactions with nitrous acid, carbylamine test',
+      'Diazonium salts — preparation and coupling reactions',
+      'Separation and distinction of 1°, 2°, 3° amines (Hinsberg)',
+    ],
+    'Biomolecules': [
+      'Carbohydrates — classification, glucose and fructose structures',
+      'Anomers, mutarotation and glycosidic linkage',
+      'Proteins — amino acids, peptide bond, structures, denaturation',
+      'Enzymes and mechanism of enzyme action',
+      'Vitamins — classification and deficiency diseases',
+      'Nucleic acids — DNA, RNA structure and functions',
+      'Hormones — overview',
+    ],
+    'Purification and Characterisation of Organic Compounds': [
+      'Crystallisation, sublimation, distillation, chromatography',
+      'Qualitative detection of N, S, halogens (Lassaigne test)',
+      'Quantitative estimation of C, H, N, S, halogens',
+      'Empirical and molecular formula determination',
+    ],
+    'Principles Related to Practical Chemistry': [
+      'Detection of functional groups in organic compounds',
+      'Salt analysis — cations and anions',
+      'Titrimetric exercises — oxalic acid vs KMnO4, Mohr salt',
+      'Preparation of inorganic and organic compounds',
+      'Chemistry involved in simple experiments',
+    ],
+  },
+  Mathematics: {
+    'Sets, Relations and Functions': [
+      'Union, intersection, complement and Venn diagrams',
+      'Types of relations — reflexive, symmetric, transitive, equivalence',
+      'Domain, codomain, range of functions',
+      'One-one, onto and inverse functions, composition',
+    ],
+    'Matrices and Determinants': [
+      'Types of matrices and algebra of matrices',
+      'Transpose, symmetric and skew-symmetric matrices',
+      'Determinants of order 2 and 3, properties',
+      'Area of triangle using determinants',
+      'Adjoint and inverse of a matrix',
+      'Solution of system of linear equations — consistency, Cramers rule',
+      'Elementary row operations and rank-based consistency',
+    ],
+    'Inverse Trigonometric Functions': [
+      'Domain, range and principal value branches',
+      'Properties and simplification of inverse trig expressions',
+      'Sum and difference formulae for inverse functions',
+    ],
+    'Integral Calculus': [
+      'Standard integrals and integration by substitution',
+      'Integration by parts and partial fractions',
+      'Integration of trigonometric and irrational functions',
+      'Definite integrals and fundamental theorem of calculus',
+      'Properties of definite integrals',
+      'Definite integral as limit of a sum',
+      'Improper and reduction formulae based integrals',
+    ],
+    'Statistics': [
+      'Mean, median, mode of grouped and ungrouped data',
+      'Mean deviation about mean and median',
+      'Variance and standard deviation',
+      'Coefficient of variation and combined variance',
+    ],
+    'Probability': [
+      'Classical and axiomatic probability, sample space',
+      'Addition and multiplication theorems',
+      'Conditional probability and independence',
+      'Bayes theorem and total probability',
+      'Random variable, probability distribution, mean and variance',
+      'Bernoulli trials and binomial distribution',
+    ],
+    'Mathematical Reasoning': [
+      'Statements, negation, compound statements',
+      'Truth tables, tautology and contradiction',
+      'Implication, converse and contrapositive',
+    ],
+    'Differential Calculus — Limits': [
+      'Limits of algebraic, trigonometric, exponential, logarithmic functions',
+      'L Hopital rule and standard expansions',
+      'Continuity at a point and on an interval',
+      'Differentiability and relation with continuity',
+    ],
+    'Circles': [
+      'General equation of a circle, centre and radius',
+      'Equation of tangent and normal to a circle',
+      'Length of tangent, power of a point',
+      'Family of circles, radical axis and orthogonality',
+      'Position of point and line relative to a circle',
+    ],
+  },
+};
+
+for (const subject of Object.keys(ADDITIONAL)) {
+  SYLLABUS[subject] = { ...(SYLLABUS[subject] || {}), ...ADDITIONAL[subject] };
+}
+
 export function getTopics(subject: string, chapter: string): string[] {
   return SYLLABUS[subject]?.[chapter] || [];
 }
 
 export function chaptersWithTopics(subject: string): string[] {
-  return Object.keys(SYLLABUS[subject] || {});
+  return Object.keys(SYLLABUS[subject] || {}).sort((a, b) => a.localeCompare(b));
 }
+
