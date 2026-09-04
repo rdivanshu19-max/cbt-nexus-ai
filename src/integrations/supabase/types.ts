@@ -240,6 +240,7 @@ export type Database = {
           option_d: string
           question_number: number
           question_text: string
+          question_type: string
           subject: string | null
           test_id: string
           topic: string | null
@@ -257,6 +258,7 @@ export type Database = {
           option_d: string
           question_number: number
           question_text: string
+          question_type?: string
           subject?: string | null
           test_id: string
           topic?: string | null
@@ -274,6 +276,7 @@ export type Database = {
           option_d?: string
           question_number?: number
           question_text?: string
+          question_type?: string
           subject?: string | null
           test_id?: string
           topic?: string | null
@@ -347,9 +350,11 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          difficulty: string | null
           duration_minutes: number
           exam_type: string | null
           id: string
+          include_integer: boolean | null
           is_published: boolean | null
           pdf_url: string | null
           subject: string | null
@@ -367,9 +372,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          difficulty?: string | null
           duration_minutes?: number
           exam_type?: string | null
           id?: string
+          include_integer?: boolean | null
           is_published?: boolean | null
           pdf_url?: string | null
           subject?: string | null
@@ -387,9 +394,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          difficulty?: string | null
           duration_minutes?: number
           exam_type?: string | null
           id?: string
+          include_integer?: boolean | null
           is_published?: boolean | null
           pdf_url?: string | null
           subject?: string | null
