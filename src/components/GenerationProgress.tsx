@@ -24,10 +24,9 @@ export const GenerationProgress = ({
   return (
     <Dialog open={open}>
       <DialogContent
-        className="sm:max-w-md border-primary/20"
+        className="sm:max-w-md border-primary/20 [&>button]:hidden"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
-        hideClose
       >
         <div className="flex flex-col items-center gap-5 py-4 text-center">
           <div className="relative h-24 w-24">
