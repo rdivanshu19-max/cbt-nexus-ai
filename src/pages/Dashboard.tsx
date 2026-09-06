@@ -10,6 +10,7 @@ import { RecentNotesWidget } from '@/components/dashboard/RecentNotesWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
 import { RankersStarPromo } from '@/components/RankersStarPromo';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 interface DashboardStats {
   totalTests: number;
@@ -110,17 +111,11 @@ const Dashboard = () => {
     <DashboardLayout>
       {showTutorial && <TutorialPopup onClose={closeTutorial} />}
       <div className="space-y-6 sm:space-y-8">
-        <div>
-          <p className="section-tag text-primary mb-2">COMMAND CENTER</p>
-          <h1 className="font-display font-black tracking-tight text-3xl sm:text-4xl md:text-5xl leading-tight">
-            Welcome back, <span className="gradient-text-aurora animate-aurora">{profile?.username || 'Student'}</span>
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm sm:text-base">Here's your preparation overview.</p>
-        </div>
+        <PageHeader chip="COMMAND CENTER" title={<>Welcome back, <span className="gradient-text-aurora animate-aurora">{profile?.username || 'Student'}</span></>} subtitle="Your preparation overview." />
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {statCards.map((s, i) => (
-            <Card key={i} className="ink-card">
+            <WindowCard key={i} title={s.label.toLowerCase().replace(' ', '.')} bodyClassName="p-4 sm:p-5">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg bg-secondary ${s.color}`}>
@@ -132,7 +127,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </WindowCard>
           ))}
         </div>
 

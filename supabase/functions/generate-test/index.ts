@@ -40,13 +40,13 @@ No markdown, no code fences, no commentary.`;
 
 const callAI = async (apiKey: string, system: string, user: string) => {
   let lastErr = "AI request failed";
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "google/gemini-2.5-flash",
           messages: [
             { role: "system", content: system },
             { role: "user", content: user },
@@ -56,7 +56,7 @@ const callAI = async (apiKey: string, system: string, user: string) => {
       });
       if (resp.status === 429 || resp.status >= 500) {
         lastErr = `AI gateway ${resp.status}`;
-        await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+         await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
         continue;
       }
       if (!resp.ok) {
@@ -73,7 +73,7 @@ const callAI = async (apiKey: string, system: string, user: string) => {
     } catch (e) {
       lastErr = e instanceof Error ? e.message : "AI parse failure";
     }
-    await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+    await new Promise((r) => setTimeout(r, 350 * (attempt + 1)));
   }
   throw new Error(lastErr);
 };
@@ -91,10 +91,10 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
+    const url = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!url || !serviceKey) throw new Error("Backend is not configured");
+    const supabase = createClient(url, serviceKey);
 
     /* ---------- phase 1: create the empty test shell ---------- */
     if (body.phase === "create") {
@@ -179,7 +179,7 @@ ${jsonShape}`;
           option_b: asInteger ? "" : String(q.option_b ?? ""),
           option_c: asInteger ? "" : String(q.option_c ?? ""),
           option_d: asInteger ? "" : String(q.option_d ?? ""),
-          correct_answer: asInteger ? intAns! : String(q.correct_answer || "A").trim().charAt(0).toUpperCase(),
+          correct_answer: asInteger && intAns !== null ? intAns : String(q.correct_answer || "A").trim().charAt(0).toUpperCase(),
           explanation: String(q.explanation || ""),
           subject: q.subject || subject || null,
           topic: q.topic || null,

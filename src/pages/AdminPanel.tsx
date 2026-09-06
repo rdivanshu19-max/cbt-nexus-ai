@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Users, Upload } from 'lucide-react';
 import { UserManagementPanel } from '@/components/admin/UserManagementPanel';
 import { OfficialTestsManager } from '@/components/admin/OfficialTestsManager';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 const AdminPanel = () => {
   const { user } = useAuth();
@@ -11,16 +12,10 @@ const AdminPanel = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Shield className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-3xl font-bold">Admin Panel</h1>
-            <p className="text-muted-foreground">Manage users and official tests</p>
-          </div>
-        </div>
+        <PageHeader chip="ADMIN CONSOLE" title="Control center" subtitle="Manage students and official tests." />
 
         <Tabs defaultValue="users">
-          <TabsList>
+          <TabsList className="w-full sm:w-auto grid grid-cols-2 rounded-full h-auto p-1">
             <TabsTrigger value="users"><Users className="h-4 w-4 mr-1" /> Users</TabsTrigger>
             <TabsTrigger value="upload"><Upload className="h-4 w-4 mr-1" /> Official Tests</TabsTrigger>
           </TabsList>

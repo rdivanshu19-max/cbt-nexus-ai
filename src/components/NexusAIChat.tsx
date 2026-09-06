@@ -109,16 +109,18 @@ export const NexusAIChat = () => {
   return (
     <>
       {/* Floating button */}
-      <button
+      <Button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-20 md:bottom-6 right-6 z-50 h-16 w-16 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+        size="icon"
+        aria-label={open ? 'Close Nexus AI' : 'Open Nexus AI'}
+        className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 h-14 w-14 sm:h-16 sm:w-16 rounded-full gradient-primary shadow-lg hover:scale-105 transition-transform"
       >
         {open ? <X className="h-6 w-6 text-primary-foreground" /> : <MessageCircle className="h-6 w-6 text-primary-foreground" />}
-      </button>
+      </Button>
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-40 md:bottom-28 right-4 md:right-6 z-50 w-[min(92vw,30rem)] h-[min(72vh,42rem)] glass-card flex flex-col shadow-2xl">
+        <div className="fixed inset-x-2 bottom-36 md:inset-x-auto md:bottom-28 md:right-6 z-50 md:w-[30rem] h-[min(68dvh,42rem)] window-card flex flex-col shadow-2xl overflow-hidden">
           <div className="p-4 border-b border-border flex items-center gap-3">
             <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center">
               <Bot className="h-4 w-4 text-primary-foreground" />

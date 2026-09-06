@@ -11,6 +11,7 @@ import { Bookmark, Trash2, Sparkles, RotateCcw, Eye, Loader2 } from 'lucide-reac
 import { NotesView, type Notes } from '@/components/short-notes/NotesView';
 import { RevisionMode } from '@/components/short-notes/RevisionMode';
 import { useAutosave } from '@/contexts/AutosaveContext';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 interface SavedNoteRow {
   id: string;
@@ -82,20 +83,9 @@ const SavedNotes = () => {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="flex items-start gap-3">
-            <div className="h-12 w-12 rounded-xl bg-primary/15 flex items-center justify-center">
-              <Bookmark className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">Saved Short Notes</h1>
-              <p className="text-sm text-muted-foreground">Bookmarked AI notes you can revisit anytime.</p>
-            </div>
-          </div>
-          <Button onClick={() => navigate('/short-notes')} className="gradient-primary text-primary-foreground">
+        <PageHeader chip="REVISION VAULT" title={<>Saved <span className="gradient-text-aurora">short notes</span></>} subtitle="Your bookmarked chapters and revision cards." actions={<Button onClick={() => navigate('/short-notes')} className="gradient-primary text-primary-foreground">
             <Sparkles className="h-4 w-4 mr-1" /> Generate new
-          </Button>
-        </div>
+          </Button>} />
 
         {rows === null && (
           <Card className="p-8 flex items-center justify-center">
@@ -120,7 +110,7 @@ const SavedNotes = () => {
               const total = r.notes.revision_cards?.length || 0;
               const done = r.finished_card_indices?.length || 0;
               return (
-                <Card key={r.id} className="p-4 flex flex-col gap-3 hover:border-primary/40 transition-colors">
+                <WindowCard key={r.id} title={`${r.subject.toLowerCase()}.note`} bodyClassName="p-4 flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="flex flex-wrap gap-1.5 mb-1.5">
@@ -151,7 +141,7 @@ const SavedNotes = () => {
                       <RotateCcw className="h-4 w-4 mr-1" /> Revise
                     </Button>
                   </div>
-                </Card>
+                </WindowCard>
               );
             })}
           </div>

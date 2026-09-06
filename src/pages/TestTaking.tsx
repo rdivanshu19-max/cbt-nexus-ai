@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Clock, ChevronLeft, ChevronRight, Flag, LayoutGrid } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Flag, LayoutGrid, Delete, RotateCcw } from 'lucide-react';
 import { MathText } from '@/components/MathText';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from '@/components/ui/drawer';
 import { useAutosave } from '@/contexts/AutosaveContext';
@@ -20,6 +20,7 @@ interface Question {
   option_c: string;
   option_d: string;
   subject?: string | null;
+  question_type?: string | null;
 }
 
 interface Response {
@@ -152,6 +153,23 @@ const TestTaking = () => {
     });
   };
 
+  const setIntegerAnswer = (answer: string) => {
+    const qId = questions[currentQ].id;
+    const clean = answer.replace(/\D/g, '').slice(0, 4);
+    setResponses(prev => {
+      const updated = new Map(prev);
+      const existing = updated.get(qId) || { question_id: qId, selected_answer: null, is_marked_for_review: false, time_spent_seconds: 0 };
+      updated.set(qId, { ...existing, selected_answer: clean || null });
+      return updated;
+    });
+  };
+
+  const answersMatch = (selected: string | null, correct: string, type?: string | null) => {
+    if (!selected) return false;
+    if (type === 'integer') return Number.parseInt(selected, 10) === Number.parseInt(correct, 10);
+    return selected.trim().toUpperCase() === correct.trim().toUpperCase();
+  };
+
   const toggleReview = () => {
     const qId = questions[currentQ].id;
     setResponses(prev => {
@@ -201,7 +219,7 @@ const TestTaking = () => {
         const resp = responses.get(q.id);
         if (!resp || !resp.selected_answer) { unattempted++; return; }
         if (resp.is_marked_for_review) markedReview++;
-        if (resp.selected_answer === q.correct_answer) correct++;
+        if (answersMatch(resp.selected_answer, q.correct_answer, q.question_type)) correct++;
         else wrong++;
       });
 
@@ -215,7 +233,7 @@ const TestTaking = () => {
         const resp = responses.get(q.id);
         if (resp?.selected_answer) {
           await supabase.from('test_responses')
-            .update({ is_correct: resp.selected_answer === q.correct_answer })
+            .update({ is_correct: answersMatch(resp.selected_answer, q.correct_answer, q.question_type) })
             .eq('attempt_id', attemptId)
             .eq('question_id', q.id);
         }
@@ -272,6 +290,7 @@ const TestTaking = () => {
 
   const currentQuestion = questions[currentQ];
   const currentResponse = responses.get(currentQuestion.id);
+  const isIntegerQuestion = currentQuestion.question_type === 'integer';
   const options = [
     { key: 'A', text: currentQuestion.option_a },
     { key: 'B', text: currentQuestion.option_b },
@@ -291,24 +310,24 @@ const TestTaking = () => {
       <div className="grid-overlay fixed inset-0 pointer-events-none" />
 
       {/* Mission HUD header */}
-      <div className="relative bg-card/80 backdrop-blur-xl border-b border-border px-3 sm:px-5 py-3 flex items-center justify-between sticky top-0 z-40 gap-3">
+      <div className="relative bg-card/80 backdrop-blur-xl border-b border-border px-2.5 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-40 gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-9 w-9 rounded-lg ring-1 ring-primary/40" />
+          <img src="/logo.jpg?v=cbt-nexus" alt="CBT Nexus" className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg ring-1 ring-primary/40" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono-hud uppercase tracking-[0.22em] text-primary/80">Mission</span>
               <span className="h-1 w-1 rounded-full bg-primary animate-pulse-soft" />
             </div>
-            <h2 className="font-semibold text-sm truncate max-w-[40vw] sm:max-w-none">{test.title}</h2>
+            <h2 className="font-semibold text-xs sm:text-sm truncate max-w-[24vw] sm:max-w-none">{test.title}</h2>
             <p className="text-[11px] text-muted-foreground font-mono-hud">{test.exam_type || 'CUSTOM'} • Q{currentQ + 1}/{questions.length}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <AutosaveBadge compact />
+          <AutosaveBadge compact className="hidden sm:inline-flex" />
           {/* Glowing timer */}
           <div
-            className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border font-mono-hud font-bold tabular-nums ${
+             className={`flex items-center gap-1.5 px-2 sm:px-4 py-2 rounded-xl border font-mono-hud font-bold tabular-nums ${
               timeCritical
                 ? 'bg-destructive/10 text-destructive border-destructive/40 animate-pulse-danger'
                 : timeWarning
@@ -317,7 +336,7 @@ const TestTaking = () => {
             }`}
           >
             <Clock className="h-4 w-4" />
-            <span className="text-base sm:text-lg tracking-wider">{formatTime(timeLeft)}</span>
+            <span className="text-xs sm:text-lg tracking-wider">{formatTime(timeLeft)}</span>
           </div>
 
           {/* Mobile-only: open HUD drawer */}
@@ -359,7 +378,7 @@ const TestTaking = () => {
                   <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-destructive/80" /> Skipped</div>
                   <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-secondary border border-border" /> Pending</div>
                 </div>
-                <div className="grid grid-cols-6 gap-2">
+                 <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-[42vh] overflow-y-auto pr-1">
                   {questions.map((q, i) => {
                     const resp = responses.get(q.id);
                     const answered = !!resp?.selected_answer;
@@ -446,6 +465,24 @@ const TestTaking = () => {
             <MathText block className="text-base sm:text-lg leading-relaxed break-words">{currentQuestion.question_text}</MathText>
           </div>
 
+          {isIntegerQuestion ? (
+            <div className="window-card mb-8 max-w-md mx-auto">
+              <div className="window-bar"><span className="section-tag text-primary">INTEGER ANSWER</span></div>
+              <div className="p-4 sm:p-5">
+                <div className="h-16 rounded-2xl border border-primary/30 bg-primary/5 flex items-center justify-end px-5 font-mono-hud text-3xl font-bold mb-4 overflow-hidden">
+                  {currentResponse?.selected_answer || <span className="text-muted-foreground">0–9999</span>}
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[1,2,3,4,5,6,7,8,9].map((digit) => (
+                    <Button key={digit} variant="outline" className="h-12 text-lg font-mono-hud" onClick={() => setIntegerAnswer(`${currentResponse?.selected_answer || ''}${digit}`)}>{digit}</Button>
+                  ))}
+                  <Button variant="outline" className="h-12" aria-label="Clear answer" onClick={() => setIntegerAnswer('')}><RotateCcw className="h-4 w-4" /></Button>
+                  <Button variant="outline" className="h-12 text-lg font-mono-hud" onClick={() => setIntegerAnswer(`${currentResponse?.selected_answer || ''}0`)}>0</Button>
+                  <Button variant="outline" className="h-12" aria-label="Delete digit" onClick={() => setIntegerAnswer((currentResponse?.selected_answer || '').slice(0, -1))}><Delete className="h-4 w-4" /></Button>
+                </div>
+              </div>
+            </div>
+          ) : (
           <div className="space-y-3 mb-8">
             {options.map(opt => {
               const selected = currentResponse?.selected_answer === opt.key;
@@ -469,6 +506,7 @@ const TestTaking = () => {
               );
             })}
           </div>
+          )}
 
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex gap-2">

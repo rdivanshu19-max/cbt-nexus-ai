@@ -67,9 +67,9 @@ Style: ${style}
 
 Produce the JSON now.`;
 
-    // Retry up to 3 times with 5s delay
+    // Fast retry: avoid making students wait through repeated five-second gaps.
     let lastErr = '';
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         const resp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
@@ -78,7 +78,7 @@ Produce the JSON now.`;
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
+            model: 'google/gemini-2.5-flash-lite',
             messages: [
               { role: 'system', content: SYSTEM },
               { role: 'user', content: userPrompt },
@@ -99,7 +99,7 @@ Produce the JSON now.`;
         }
         if (!resp.ok) {
           lastErr = `AI returned ${resp.status}`;
-          if (attempt < 3) await new Promise((r) => setTimeout(r, 5000));
+           if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
           continue;
         }
 
@@ -115,7 +115,7 @@ Produce the JSON now.`;
         }
         if (!parsed) {
           lastErr = 'AI returned non-JSON';
-          if (attempt < 3) await new Promise((r) => setTimeout(r, 5000));
+           if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
           continue;
         }
 
@@ -124,7 +124,7 @@ Produce the JSON now.`;
         });
       } catch (e: any) {
         lastErr = e?.message || 'unknown error';
-        if (attempt < 3) await new Promise((r) => setTimeout(r, 5000));
+         if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
       }
     }
 
