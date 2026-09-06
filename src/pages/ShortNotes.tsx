@@ -13,6 +13,9 @@ import { ChapterAutocomplete } from '@/components/short-notes/ChapterAutocomplet
 import { NotesView, type Notes } from '@/components/short-notes/NotesView';
 import { RevisionMode } from '@/components/short-notes/RevisionMode';
 import { useAutosave } from '@/contexts/AutosaveContext';
+import { GenerationProgress } from '@/components/GenerationProgress';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
+import { useEffect } from 'react';
 
 const SUBJECTS_BY_EXAM: Record<string, string[]> = {
   JEE: ['Physics', 'Chemistry', 'Mathematics'],
@@ -33,14 +36,21 @@ const ShortNotes = () => {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [reviewing, setReviewing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const { setStatus: setAutosaveStatus } = useAutosave();
+
+  useEffect(() => {
+    if (!loading) return;
+    const timer = window.setInterval(() => setProgress((value) => Math.min(92, value + Math.max(1, Math.round((92 - value) / 7)))), 450);
+    return () => window.clearInterval(timer);
+  }, [loading]);
 
   const handleGenerate = async () => {
     if (!chapter.trim()) {
       toast({ title: 'Chapter required', description: 'Pick or type a chapter name.', variant: 'destructive' });
       return;
     }
-    setLoading(true); setNotes(null); setSavedId(null);
+    setLoading(true); setProgress(4); setNotes(null); setSavedId(null);
     try {
       const { data, error } = await supabase.functions.invoke('generate-short-notes', {
         body: { exam, classLevel, subject, chapter: chapter.trim(), style },
@@ -48,6 +58,7 @@ const ShortNotes = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       if (!data?.notes) throw new Error('No notes returned');
+      setProgress(100);
       setNotes(data.notes);
       toast({ title: 'Notes ready', description: `Short notes for "${chapter}" generated.` });
     } catch (e: any) {
@@ -104,22 +115,11 @@ const ShortNotes = () => {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="flex items-start gap-3">
-            <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-              <Sparkles className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">AI Short Notes</h1>
-              <p className="text-sm text-muted-foreground">Pick a chapter and let AI generate exam-ready short notes, key points and revision cards.</p>
-            </div>
-          </div>
-          <Link to="/saved-notes">
+        <PageHeader chip="AI NOTES" title={<>Build a <span className="gradient-text-aurora">revision pack</span></>} subtitle="Pick a chapter for focused notes, key points and revision cards." actions={<Link to="/saved-notes">
             <Button variant="outline" size="sm"><Bookmark className="h-4 w-4 mr-1" /> Saved Notes</Button>
-          </Link>
-        </div>
+          </Link>} />
 
-        <Card className="p-4 sm:p-6 space-y-4">
+        <WindowCard title="notes.config" bodyClassName="p-4 sm:p-6 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>Exam</Label>
@@ -183,15 +183,9 @@ const ShortNotes = () => {
           >
             {loading ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating notes…</>) : (<><Sparkles className="h-4 w-4 mr-2" /> Generate Short Notes</>)}
           </Button>
-        </Card>
+        </WindowCard>
 
-        {loading && (
-          <Card className="p-8 flex flex-col items-center text-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="font-medium">Crafting your notes…</p>
-            <p className="text-sm text-muted-foreground">This usually takes 10–25 seconds.</p>
-          </Card>
-        )}
+        <GenerationProgress open={loading} title="Crafting your notes" done={progress} total={100} unit="%" status={progress < 45 ? 'Mapping the chapter…' : progress < 80 ? 'Condensing exam concepts…' : 'Building revision cards…'} />
 
         {notes && (
           <>

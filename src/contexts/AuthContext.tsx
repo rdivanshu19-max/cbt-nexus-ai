@@ -126,11 +126,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const deleteAccount = async () => {
     if (!user) return;
-    // Delete profile (cascade will handle related data)
-    await supabase.from('profiles').delete().eq('user_id', user.id);
-    await supabase.from('chat_messages').delete().eq('user_id', user.id);
-    await supabase.from('test_attempts').delete().eq('user_id', user.id);
-    await supabase.from('study_streaks').delete().eq('user_id', user.id);
+    const { data, error } = await supabase.functions.invoke('delete-account');
+    if (error) throw error;
+    if (!data?.ok) throw new Error(data?.error || 'Account deletion failed.');
     await signOut();
   };
 

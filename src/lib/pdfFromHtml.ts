@@ -4,7 +4,7 @@
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { rankersEdgeLogo, rankersStarLogo } from '@/lib/brandLogos';
+import { rankersEdgeLogo, nexusLogo } from '@/lib/brandLogos';
 
 const A4_WIDTH_PX = 794;   // 210mm @ 96dpi
 const A4_HEIGHT_PX = 1123; // 297mm @ 96dpi
@@ -22,7 +22,7 @@ const ORIGIN = typeof window !== 'undefined' ? window.location.origin : '';
 /** Absolute URL for the Rankers Edge logo (works inside generated PDFs). */
 export const RANKERS_EDGE_LOGO_URL: string = new URL(rankersEdgeLogo, ORIGIN || 'http://localhost').href;
 /** Absolute URL for the Rankers Star logo (works inside generated PDFs). */
-export const RANKERS_STAR_LOGO_URL: string = new URL(rankersStarLogo, ORIGIN || 'http://localhost').href;
+export const RANKERS_STAR_LOGO_URL: string = new URL(nexusLogo, ORIGIN || 'http://localhost').href;
 
 /**
  * Render the provided HTML string into an A4 PDF and trigger download.
@@ -224,8 +224,7 @@ export function pdfHeader(title: string, subtitle?: string): string {
             <div style="font-size:10.5px;font-weight:700;line-height:1.3;">nexuscbt.vercel.app</div>
             <div style="font-size:10px;opacity:0.85;margin-top:2px;">${new Date().toLocaleDateString()}</div>
             <div style="font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-top:6px;margin-bottom:4px;">in ecosystem with</div>
-            <img src="${RANKERS_STAR_LOGO_URL}" alt="Rankers Star" crossorigin="anonymous" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:#0a1024;display:inline-block;vertical-align:middle;margin-right:4px;" />
-            <img src="${RANKERS_EDGE_LOGO_URL}" alt="Rankers Edge" crossorigin="anonymous" style="width:34px;height:34px;border-radius:8px;object-fit:contain;background:#0a0f1f;display:inline-block;vertical-align:middle;padding:2px;" />
+            <img src="${RANKERS_STAR_LOGO_URL}" alt="CBT Nexus" crossorigin="anonymous" style="width:42px;height:42px;border-radius:9px;object-fit:contain;display:inline-block;vertical-align:middle;" />
           </td>
         </tr>
       </table>

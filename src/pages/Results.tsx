@@ -13,6 +13,7 @@ import { generateReportCard } from '@/lib/reportPdf';
 import { generateTestPaperPdf } from '@/lib/testPdf';
 import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { useToast } from '@/hooks/use-toast';
+import { PageHeader, WindowCard } from '@/components/ui/page-header';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -174,14 +175,8 @@ const Results = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6 max-w-5xl mx-auto">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div>
-            <Link to="/tests" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 mb-2"><ArrowLeft className="h-4 w-4" /> Back to tests</Link>
-            <p className="section-tag text-primary mb-1">// REPORT</p>
-            <h1 className="text-2xl sm:text-3xl font-display font-black">Test Results</h1>
-            <p className="text-muted-foreground text-sm">{test.title}</p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
+        <Link to="/tests" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to tests</Link>
+        <PageHeader chip="PERFORMANCE REPORT" title={<>Test <span className="gradient-text-aurora">results</span></>} subtitle={test.title} actions={<div className="flex items-center gap-2 flex-wrap">
             <Badge className="text-base px-3 py-1.5 gradient-primary text-primary-foreground border-0">
               {attempt.total_score} / {test.total_marks}
             </Badge>
@@ -191,8 +186,7 @@ const Results = () => {
             <Button onClick={handleDownloadTestPaper} disabled={downloadingTest} size="sm" variant="outline">
               <FileText className="h-4 w-4 mr-1" /> {downloadingTest ? 'Generating…' : 'Test Paper PDF'}
             </Button>
-          </div>
-        </div>
+          </div>} />
 
         {/* Share bar */}
         <Card className="ink-card border-primary/30">

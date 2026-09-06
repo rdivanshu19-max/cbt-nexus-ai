@@ -36,8 +36,10 @@ const post = async (body: unknown) => {
   return data;
 };
 
-const BATCH_SIZE = 8;
-const CONCURRENCY = 5;
+// Small batches reliably finish inside the function request window while
+// parallel workers keep full papers fast.
+const BATCH_SIZE = 4;
+const CONCURRENCY = 6;
 
 /** Splits the work into small parallel batches so big papers generate fast and report progress. */
 export const runTestGeneration = async (opts: RunOptions) => {
@@ -95,7 +97,14 @@ export const runTestGeneration = async (opts: RunOptions) => {
         const res = await post(job);
         done += res?.inserted ?? job.count;
       } catch {
-        failures += 1;
+        // Retry a failed batch once before moving on. A single transient AI
+        // failure should never leave a small test empty.
+        try {
+          const res = await post(job);
+          done += res?.inserted ?? job.count;
+        } catch {
+          failures += 1;
+        }
       }
       opts.onProgress(done);
     }
@@ -104,7 +113,7 @@ export const runTestGeneration = async (opts: RunOptions) => {
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
 
   const final = await post({ phase: 'finalize', testId });
-  if (!final?.questionCount) throw new Error('AI could not generate any questions. Please try again.');
+  if (!final?.questionCount) throw new Error('The AI paper setter could not return questions. Please try once more.');
 
   return { testId, questionCount: final.questionCount as number, failures };
 };
