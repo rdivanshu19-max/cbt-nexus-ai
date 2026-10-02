@@ -1,5 +1,15 @@
 # Roadmap
 
+## RankVortex-inspired complete UI
+- [ ] Collect desktop and mobile reference screenshots (site blocks automated access)
+- [ ] Replace global theme, typography, surfaces, controls, navigation, and motion
+- [ ] Restyle landing, auth, dashboard, tests, history, AI tools, notes, results, profile, admin, and exam console
+- [ ] Verify desktop and mobile layouts visually
+
+## PDF to CBT AI
+- [x] Replace the Gemini runtime key securely
+- [ ] Validate PDF conversion end-to-end with a real test PDF
+
 ## AI test upgrades
 - [ ] Multi-subject / multi-chapter / multi-topic selection
 - [ ] Custom question count + duration
