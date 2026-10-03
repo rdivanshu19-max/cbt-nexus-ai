@@ -220,7 +220,9 @@ ${jsonShape}`;
 
     throw new Error("Unknown phase");
   } catch (e) {
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    const msg = e instanceof Error ? e.message : (e as any)?.message || JSON.stringify(e);
+    console.error("generate-test error:", msg);
+    return new Response(JSON.stringify({ error: msg }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
