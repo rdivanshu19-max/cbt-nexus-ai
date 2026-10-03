@@ -20,7 +20,7 @@ if (stored && stored !== "full") {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="cbt-nexus-theme">
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="cbt-nexus-theme-v2">
     <App />
   </ThemeProvider>,
 );

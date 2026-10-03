@@ -6,120 +6,96 @@
 
 @layer base {
   :root {
-    /* Light counterpart of the nocturne system */
-    --background: 240 20% 98%;
-    --foreground: 240 12% 8%;
-
+    /* RankVortex-inspired "Graph Paper" — bright paper, navy ink, electric blue + sunflower */
+    --background: 45 40% 97%;
+    --foreground: 228 62% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 240 12% 8%;
-
+    --card-foreground: 228 62% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 12% 8%;
-
-    --primary: 245 78% 58%;
+    --popover-foreground: 228 62% 14%;
+    --primary: 224 92% 52%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 252 90% 70%;
-
-    --secondary: 240 16% 94%;
-    --secondary-foreground: 240 12% 12%;
-
-    --muted: 240 16% 94%;
-    --muted-foreground: 240 6% 42%;
-
-    --accent: 265 85% 62%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 352 78% 52%;
+    --primary-glow: 214 95% 64%;
+    --secondary: 46 100% 92%;
+    --secondary-foreground: 228 62% 14%;
+    --muted: 220 30% 94%;
+    --muted-foreground: 226 18% 38%;
+    --accent: 45 100% 56%;
+    --accent-foreground: 228 62% 14%;
+    --destructive: 356 82% 54%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 240 12% 88%;
-    --input: 240 12% 88%;
-    --ring: 245 78% 58%;
-
-    --radius: 1.25rem;
-
-    --success: 158 70% 38%;
+    --border: 228 40% 20%;
+    --input: 228 30% 70%;
+    --ring: 224 92% 52%;
+    --radius: 1rem;
+    --success: 152 68% 36%;
     --success-foreground: 0 0% 100%;
-    --warning: 32 92% 48%;
-    --warning-foreground: 240 12% 8%;
-    --info: 210 90% 52%;
+    --warning: 38 96% 50%;
+    --warning-foreground: 228 62% 14%;
+    --info: 200 90% 46%;
     --info-foreground: 0 0% 100%;
-
-    --magenta: 292 80% 58%;
-
-    --sidebar-background: 240 20% 97%;
-    --sidebar-foreground: 240 12% 8%;
-    --sidebar-primary: 245 78% 58%;
+    --magenta: 330 85% 58%;
+    --grid-line: 224 60% 50% / 0.08;
+    --sidebar-background: 45 40% 97%;
+    --sidebar-foreground: 228 62% 14%;
+    --sidebar-primary: 224 92% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 16% 93%;
-    --sidebar-accent-foreground: 240 12% 12%;
-    --sidebar-border: 240 12% 88%;
-    --sidebar-ring: 245 78% 58%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(245 78% 58%), hsl(265 85% 66%));
-    --gradient-aurora: linear-gradient(100deg, hsl(245 80% 60%) 0%, hsl(265 85% 68%) 45%, hsl(292 80% 62%) 100%);
-    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(240 20% 98%));
-    --hero-glow: radial-gradient(circle at 50% -10%, hsl(245 78% 58% / 0.14), transparent 60%);
-    --shadow-elegant: 0 18px 44px -26px hsl(240 20% 10% / 0.24);
-    --shadow-soft-glow: 0 0 0 1px hsl(240 12% 88%);
-
+    --sidebar-accent: 46 100% 90%;
+    --sidebar-accent-foreground: 228 62% 14%;
+    --sidebar-border: 228 40% 20%;
+    --sidebar-ring: 224 92% 52%;
+    --gradient-primary: linear-gradient(135deg, hsl(224 92% 52%), hsl(214 95% 62%));
+    --gradient-aurora: linear-gradient(100deg, hsl(224 92% 52%) 0%, hsl(200 90% 50%) 55%, hsl(45 100% 56%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(45 40% 98%));
+    --hero-glow: none;
+    --shadow-elegant: 4px 4px 0 0 hsl(228 62% 14%);
+    --shadow-soft-glow: 0 0 0 2px hsl(228 62% 14%);
     --ui-intensity: 1;
   }
 
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 240 20% 98%;
-
-    --card: 240 9% 8%;
-    --card-foreground: 240 20% 98%;
-
-    --popover: 240 9% 9%;
-    --popover-foreground: 240 20% 98%;
-
-    --primary: 246 84% 65%;
+    --background: 228 45% 9%;
+    --foreground: 45 40% 96%;
+    --card: 228 42% 13%;
+    --card-foreground: 45 40% 96%;
+    --popover: 228 42% 13%;
+    --popover-foreground: 45 40% 96%;
+    --primary: 218 95% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 254 92% 75%;
-
-    --secondary: 240 8% 13%;
-    --secondary-foreground: 240 20% 96%;
-
-    --muted: 240 8% 13%;
-    --muted-foreground: 240 8% 64%;
-
-    --accent: 266 88% 70%;
-    --accent-foreground: 240 10% 4%;
-
-    --destructive: 352 82% 58%;
+    --primary-glow: 210 95% 72%;
+    --secondary: 228 36% 18%;
+    --secondary-foreground: 45 40% 96%;
+    --muted: 228 36% 18%;
+    --muted-foreground: 225 20% 70%;
+    --accent: 45 100% 58%;
+    --accent-foreground: 228 62% 10%;
+    --destructive: 356 85% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 240 8% 16%;
-    --input: 240 8% 18%;
-    --ring: 246 84% 65%;
-
-    --success: 158 72% 46%;
-    --success-foreground: 240 10% 4%;
-    --warning: 36 94% 58%;
-    --warning-foreground: 240 10% 4%;
-    --info: 205 92% 62%;
-    --info-foreground: 240 10% 4%;
-
-    --magenta: 292 86% 68%;
-
-    --sidebar-background: 240 10% 5%;
-    --sidebar-foreground: 240 20% 96%;
-    --sidebar-primary: 246 84% 65%;
+    --border: 45 30% 85%;
+    --input: 228 30% 30%;
+    --ring: 218 95% 62%;
+    --success: 152 65% 48%;
+    --success-foreground: 228 45% 9%;
+    --warning: 40 96% 58%;
+    --warning-foreground: 228 45% 9%;
+    --info: 200 90% 60%;
+    --info-foreground: 228 45% 9%;
+    --magenta: 330 85% 66%;
+    --grid-line: 45 60% 90% / 0.06;
+    --sidebar-background: 228 45% 9%;
+    --sidebar-foreground: 45 40% 96%;
+    --sidebar-primary: 218 95% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 8% 12%;
-    --sidebar-accent-foreground: 240 20% 96%;
-    --sidebar-border: 240 8% 15%;
-    --sidebar-ring: 246 84% 65%;
-
-    --gradient-primary: linear-gradient(135deg, hsl(246 84% 65%), hsl(266 88% 72%));
-    --gradient-aurora: linear-gradient(100deg, hsl(246 90% 70%) 0%, hsl(266 88% 74%) 45%, hsl(292 86% 70%) 100%);
-    --gradient-surface: linear-gradient(180deg, hsl(240 9% 10%), hsl(240 10% 6%));
-    --hero-glow: radial-gradient(circle at 50% -8%, hsl(246 84% 65% / 0.20), transparent 62%);
-    --shadow-elegant: 0 24px 60px -32px hsl(0 0% 0% / 0.9);
-    --shadow-soft-glow: 0 0 0 1px hsl(240 8% 18%);
+    --sidebar-accent: 228 36% 18%;
+    --sidebar-accent-foreground: 45 40% 96%;
+    --sidebar-border: 45 30% 85%;
+    --sidebar-ring: 218 95% 62%;
+    --gradient-primary: linear-gradient(135deg, hsl(218 95% 62%), hsl(210 95% 72%));
+    --gradient-aurora: linear-gradient(100deg, hsl(218 95% 62%) 0%, hsl(200 90% 60%) 55%, hsl(45 100% 58%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(228 42% 14%), hsl(228 45% 11%));
+    --hero-glow: none;
+    --shadow-elegant: 4px 4px 0 0 hsl(45 100% 58%);
+    --shadow-soft-glow: 0 0 0 2px hsl(45 30% 85%);
   }
 
   html[data-ui-intensity='calm'] {
@@ -169,28 +145,33 @@
     max-width: 100vw;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-image: var(--hero-glow);
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    background-image:
+      linear-gradient(hsl(var(--grid-line)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
+    background-size: 28px 28px;
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
   }
   #root { min-height: 100vh; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif; letter-spacing: -0.03em; text-wrap: balance; }
+  p { text-wrap: pretty; }
   ::selection { background: hsl(var(--primary) / 0.30); color: hsl(var(--foreground)); }
 }
 
 @layer utilities {
   /* Typography — tight geometric grotesk for display */
   .font-display {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    letter-spacing: -0.035em;
+    font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif;
+    letter-spacing: -0.03em;
   }
   .font-mono-hud { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
   /* Pill chip label (replaces the old "// TAG" style) */
   .section-tag {
-    @apply inline-flex items-center gap-2 rounded-full border border-border bg-secondary/70
-           px-3 py-1 text-[11px] sm:text-xs font-medium tracking-tight text-foreground/70;
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-border bg-accent
+           px-3 py-1 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-accent-foreground;
     backdrop-filter: blur(8px);
   }
   .section-tag::before {
@@ -202,15 +183,15 @@
 
   /* Surfaces */
   .glass-card {
-    @apply bg-card/70 backdrop-blur-xl border border-border rounded-[1.5rem];
+    @apply bg-card/90 backdrop-blur-xl border-2 border-border rounded-[1.25rem];
     box-shadow: var(--shadow-elegant);
   }
   .ink-card {
-    @apply bg-card border border-border rounded-[1.5rem];
+    @apply bg-card border-2 border-border rounded-[1.25rem];
     box-shadow: var(--shadow-elegant);
-    transition: border-color 240ms ease, transform 240ms ease, box-shadow 240ms ease;
+    transition: transform 200ms ease, box-shadow 200ms ease;
   }
-  .ink-card:hover { border-color: hsl(var(--primary) / calc(0.45 * var(--ui-intensity) + 0.05)); }
+  .ink-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 hsl(var(--border)); }
   .surface-elevated {
     background-image: var(--gradient-surface);
     @apply border border-border rounded-[1.5rem];
@@ -220,7 +201,7 @@
 
   /* Pill navigation shell like the reference */
   .pill-shell {
-    @apply rounded-full border border-border bg-card/80 backdrop-blur-xl;
+    @apply rounded-full border-2 border-border bg-card/95 backdrop-blur-xl;
     box-shadow: var(--shadow-elegant);
   }
 
@@ -229,7 +210,7 @@
     @apply ink-card overflow-hidden;
   }
   .window-bar {
-    @apply flex items-center gap-2 px-4 py-3 border-b border-border bg-secondary/40;
+    @apply flex items-center gap-2 px-4 py-3 border-b-2 border-border bg-secondary;
   }
   .window-dots { @apply flex items-center gap-1.5; }
   .window-dots > span { @apply h-2.5 w-2.5 rounded-full; }
@@ -237,7 +218,7 @@
   /* HUD panel now reads as a soft console panel */
   .hud-panel {
     position: relative;
-    @apply bg-card border border-border rounded-[1.25rem];
+    @apply bg-card border-2 border-border rounded-[1.25rem];
     box-shadow: var(--shadow-elegant);
   }
 
