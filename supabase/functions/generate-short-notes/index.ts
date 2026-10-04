@@ -1,4 +1,4 @@
-// Generate short notes for a JEE/NEET chapter using Lovable AI Gateway.
+// Generate short notes for a JEE/NEET chapter using the project's Gemini key.
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -52,7 +52,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const apiKey = Deno.env.get('LOVABLE_API_KEY');
+    const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) {
       return new Response(JSON.stringify({ error: 'AI not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -71,19 +71,14 @@ Produce the JSON now.`;
     let lastErr = '';
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const resp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-lite',
-            messages: [
-              { role: 'system', content: SYSTEM },
-              { role: 'user', content: userPrompt },
-            ],
-            response_format: { type: 'json_object' },
+            contents: [{ role: 'user', parts: [{ text: `${SYSTEM}\n\n${userPrompt}` }] }],
+            generationConfig: { responseMimeType: 'application/json', temperature: 0.2 },
           }),
         });
 
@@ -93,7 +88,7 @@ Produce the JSON now.`;
           });
         }
         if (resp.status === 402) {
-          return new Response(JSON.stringify({ error: 'AI credits exhausted. Please add credits in Settings.' }), {
+          return new Response(JSON.stringify({ error: 'AI service quota is exhausted. Please try again later.' }), {
             status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
@@ -104,7 +99,7 @@ Produce the JSON now.`;
         }
 
         const data = await resp.json();
-        const text: string = data?.choices?.[0]?.message?.content ?? '';
+        const text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
         let parsed: any;
         try {
           parsed = JSON.parse(text);

@@ -11,18 +11,18 @@
 - [ ] Validate PDF conversion end-to-end with a real test PDF
 
 ## AI test upgrades
-- [ ] Multi-subject / multi-chapter / multi-topic selection
-- [ ] Custom question count + duration
-- [ ] Difficulty levels (easy / moderate / hard / very hard) that are genuinely calibrated
-- [ ] Integer-type question option (20% per subject, non-negative integer answers)
-- [ ] Fix full-syllabus test generation (batched + parallel)
-- [ ] Progress animation ("12 / 75 questions generated") for tests and notes
-- [ ] Faster generation
+- [x] Multi-subject / multi-chapter / multi-topic selection
+- [x] Custom question count + duration
+- [x] Difficulty levels (easy / moderate / hard / very hard) that are genuinely calibrated
+- [x] Integer-type question option (20% per subject, non-negative integer answers)
+- [x] Fix full-syllabus test generation (batched + parallel)
+- [x] Progress animation ("12 / 75 questions generated") for tests and notes
+- [x] Faster generation
 
 ## Bugs
-- [ ] Account deletion must delete the auth user (currently can log back in)
+- [x] Account deletion must delete the auth user (currently can log back in)
 
 ## UI
-- [ ] Pill header + chip labels + window cards on Dashboard, Short Notes, Saved Notes, Results
-- [ ] Admin panel mobile polish
-- [ ] Mission console phone polish
+- [x] Pill header + chip labels + window cards on Dashboard, Short Notes, Saved Notes, Results
+- [x] Admin panel mobile polish
+- [x] Mission console phone polish

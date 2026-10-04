@@ -42,29 +42,25 @@ const callAI = async (apiKey: string, system: string, user: string) => {
   let lastErr = "AI request failed";
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { role: "system", content: system },
-            { role: "user", content: user },
-          ],
-          response_format: { type: "json_object" },
+          contents: [{ role: "user", parts: [{ text: `${system}\n\n${user}` }] }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0.35 },
         }),
       });
       if (resp.status === 429 || resp.status >= 500) {
-        lastErr = `AI gateway ${resp.status}`;
+        lastErr = `Gemini service ${resp.status}`;
          await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
         continue;
       }
       if (!resp.ok) {
-        lastErr = `AI gateway ${resp.status}: ${await resp.text()}`;
+        lastErr = `Gemini service ${resp.status}: ${(await resp.text()).slice(0, 300)}`;
         break;
       }
       const data = await resp.json();
-      let content: string = data.choices?.[0]?.message?.content ?? "";
+      let content: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
       content = content.replace(/```json/gi, "").replace(/```/g, "").trim();
       const parsed = JSON.parse(content);
       const list = Array.isArray(parsed) ? parsed : parsed.questions;
@@ -90,7 +86,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
     const url = Deno.env.get("SUPABASE_URL");
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!url || !serviceKey) throw new Error("Backend is not configured");
@@ -124,7 +120,7 @@ Deno.serve(async (req) => {
 
     /* ---------- phase 2: generate one batch of questions ---------- */
     if (body.phase === "batch") {
-      if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+      if (!apiKey) throw new Error("AI is not configured");
 
       const {
         testId, startNumber, count, integerCount = 0,
