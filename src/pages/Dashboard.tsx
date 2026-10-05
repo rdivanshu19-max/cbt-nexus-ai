@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Flame, Target, TrendingUp, BookOpen, Award, AlertTriangle, Brain, History } from 'lucide-react';
 import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
+import { RankersEdgeButton } from '@/components/RankersEdgeButton';
 
 interface DashboardStats {
   totalTests: number;
@@ -112,6 +113,8 @@ const Dashboard = () => {
       {showTutorial && <TutorialPopup onClose={closeTutorial} />}
       <div className="space-y-6 sm:space-y-8">
         <PageHeader chip="COMMAND CENTER" title={<>Welcome back, <span className="gradient-text-aurora animate-aurora">{profile?.username || 'Student'}</span></>} subtitle="Your preparation overview." />
+
+        <RankersEdgeButton className="w-full sm:w-auto" />
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {statCards.map((s, i) => (

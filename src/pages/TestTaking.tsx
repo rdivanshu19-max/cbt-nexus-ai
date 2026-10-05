@@ -402,8 +402,9 @@ const TestTaking = () => {
                     );
                   })}
                 </div>
+                <RankersEdgeButton compact className="w-full mt-4" />
                 <DrawerClose asChild>
-                  <Button variant="outline" className="w-full mt-4">Close console</Button>
+                  <Button variant="outline" className="w-full mt-3">Close console</Button>
                 </DrawerClose>
               </div>
             </DrawerContent>
