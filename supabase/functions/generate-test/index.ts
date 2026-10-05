@@ -38,38 +38,45 @@ const jsonShape = `Return ONLY a JSON object of the form {"questions": [ ... ]}.
 }
 No markdown, no code fences, no commentary.`;
 
+// Google retires model ids; try current ones in order and fall through on 404/overload.
+const MODELS = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-flash-lite-latest"];
+
 const callAI = async (apiKey: string, system: string, user: string) => {
   let lastErr = "AI request failed";
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: `${system}\n\n${user}` }] }],
-          generationConfig: { responseMimeType: "application/json", temperature: 0.35 },
-        }),
-      });
-      if (resp.status === 429 || resp.status >= 500) {
-        lastErr = `Gemini service ${resp.status}`;
-         await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
-        continue;
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: `${system}\n\n${user}` }] }],
+            generationConfig: { responseMimeType: "application/json", temperature: 0.35 },
+          }),
+        });
+        if (resp.status === 404) { lastErr = `Model ${model} unavailable`; break; }
+        if (resp.status === 429 || resp.status >= 500) {
+          lastErr = `Gemini service ${resp.status}`;
+          if (attempt === 0) await new Promise((r) => setTimeout(r, 600));
+          continue;
+        }
+        if (!resp.ok) {
+          lastErr = `Gemini service ${resp.status}: ${(await resp.text()).slice(0, 300)}`;
+          break;
+        }
+        const data = await resp.json();
+        let content: string = (data?.candidates?.[0]?.content?.parts || [])
+          .filter((p: any) => typeof p?.text === "string" && !p.thought)
+          .map((p: any) => p.text).join("");
+        content = content.replace(/```json/gi, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(content);
+        const list = Array.isArray(parsed) ? parsed : parsed.questions;
+        if (Array.isArray(list) && list.length > 0) return list;
+        lastErr = "AI returned no questions";
+      } catch (e) {
+        lastErr = e instanceof Error ? e.message : "AI parse failure";
       }
-      if (!resp.ok) {
-        lastErr = `Gemini service ${resp.status}: ${(await resp.text()).slice(0, 300)}`;
-        break;
-      }
-      const data = await resp.json();
-      let content: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-      content = content.replace(/```json/gi, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(content);
-      const list = Array.isArray(parsed) ? parsed : parsed.questions;
-      if (Array.isArray(list) && list.length > 0) return list;
-      lastErr = "AI returned no questions";
-    } catch (e) {
-      lastErr = e instanceof Error ? e.message : "AI parse failure";
     }
-    await new Promise((r) => setTimeout(r, 350 * (attempt + 1)));
   }
   throw new Error(lastErr);
 };

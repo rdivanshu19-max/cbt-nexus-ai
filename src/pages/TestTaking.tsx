@@ -10,6 +10,7 @@ import { MathText } from '@/components/MathText';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from '@/components/ui/drawer';
 import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
+import { RankersEdgeButton } from '@/components/RankersEdgeButton';
 
 interface Question {
   id: string;
@@ -402,8 +403,9 @@ const TestTaking = () => {
                     );
                   })}
                 </div>
+                <RankersEdgeButton compact className="w-full mt-4" />
                 <DrawerClose asChild>
-                  <Button variant="outline" className="w-full mt-4">Close console</Button>
+                  <Button variant="outline" className="w-full mt-3">Close console</Button>
                 </DrawerClose>
               </div>
             </DrawerContent>
@@ -583,6 +585,7 @@ const TestTaking = () => {
           >
             {submitting ? 'Submitting…' : 'Submit Test'}
           </Button>
+          <RankersEdgeButton compact className="mt-3 w-full" />
         </div>
       </div>
     </div>
