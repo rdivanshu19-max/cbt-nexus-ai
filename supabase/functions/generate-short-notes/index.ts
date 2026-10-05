@@ -67,59 +67,51 @@ Style: ${style}
 
 Produce the JSON now.`;
 
-    // Fast retry: avoid making students wait through repeated five-second gaps.
+    // Google retires model ids; try current ones in order, falling through on 404/overload.
+    const MODELS = ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-3.8-flash'];
     let lastErr = '';
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: `${SYSTEM}\n\n${userPrompt}` }] }],
-            generationConfig: { responseMimeType: 'application/json', temperature: 0.2 },
-          }),
-        });
-
-        if (resp.status === 429) {
-          return new Response(JSON.stringify({ error: 'Rate limit reached. Please try again in a minute.' }), {
-            status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-        if (resp.status === 402) {
-          return new Response(JSON.stringify({ error: 'AI service quota is exhausted. Please try again later.' }), {
-            status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-        if (!resp.ok) {
-          lastErr = `AI returned ${resp.status}`;
-           if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
-          continue;
-        }
-
-        const data = await resp.json();
-        const text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-        let parsed: any;
+    for (const model of MODELS) {
+      for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          parsed = JSON.parse(text);
-        } catch {
-          // attempt to extract JSON object
-          const m = text.match(/\{[\s\S]*\}/);
-          parsed = m ? JSON.parse(m[0]) : null;
-        }
-        if (!parsed) {
-          lastErr = 'AI returned non-JSON';
-           if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
-          continue;
-        }
+          const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: `${SYSTEM}\n\n${userPrompt}` }] }],
+              generationConfig: { responseMimeType: 'application/json', temperature: 0.2 },
+            }),
+          });
 
-        return new Response(JSON.stringify({ notes: parsed }), {
-          status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (e: any) {
-        lastErr = e?.message || 'unknown error';
-         if (attempt < 2) await new Promise((r) => setTimeout(r, 500));
+          if (resp.status === 404) { lastErr = `Model ${model} unavailable`; break; }
+          if (resp.status === 429 || resp.status >= 500) {
+            lastErr = `AI busy (${resp.status})`;
+            if (attempt < 2) await new Promise((r) => setTimeout(r, 600));
+            continue;
+          }
+          if (!resp.ok) {
+            lastErr = `AI returned ${resp.status}: ${(await resp.text()).slice(0, 200)}`;
+            break;
+          }
+
+          const data = await resp.json();
+          const text: string = (data?.candidates?.[0]?.content?.parts || [])
+            .filter((p: any) => typeof p?.text === 'string' && !p.thought)
+            .map((p: any) => p.text).join('');
+          let parsed: any;
+          try {
+            parsed = JSON.parse(text);
+          } catch {
+            const m = text.match(/\{[\s\S]*\}/);
+            parsed = m ? JSON.parse(m[0]) : null;
+          }
+          if (!parsed) { lastErr = 'AI returned non-JSON'; continue; }
+
+          return new Response(JSON.stringify({ notes: parsed }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        } catch (e: any) {
+          lastErr = e?.message || 'unknown error';
+        }
       }
     }
 
