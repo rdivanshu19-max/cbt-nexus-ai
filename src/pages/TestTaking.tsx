@@ -585,6 +585,7 @@ const TestTaking = () => {
           >
             {submitting ? 'Submitting…' : 'Submit Test'}
           </Button>
+          <RankersEdgeButton compact className="mt-3 w-full" />
         </div>
       </div>
     </div>
