@@ -10,6 +10,7 @@ import { MathText } from '@/components/MathText';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from '@/components/ui/drawer';
 import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
+import { RankersEdgeButton } from '@/components/RankersEdgeButton';
 
 interface Question {
   id: string;
