@@ -8,7 +8,7 @@ import {
   Heart, ExternalLink, Rocket, Briefcase, Target,
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
-import { rankersEdgeLogo, rankersStarLogo } from '@/lib/brandLogos';
+import { rankersEdgeLogo, rankersStarLogo, nexusLogo } from '@/lib/brandLogos';
 
 const Index = () => {
   const arsenal = [
@@ -191,9 +191,7 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-4">
             <div className="ink-card p-5 sm:p-6 hover-lift">
               <div className="flex items-center gap-3 mb-3">
-                <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-primary-foreground">
-                  <Activity className="h-5 w-5" />
-                </div>
+                <img src={nexusLogo} alt="CBT Nexus" className="h-12 w-12 rounded-xl object-cover ring-1 ring-border" />
                 <div>
                   <p className="section-tag text-accent">ENGINE · YOU ARE HERE</p>
                   <h3 className="font-display font-bold text-xl sm:text-2xl">CBT Nexus</h3>

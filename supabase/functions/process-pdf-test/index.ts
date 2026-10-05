@@ -126,7 +126,7 @@ async function callGemini(
   pdfBase64: string | null,
   answerKeyText: string | null,
 ): Promise<{ questions: any[]; model: string }> {
-  const modelCandidates = ["gemini-1.5-flash-latest", "gemini-1.5-flash-002", "gemini-2.5-flash"];
+  const modelCandidates = ["gemini-flash-latest", "gemini-3.8-flash", "gemini-flash-lite-latest"];
   const parts: any[] = [];
 
   let fullPrompt = EXTRACTION_PROMPT;
@@ -149,8 +149,8 @@ async function callGemini(
   }
 
   let lastError: Error | null = null;
-  const MAX_RETRIES = 3;
-  const RETRY_DELAY_MS = 5000;
+  const MAX_RETRIES = 2;
+  const RETRY_DELAY_MS = 1500;
 
   for (const model of modelCandidates) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -203,7 +203,9 @@ async function callGemini(
     }
 
     const data = await response.json();
-    const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+    const rawContent = (data.candidates?.[0]?.content?.parts || [])
+      .filter((p: any) => typeof p?.text === "string" && !p.thought)
+      .map((p: any) => p.text).join("") || "[]";
     const cleaned = cleanAiJson(rawContent);
 
     let parsed: any;
