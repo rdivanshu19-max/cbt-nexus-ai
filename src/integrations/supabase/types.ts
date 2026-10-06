@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      coaching_partners: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          sort_order: number
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          sort_order?: number
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          sort_order?: number
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       pdf_conversions: {
         Row: {
           converted_at: string
@@ -130,6 +160,137 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      series_promo_codes: {
+        Row: {
+          code: string
+          id: string
+          series_id: string
+        }
+        Insert: {
+          code: string
+          id?: string
+          series_id: string
+        }
+        Update: {
+          code?: string
+          id?: string
+          series_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_promo_codes_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "test_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      series_test_sources: {
+        Row: {
+          external_url: string | null
+          storage_path: string | null
+          test_id: string
+        }
+        Insert: {
+          external_url?: string | null
+          storage_path?: string | null
+          test_id: string
+        }
+        Update: {
+          external_url?: string | null
+          storage_path?: string | null
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_test_sources_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: true
+            referencedRelation: "series_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      series_tests: {
+        Row: {
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          label: string | null
+          lock_mode: string
+          question_count: number | null
+          series_id: string
+          sort_order: number
+          syllabus: string | null
+          title: string
+          total_marks: number | null
+          unlock_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          label?: string | null
+          lock_mode?: string
+          question_count?: number | null
+          series_id: string
+          sort_order?: number
+          syllabus?: string | null
+          title: string
+          total_marks?: number | null
+          unlock_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          label?: string | null
+          lock_mode?: string
+          question_count?: number | null
+          series_id?: string
+          sort_order?: number
+          syllabus?: string | null
+          title?: string
+          total_marks?: number | null
+          unlock_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_tests_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "test_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      series_unlocks: {
+        Row: {
+          created_at: string
+          series_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          series_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          series_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_unlocks_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "test_series"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       study_streaks: {
         Row: {
@@ -338,6 +499,53 @@ export type Database = {
             columns: ["question_id"]
             isOneToOne: false
             referencedRelation: "test_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_series: {
+        Row: {
+          accent: string
+          coaching_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean
+          session_label: string | null
+          sort_order: number
+          tagline: string | null
+          title: string
+        }
+        Insert: {
+          accent?: string
+          coaching_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          session_label?: string | null
+          sort_order?: number
+          tagline?: string | null
+          title: string
+        }
+        Update: {
+          accent?: string
+          coaching_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          session_label?: string | null
+          sort_order?: number
+          tagline?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_series_coaching_id_fkey"
+            columns: ["coaching_id"]
+            isOneToOne: false
+            referencedRelation: "coaching_partners"
             referencedColumns: ["id"]
           },
         ]

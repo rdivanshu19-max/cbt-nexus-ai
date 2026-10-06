@@ -8,6 +8,20 @@
       "when": 1791177276729,
       "tag": "0000_allow_integer_and_new_difficulty",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791264108924,
+      "tag": "0001_test_series_system",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791264133102,
+      "tag": "0002_series_tests_storage_policies",
+      "breakpoints": true
     }
   ]
 }
