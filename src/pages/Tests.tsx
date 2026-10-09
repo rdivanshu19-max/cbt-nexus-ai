@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, FileText, BookOpen } from 'lucide-react';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
+import { SeriesCountdown } from '@/components/SeriesCountdown';
 
 interface Test {
   id: string;
@@ -100,6 +101,7 @@ const Tests = () => {
           title={<>Available <span className="headline-dim">tests.</span></>}
           subtitle="Official papers stay separate from AI and custom practice sets."
           actions={<>
+            <Link to="/test-series"><Button variant="outline">Test Series</Button></Link>
             <Link to="/generate-test"><Button variant="outline">AI Generate</Button></Link>
             <Link to="/custom-test"><Button className="gradient-primary text-primary-foreground">Custom Test</Button></Link>
           </>}
@@ -127,6 +129,8 @@ const Tests = () => {
               </div>
             </div>
         </WindowCard>
+
+        <SeriesCountdown />
 
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
