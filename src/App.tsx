@@ -21,6 +21,9 @@ import AdminPanel from "./pages/AdminPanel";
 import ShortNotes from "./pages/ShortNotes";
 import SavedNotes from "./pages/SavedNotes";
 import NotFound from "./pages/NotFound";
+import TestSeries from "./pages/TestSeries";
+import SeriesDetail from "./pages/SeriesDetail";
+import SeriesPlayer from "./pages/SeriesPlayer";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,9 @@ const App = () => (
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/short-notes" element={<ProtectedRoute><ShortNotes /></ProtectedRoute>} />
               <Route path="/saved-notes" element={<ProtectedRoute><SavedNotes /></ProtectedRoute>} />
+              <Route path="/test-series" element={<ProtectedRoute><TestSeries /></ProtectedRoute>} />
+              <Route path="/test-series/:seriesId" element={<ProtectedRoute><SeriesDetail /></ProtectedRoute>} />
+              <Route path="/test-series/play/:testId" element={<ProtectedRoute><SeriesPlayer /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
