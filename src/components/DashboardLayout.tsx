@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
-import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles, Bookmark } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles, Bookmark, Layers } from 'lucide-react';
 import { PdfQuotaBadge } from '@/components/PdfQuotaBadge';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tests', icon: BookOpen, label: 'Tests' },
+  { to: '/test-series', icon: Layers, label: 'Series' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/generate-test', icon: Brain, label: 'AI Test' },
   { to: '/custom-test', icon: Plus, label: 'Custom' },
