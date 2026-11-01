@@ -1,5 +1,22 @@
 # Roadmap
 
+## Platform upgrade (10 features, from uploaded brief)
+Integrate into the existing NEXUS CBT — upgrade overlapping features, never duplicate.
+
+- [ ] 1. Scoreback Review: question-wise mistake classification, recoverable marks, potential score, detailed explanations (upgrade Results page)
+- [ ] 2. Tukkabazi: reattempt mode for skipped questions after submission, verified answers + solutions; original scores untouched
+- [ ] 3. My Error Book: auto-save wrong questions, bookmarks, personal/voice notes, subject/chapter filters, mistake tags, revision tracking, reattempt
+- [ ] 4. Personalized Boosters: weak-chapter, mistake and speed boosters from real performance
+- [ ] 5. Easy Solutions: simplified explanations alongside detailed ones, EN / HI / Hinglish
+- [ ] 6. Question Type Practice: MCQ, MSQ, Numerical, Assertion-Reason, Match-the-Following practice modes
+- [ ] 7. Smart Test Generation: PYQ-based chapter weightage + difficulty-balanced selection
+- [ ] 8. Flashcards: formula / reaction / concept, bookmarking, revision tracking
+- [ ] 9. Study Planner: daily tasks, 7-day planning, automatic backlog, JEE Main/Advanced syllabus tracking
+- [ ] 10. Mobile Reading Modes: four customizable question-reading themes
+- [ ] DB migration supporting all of the above
+- [ ] End-to-end verification of each feature
+
+
 ## RankVortex-inspired complete UI
 - [ ] Collect desktop and mobile reference screenshots (site blocks automated access)
 - [ ] Replace global theme, typography, surfaces, controls, navigation, and motion
