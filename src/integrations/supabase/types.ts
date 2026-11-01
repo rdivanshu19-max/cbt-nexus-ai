@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      chapter_weightage: {
+        Row: {
+          avg_questions: number
+          chapter: string
+          created_at: string
+          exam_type: string
+          id: string
+          subject: string
+          weight: number
+        }
+        Insert: {
+          avg_questions?: number
+          chapter: string
+          created_at?: string
+          exam_type: string
+          id?: string
+          subject: string
+          weight?: number
+        }
+        Update: {
+          avg_questions?: number
+          chapter?: string
+          created_at?: string
+          exam_type?: string
+          id?: string
+          subject?: string
+          weight?: number
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -68,6 +98,193 @@ export type Database = {
         }
         Relationships: []
       }
+      error_book: {
+        Row: {
+          bookmarked: boolean
+          chapter: string | null
+          created_at: string
+          id: string
+          last_reattempt_correct: boolean | null
+          last_revised_at: string | null
+          mistake_tag: string
+          next_revision_at: string | null
+          note: string | null
+          question_id: string | null
+          question_snapshot: Json
+          reattempt_count: number
+          resolved: boolean
+          revision_count: number
+          source_attempt_id: string | null
+          subject: string | null
+          test_id: string | null
+          topic: string | null
+          updated_at: string
+          user_id: string
+          voice_note_url: string | null
+        }
+        Insert: {
+          bookmarked?: boolean
+          chapter?: string | null
+          created_at?: string
+          id?: string
+          last_reattempt_correct?: boolean | null
+          last_revised_at?: string | null
+          mistake_tag?: string
+          next_revision_at?: string | null
+          note?: string | null
+          question_id?: string | null
+          question_snapshot: Json
+          reattempt_count?: number
+          resolved?: boolean
+          revision_count?: number
+          source_attempt_id?: string | null
+          subject?: string | null
+          test_id?: string | null
+          topic?: string | null
+          updated_at?: string
+          user_id: string
+          voice_note_url?: string | null
+        }
+        Update: {
+          bookmarked?: boolean
+          chapter?: string | null
+          created_at?: string
+          id?: string
+          last_reattempt_correct?: boolean | null
+          last_revised_at?: string | null
+          mistake_tag?: string
+          next_revision_at?: string | null
+          note?: string | null
+          question_id?: string | null
+          question_snapshot?: Json
+          reattempt_count?: number
+          resolved?: boolean
+          revision_count?: number
+          source_attempt_id?: string | null
+          subject?: string | null
+          test_id?: string | null
+          topic?: string | null
+          updated_at?: string
+          user_id?: string
+          voice_note_url?: string | null
+        }
+        Relationships: []
+      }
+      flashcard_decks: {
+        Row: {
+          card_count: number
+          chapter: string | null
+          created_at: string
+          deck_type: string
+          exam_type: string | null
+          id: string
+          subject: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          card_count?: number
+          chapter?: string | null
+          created_at?: string
+          deck_type?: string
+          exam_type?: string | null
+          id?: string
+          subject?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          card_count?: number
+          chapter?: string | null
+          created_at?: string
+          deck_type?: string
+          exam_type?: string | null
+          id?: string
+          subject?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      flashcard_reviews: {
+        Row: {
+          bookmarked: boolean
+          box: number
+          card_id: string
+          id: string
+          known_count: number
+          last_reviewed_at: string | null
+          next_review_at: string | null
+          review_count: number
+          user_id: string
+        }
+        Insert: {
+          bookmarked?: boolean
+          box?: number
+          card_id: string
+          id?: string
+          known_count?: number
+          last_reviewed_at?: string | null
+          next_review_at?: string | null
+          review_count?: number
+          user_id: string
+        }
+        Update: {
+          bookmarked?: boolean
+          box?: number
+          card_id?: string
+          id?: string
+          known_count?: number
+          last_reviewed_at?: string | null
+          next_review_at?: string | null
+          review_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_reviews_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          back: string
+          created_at: string
+          deck_id: string
+          front: string
+          id: string
+          tags: string[] | null
+        }
+        Insert: {
+          back: string
+          created_at?: string
+          deck_id: string
+          front: string
+          id?: string
+          tags?: string[] | null
+        }
+        Update: {
+          back?: string
+          created_at?: string
+          deck_id?: string
+          front?: string
+          id?: string
+          tags?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "flashcard_decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pdf_conversions: {
         Row: {
           converted_at: string
@@ -83,6 +300,111 @@ export type Database = {
           converted_at?: string
           id?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      planner_tasks: {
+        Row: {
+          chapter: string | null
+          created_at: string
+          exam_track: string
+          id: string
+          source: string
+          status: string
+          subject: string | null
+          target_minutes: number | null
+          task_date: string
+          title: string
+          topic: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chapter?: string | null
+          created_at?: string
+          exam_track?: string
+          id?: string
+          source?: string
+          status?: string
+          subject?: string | null
+          target_minutes?: number | null
+          task_date: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chapter?: string | null
+          created_at?: string
+          exam_track?: string
+          id?: string
+          source?: string
+          status?: string
+          subject?: string | null
+          target_minutes?: number | null
+          task_date?: string
+          title?: string
+          topic?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      practice_sessions: {
+        Row: {
+          accuracy: number | null
+          chapter: string | null
+          completed_at: string | null
+          correct: number
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          mode: string
+          questions: Json
+          skipped: number
+          status: string
+          subject: string | null
+          title: string
+          total: number
+          user_id: string
+          wrong: number
+        }
+        Insert: {
+          accuracy?: number | null
+          chapter?: string | null
+          completed_at?: string | null
+          correct?: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          mode: string
+          questions?: Json
+          skipped?: number
+          status?: string
+          subject?: string | null
+          title: string
+          total?: number
+          user_id: string
+          wrong?: number
+        }
+        Update: {
+          accuracy?: number | null
+          chapter?: string | null
+          completed_at?: string | null
+          correct?: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          mode?: string
+          questions?: Json
+          skipped?: number
+          status?: string
+          subject?: string | null
+          title?: string
+          total?: number
+          user_id?: string
+          wrong?: number
         }
         Relationships: []
       }
@@ -390,15 +712,18 @@ export type Database = {
       test_questions: {
         Row: {
           correct_answer: string
+          correct_answers: Json | null
           created_at: string
           difficulty: string | null
           explanation: string | null
+          explanation_easy: Json | null
           id: string
           image_url: string | null
           option_a: string
           option_b: string
           option_c: string
           option_d: string
+          question_data: Json | null
           question_number: number
           question_text: string
           question_type: string
@@ -408,15 +733,18 @@ export type Database = {
         }
         Insert: {
           correct_answer: string
+          correct_answers?: Json | null
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_easy?: Json | null
           id?: string
           image_url?: string | null
           option_a: string
           option_b: string
           option_c: string
           option_d: string
+          question_data?: Json | null
           question_number: number
           question_text: string
           question_type?: string
@@ -426,15 +754,18 @@ export type Database = {
         }
         Update: {
           correct_answer?: string
+          correct_answers?: Json | null
           created_at?: string
           difficulty?: string | null
           explanation?: string | null
+          explanation_easy?: Json | null
           id?: string
           image_url?: string | null
           option_a?: string
           option_b?: string
           option_c?: string
           option_d?: string
+          question_data?: Json | null
           question_number?: number
           question_text?: string
           question_type?: string
@@ -616,6 +947,51 @@ export type Database = {
           unattempted_marks?: number
           updated_at?: string
           wrong_marks?: number
+        }
+        Relationships: []
+      }
+      tukkabazi_sessions: {
+        Row: {
+          attempt_id: string
+          completed_at: string | null
+          correct: number
+          created_at: string
+          id: string
+          question_ids: Json
+          responses: Json
+          status: string
+          test_id: string
+          total: number
+          user_id: string
+          wrong: number
+        }
+        Insert: {
+          attempt_id: string
+          completed_at?: string | null
+          correct?: number
+          created_at?: string
+          id?: string
+          question_ids?: Json
+          responses?: Json
+          status?: string
+          test_id: string
+          total?: number
+          user_id: string
+          wrong?: number
+        }
+        Update: {
+          attempt_id?: string
+          completed_at?: string | null
+          correct?: number
+          created_at?: string
+          id?: string
+          question_ids?: Json
+          responses?: Json
+          status?: string
+          test_id?: string
+          total?: number
+          user_id?: string
+          wrong?: number
         }
         Relationships: []
       }
