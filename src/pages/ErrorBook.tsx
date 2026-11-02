@@ -89,9 +89,7 @@ const ErrorBook = () => {
 
   const revise = (row: ErrorRow) => {
     const box = Math.min(row.revision_count, REVISION_INTERVALS.length - 1);
-    update(row.id, { revision_count: row.revision_count + 1, last_revised_at_box: undefined as any, next_revision_at: nextRevisionDate(box) } as any);
-    // keep it simple: revision_count + next date
-    supabase.from('error_book').update({ revision_count: row.revision_count + 1, next_revision_at: nextRevisionDate(box) }).eq('id', row.id);
+    update(row.id, { revision_count: row.revision_count + 1, next_revision_at: nextRevisionDate(box) });
   };
 
   const reattempt = (row: ErrorRow, correct: boolean) => {

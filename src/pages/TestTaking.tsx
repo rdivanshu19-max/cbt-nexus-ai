@@ -12,7 +12,7 @@ import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
 import { RankersEdgeButton, RankersStarButton } from '@/components/RankersEdgeButton';
 
-interface Question {
+export interface Question {
   id: string;
   question_number: number;
   question_text: string;
@@ -24,7 +24,7 @@ interface Question {
   question_type?: string | null;
 }
 
-interface Response {
+export interface Response {
   question_id: string;
   selected_answer: string | null;
   is_marked_for_review: boolean;
