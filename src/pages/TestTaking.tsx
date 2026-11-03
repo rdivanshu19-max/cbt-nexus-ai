@@ -11,6 +11,8 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, Drawer
 import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
 import { RankersEdgeButton, RankersStarButton } from '@/components/RankersEdgeButton';
+import { ReadingThemePicker, getReadingTheme } from '@/components/ReadingThemes';
+if (typeof document !== 'undefined') document.documentElement.dataset.readingTheme = getReadingTheme();
 
 export interface Question {
   id: string;
@@ -454,7 +456,8 @@ const TestTaking = () => {
           </div>
 
           {/* Question card */}
-          <div className="hud-panel p-5 sm:p-6 mb-6">
+          <div className="hud-panel reading-surface p-5 sm:p-6 mb-6">
+            <div className="flex justify-end mb-2"><ReadingThemePicker /></div>
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               <Badge className="bg-primary/15 text-primary border border-primary/30 font-mono-hud">Q{currentQuestion.question_number}</Badge>
               {currentQuestion.subject && <Badge variant="outline" className="font-mono-hud uppercase tracking-wider text-[10px]">{currentQuestion.subject}</Badge>}

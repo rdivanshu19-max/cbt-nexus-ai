@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
-import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles, Bookmark, Layers } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Brain, User, LogOut, Shield, Plus, History, Sparkles, Bookmark, Layers, NotebookPen, Layers3, CalendarDays } from 'lucide-react';
 import { PdfQuotaBadge } from '@/components/PdfQuotaBadge';
 
 const navItems = [
@@ -14,6 +14,9 @@ const navItems = [
   { to: '/history', icon: History, label: 'History' },
   { to: '/generate-test', icon: Brain, label: 'AI Test' },
   { to: '/custom-test', icon: Plus, label: 'Custom' },
+  { to: '/error-book', icon: NotebookPen, label: 'Errors' },
+  { to: '/flashcards', icon: Layers3, label: 'Cards' },
+  { to: '/planner', icon: CalendarDays, label: 'Planner' },
   { to: '/short-notes', icon: Sparkles, label: 'Notes' },
   { to: '/saved-notes', icon: Bookmark, label: 'Saved' },
   { to: '/profile', icon: User, label: 'Profile' },
