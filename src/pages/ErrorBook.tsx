@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MathText } from '@/components/MathText';
 import { useToast } from '@/hooks/use-toast';
+import { AddErrorForm } from '@/components/AddErrorForm';
 import { MISTAKE_LABELS, REVISION_INTERVALS, nextRevisionDate } from '@/lib/errorBook';
 import { Bookmark, BookmarkCheck, CheckCircle2, Circle, Mic, Square, Play, Trash2, RotateCcw, Zap, CalendarClock } from 'lucide-react';
 
@@ -151,6 +152,7 @@ const ErrorBook = () => {
           title={<>Never repeat a <span className="gradient-text-aurora">mistake</span></>}
           subtitle={`${rows.filter((r) => !r.resolved).length} open errors • wrong answers are auto-saved after every test`}
         />
+        {user && <AddErrorForm userId={user.id} onAdded={(r) => setRows((p) => [r as ErrorRow, ...p])} />}
 
         {boosterChapters.length > 0 && (
           <Card className="ink-card border-primary/30">
@@ -214,6 +216,17 @@ const ErrorBook = () => {
                   </div>
                 }>
                   <div className="space-y-3 p-1">
+                    {snap.manual && (
+                      <div className="space-y-2 text-sm">
+                        <div className="flex flex-wrap gap-1.5">
+                          <Badge variant="outline">{snap.source_type}</Badge>
+                          {snap.source_name && <Badge variant="outline">{snap.source_name}</Badge>}
+                          {snap.question_ref && <Badge variant="outline">{snap.question_ref}</Badge>}
+                        </div>
+                        {snap.photo && <img src={snap.photo} alt="Question" className="max-h-72 rounded border" />}
+                        {snap.correct_answer && <p className="text-xs">Correct answer: <b>{snap.correct_answer}</b></p>}
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge className="bg-destructive/10 text-destructive border border-destructive/30">{MISTAKE_LABELS[row.mistake_tag] || row.mistake_tag}</Badge>
                       {row.next_revision_at && (
