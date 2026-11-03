@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Question, Response } from '@/pages/TestTaking';
+import type { Question as BaseQuestion, Response } from '@/pages/TestTaking';
+type Question = BaseQuestion & { correct_answer: string; explanation?: string | null };
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
