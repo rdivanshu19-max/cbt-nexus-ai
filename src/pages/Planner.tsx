@@ -18,6 +18,8 @@ const Planner = () => {
   const [subject, setSubject] = useState('');
   const [date, setDate] = useState(iso(new Date()));
   const [track, setTrack] = useState('jee_main');
+  const [asBacklog, setAsBacklog] = useState(false);
+  const [backlog, setBacklog] = useState<any[]>([]);
   const today = iso(new Date());
 
   const load = async () => {
@@ -28,12 +30,14 @@ const Planner = () => {
     const { data } = await supabase.from('planner_tasks').select('*').eq('user_id', user.id)
       .gte('task_date', today).lte('task_date', days()[6]).order('created_at');
     setTasks(data || []);
+    const { data: bl } = await supabase.from('planner_tasks').select('*').eq('user_id', user.id).eq('source', 'backlog').eq('status', 'pending').order('task_date');
+    setBacklog(bl || []);
   };
   useEffect(() => { load(); }, [user]);
 
   const add = async () => {
     if (!user || !title.trim()) return;
-    await supabase.from('planner_tasks').insert({ user_id: user.id, title: title.trim(), subject: subject || null, task_date: date, source: 'manual', status: 'pending', exam_track: track });
+    await supabase.from('planner_tasks').insert({ user_id: user.id, title: title.trim(), subject: subject || null, task_date: date, source: asBacklog ? 'backlog' : 'manual', status: 'pending', exam_track: track });
     setTitle(''); load();
   };
   const toggle = async (t: any) => { await supabase.from('planner_tasks').update({ status: t.status === 'done' ? 'pending' : 'done' }).eq('id', t.id); load(); };
@@ -55,7 +59,22 @@ const Planner = () => {
             </select>
             <Button onClick={add}><Plus className="h-4 w-4 mr-1" />Add</Button>
           </div>
+          <label className="flex items-center gap-2 px-4 pb-4 text-sm"><input type="checkbox" checked={asBacklog} onChange={(e) => setAsBacklog(e.target.checked)} /> Mark as backlog (keeps reminding you until done)</label>
         </WindowCard>
+        {backlog.length > 0 && (
+          <WindowCard>
+            <div className="p-4 space-y-2">
+              <p className="font-display font-bold">Remaining backlog · {backlog.length}</p>
+              {backlog.map((t) => (
+                <div key={t.id} className="flex items-center gap-2 text-sm">
+                  <button onClick={() => toggle(t)} aria-label="Mark done" className="h-5 w-5 shrink-0 rounded border-2 border-border" />
+                  <span className="flex-1 break-words">{t.title}{t.subject ? ` · ${t.subject}` : ''}</span>
+                  <Badge variant="outline" className="text-[10px]">since {t.created_at.slice(0, 10)}</Badge>
+                </div>
+              ))}
+            </div>
+          </WindowCard>
+        )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {days().map((d) => {
             const list = tasks.filter((t) => t.task_date === d);
