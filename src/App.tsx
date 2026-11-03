@@ -24,6 +24,9 @@ import NotFound from "./pages/NotFound";
 import TestSeries from "./pages/TestSeries";
 import SeriesDetail from "./pages/SeriesDetail";
 import SeriesPlayer from "./pages/SeriesPlayer";
+import ErrorBook from "./pages/ErrorBook";
+import Flashcards from "./pages/Flashcards";
+import Planner from "./pages/Planner";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +55,9 @@ const App = () => (
               <Route path="/test-series" element={<ProtectedRoute><TestSeries /></ProtectedRoute>} />
               <Route path="/test-series/:seriesId" element={<ProtectedRoute><SeriesDetail /></ProtectedRoute>} />
               <Route path="/test-series/play/:testId" element={<ProtectedRoute><SeriesPlayer /></ProtectedRoute>} />
+              <Route path="/error-book" element={<ProtectedRoute><ErrorBook /></ProtectedRoute>} />
+              <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
+              <Route path="/planner" element={<ProtectedRoute><Planner /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>

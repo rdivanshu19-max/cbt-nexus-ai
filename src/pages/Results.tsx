@@ -14,6 +14,8 @@ import { generateTestPaperPdf } from '@/lib/testPdf';
 import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
+import { Tukkabazi } from '@/components/Tukkabazi';
+import { syncErrorBook } from '@/lib/errorBook';
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -54,6 +56,7 @@ const Results = () => {
 
       const { data: qs } = await supabase.from('test_questions').select('*').eq('test_id', att.test_id).order('question_number');
       setQuestions(qs || []);
+      if (att.status === 'completed') syncErrorBook(user.id, att.id, (qs || []) as any, (resps || []) as any).catch(() => {});
 
       setLoading(false);
     };
@@ -176,6 +179,8 @@ const Results = () => {
     <DashboardLayout>
       <div className="space-y-6 max-w-5xl mx-auto">
         <Link to="/tests" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to tests</Link>
+        {user && <Tukkabazi userId={user.id} attemptId={attempt.id} testId={attempt.test_id} questions={questions as any} responses={new Map(responses.map((r: any) => [r.question_id, r]))} />}
+        <div className="flex flex-wrap gap-2"><Button asChild size="sm" variant="outline"><Link to="/error-book">Open Error Book</Link></Button><Button asChild size="sm" variant="outline"><Link to="/planner">Plan revision</Link></Button></div>
         <PageHeader chip="PERFORMANCE REPORT" title={<>Test <span className="gradient-text-aurora">results</span></>} subtitle={test.title} actions={<div className="flex items-center gap-2 flex-wrap">
             <Badge className="text-base px-3 py-1.5 gradient-primary text-primary-foreground border-0">
               {attempt.total_score} / {test.total_marks}
