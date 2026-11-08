@@ -29,6 +29,13 @@
       "when": 1793529992341,
       "tag": "0003_platform_upgrade_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794114416223,
+      "tag": "0004_diwali_gifts_and_claims",
+      "breakpoints": true
     }
   ]
 }

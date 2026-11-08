@@ -98,6 +98,60 @@ export type Database = {
         }
         Relationships: []
       }
+      diwali_claims: {
+        Row: {
+          certificate_id: string
+          claimed_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          certificate_id?: string
+          claimed_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          certificate_id?: string
+          claimed_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      diwali_gift_resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_name: string
+          id: string
+          is_active: boolean
+          sort_order: number
+          storage_path: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_name: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          storage_path: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_name?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          storage_path?: string
+          title?: string
+        }
+        Relationships: []
+      }
       error_book: {
         Row: {
           bookmarked: boolean

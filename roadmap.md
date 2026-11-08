@@ -43,3 +43,9 @@ Integrate into the existing NEXUS CBT — upgrade overlapping features, never du
 - [x] Pill header + chip labels + window cards on Dashboard, Short Notes, Saved Notes, Results
 - [x] Admin panel mobile polish
 - [x] Mission console phone polish
+
+## Diwali 2026 gift experience
+- [ ] Expiring festive theme and interactive celebration on the homepage
+- [ ] Authenticated one-time persistent claims, study PDFs, existing early-access codes, and personalized certificate
+- [ ] Admin PDF management and ALLEN series highlighting
+- [ ] Verify claim, downloads, certificate, expiry, and mobile layout
