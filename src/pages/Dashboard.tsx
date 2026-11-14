@@ -94,7 +94,11 @@ const Dashboard = () => {
   const closeTutorial = async () => {
     setShowTutorial(false);
     if (user) {
-      try { localStorage.setItem(`cbt_tutorial_seen_${user.id}`, '1'); } catch {}
+      try {
+        localStorage.setItem(`cbt_tutorial_seen_${user.id}`, '1');
+      } catch {
+        /* storage may be blocked in private mode; the profile flag still persists */
+      }
       await supabase.from('profiles').update({ has_seen_tutorial: true }).eq('user_id', user.id);
     }
   };

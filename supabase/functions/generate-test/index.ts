@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { requireUser } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,12 +93,45 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // This function writes with the service-role key and spends the project's
+    // Gemini quota, so the caller must be a real signed-in user. The id used as
+    // `created_by` comes from the verified session, never from the request body.
+    const auth = await requireUser(req);
+    if (!auth.ok) {
+      return new Response(JSON.stringify({ error: auth.error }), {
+        status: auth.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userId = auth.userId;
+
     const body = await req.json();
     const apiKey = Deno.env.get("GEMINI_API_KEY");
     const url = Deno.env.get("SUPABASE_URL");
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!url || !serviceKey) throw new Error("Backend is not configured");
     const supabase = createClient(url, serviceKey);
+
+    // Phases that continue an existing test must prove the caller owns it.
+    if (body.phase === "batch" || body.phase === "finalize") {
+      if (!body.testId) throw new Error("testId is required");
+      const { data: owner, error: ownerError } = await supabase
+        .from("tests")
+        .select("created_by")
+        .eq("id", body.testId)
+        .maybeSingle();
+      if (ownerError) throw ownerError;
+      if (!owner) throw new Error("Test not found");
+      if (owner.created_by && owner.created_by !== userId) {
+        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+        if (!isAdmin) {
+          return new Response(JSON.stringify({ error: "You are not allowed to modify this test." }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+    }
 
     /* ---------- phase 1: create the empty test shell ---------- */
     if (body.phase === "create") {
@@ -116,7 +150,7 @@ Deno.serve(async (req) => {
         unattempted_marks: 0,
         difficulty: body.difficulty || "moderate",
         include_integer: !!body.includeInteger,
-        created_by: body.userId,
+        created_by: userId,
         is_published: true,
       }).select().single();
       if (error) throw error;

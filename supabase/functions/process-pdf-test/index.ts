@@ -51,7 +51,7 @@ const cleanAiJson = (content: string) =>
 
 function estimateQuestionCount(sourceText: string): number | null {
   const seen = new Set<number>();
-  const regex = /(?:^|\n)\s*(?:Q(?:uestion)?\s*)?(\d{1,3})[\.:\)]/gim;
+  const regex = /(?:^|\n)\s*(?:Q(?:uestion)?\s*)?(\d{1,3})[.:)]/gim;
   let match: RegExpExecArray | null;
 
   while ((match = regex.exec(sourceText)) !== null) {
