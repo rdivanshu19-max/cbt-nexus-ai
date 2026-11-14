@@ -50,13 +50,16 @@ export const NexusAIChat = () => {
 
     try {
       const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nexus-ai-chat`;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error('Your session has expired. Please sign in again.');
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ messages: [...messages, userMsg].slice(-20), userId: user.id }),
+        body: JSON.stringify({ messages: [...messages, userMsg].slice(-20) }),
       });
 
       if (!resp.ok || !resp.body) throw new Error('Failed to connect to Nexus AI');
@@ -92,7 +95,9 @@ export const NexusAIChat = () => {
                 return [...prev, { role: 'assistant', content: assistantContent }];
               });
             }
-          } catch {}
+          } catch {
+            /* stream aborted mid-message: keep whatever text already arrived */
+          }
         }
       }
 

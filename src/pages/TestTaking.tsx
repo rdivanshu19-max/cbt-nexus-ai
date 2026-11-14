@@ -79,7 +79,9 @@ const TestTaking = () => {
             }
             if (saved.attemptId) setAttemptId(saved.attemptId);
           }
-        } catch {}
+        } catch {
+          /* corrupt or unavailable local draft: start the test from a clean state */
+        }
       }
       setTimeLeft(initialTimeLeft);
 

@@ -1,4 +1,6 @@
 // Generate short notes for a JEE/NEET chapter using the project's Gemini key.
+import { requireUser } from "../_shared/auth.ts";
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -38,6 +40,15 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
+    // The Gemini key is server-only: an anonymous caller must not be able to
+    // spend the project's AI quota by hitting this endpoint directly.
+    const auth = await requireUser(req);
+    if (!auth.ok) {
+      return new Response(JSON.stringify({ error: auth.error }), {
+        status: auth.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const body = (await req.json()) as Body;
     const { exam, classLevel, subject, chapter, style } = body || ({} as Body);
 

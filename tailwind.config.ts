@@ -92,5 +92,8 @@ export default {
       },
     },
   },
+  // tailwindcss-animate ships CommonJS only and Tailwind v3 loads this config
+  // through jiti, where require() is the supported form.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

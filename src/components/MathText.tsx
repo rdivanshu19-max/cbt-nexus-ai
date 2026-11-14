@@ -58,7 +58,7 @@ const MATH_SYMBOL_RE = /[×÷±∓≤≥≠≈∞∑∫√°·→←]/;
 //  ^  _  \  /  unicode super/subscript  Greek letter  math symbol
 function looksLikeMath(token: string): boolean {
   if (/[\^_\\]/.test(token)) return true;
-  if (/[A-Za-z0-9)\]]\/[A-Za-z0-9(\[]/.test(token)) return true; // a/b style
+  if (/[A-Za-z0-9)\]]\/[A-Za-z0-9([]/.test(token)) return true; // a/b style
   if (SUPERSCRIPT_RE.test(token)) return true;
   if (SUBSCRIPT_RE.test(token)) return true;
   if (GREEK_RE.test(token)) return true;

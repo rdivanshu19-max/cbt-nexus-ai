@@ -1,3 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
+
 const FUNC_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-test`;
 const ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
@@ -26,9 +28,19 @@ interface RunOptions {
 }
 
 const post = async (body: unknown) => {
+  // The edge function verifies the caller's session, so send the user's access
+  // token (not the publishable key, which every visitor already has).
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) throw new Error('Please sign in again to generate a test.');
+
   const resp = await fetch(FUNC_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ANON}` },
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: ANON,
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(body),
   });
   const data = await resp.json().catch(() => ({}));
