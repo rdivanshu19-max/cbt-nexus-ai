@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+
+type PlannerTask = Database['public']['Tables']['planner_tasks']['Row'];
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
@@ -13,13 +16,13 @@ const days = () => Array.from({ length: 7 }, (_, i) => { const d = new Date(); d
 
 const Planner = () => {
   const { user } = useAuth();
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<PlannerTask[]>([]);
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
   const [date, setDate] = useState(iso(new Date()));
   const [track, setTrack] = useState('jee_main');
   const [asBacklog, setAsBacklog] = useState(false);
-  const [backlog, setBacklog] = useState<any[]>([]);
+  const [backlog, setBacklog] = useState<PlannerTask[]>([]);
   const today = iso(new Date());
 
   const load = async () => {
@@ -40,7 +43,7 @@ const Planner = () => {
     await supabase.from('planner_tasks').insert({ user_id: user.id, title: title.trim(), subject: subject || null, task_date: date, source: asBacklog ? 'backlog' : 'manual', status: 'pending', exam_track: track });
     setTitle(''); load();
   };
-  const toggle = async (t: any) => { await supabase.from('planner_tasks').update({ status: t.status === 'done' ? 'pending' : 'done' }).eq('id', t.id); load(); };
+  const toggle = async (t: PlannerTask) => { await supabase.from('planner_tasks').update({ status: t.status === 'done' ? 'pending' : 'done' }).eq('id', t.id); load(); };
   const remove = async (id: string) => { await supabase.from('planner_tasks').delete().eq('id', id); load(); };
 
   const done = tasks.filter((t) => t.status === 'done').length;

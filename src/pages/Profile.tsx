@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { User, Trash2, Save, LogOut } from 'lucide-react';
+import { errorMessage } from '@/lib/errors';
 
 const Profile = () => {
   const { profile, updateProfile, deleteAccount, signOut } = useAuth();
@@ -25,8 +26,8 @@ const Profile = () => {
     try {
       await updateProfile({ username, bio });
       toast({ title: 'Profile updated!' });
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Error', description: errorMessage(err), variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -37,8 +38,8 @@ const Profile = () => {
       await deleteAccount();
       toast({ title: 'Account deleted. Goodbye!' });
       navigate('/');
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Error', description: errorMessage(err), variant: 'destructive' });
     }
   };
 

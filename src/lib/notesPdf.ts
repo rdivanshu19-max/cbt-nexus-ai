@@ -22,15 +22,17 @@ function stripMath(s: string): string {
     .replace(/\$([^$]+)\$/g, '$1')
     .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
     .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
-    .replace(/\\(?:left|right|cdot|times|alpha|beta|gamma|delta|theta|pi|infty|sum|int)/g, (m) => ({
-      '\\cdot': '·', '\\times': '×', '\\alpha': 'α', '\\beta': 'β', '\\gamma': 'γ',
-      '\\delta': 'δ', '\\theta': 'θ', '\\pi': 'π', '\\infty': '∞', '\\sum': 'Σ', '\\int': '∫',
-      '\\left': '', '\\right': '',
-    } as any)[m] || m)
+    .replace(/\\(?:left|right|cdot|times|alpha|beta|gamma|delta|theta|pi|infty|sum|int)/g, (m) => LATEX_SYMBOLS[m] ?? m)
     .replace(/[{}\\]/g, '');
 }
 
-function escMath(s: any): string { return esc(stripMath(String(s ?? ''))); }
+const LATEX_SYMBOLS: Record<string, string> = {
+  '\\cdot': '·', '\\times': '×', '\\alpha': 'α', '\\beta': 'β', '\\gamma': 'γ',
+  '\\delta': 'δ', '\\theta': 'θ', '\\pi': 'π', '\\infty': '∞', '\\sum': 'Σ', '\\int': '∫',
+  '\\left': '', '\\right': '',
+};
+
+function escMath(s: unknown): string { return esc(stripMath(String(s ?? ''))); }
 
 export async function generateNotesPdf({ notes, exam, classLevel, subject, chapter, studentName }: NotesPdfInput): Promise<void> {
   const headColor = HEADING_COLORS[Math.abs(chapter.length) % HEADING_COLORS.length];

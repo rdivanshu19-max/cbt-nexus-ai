@@ -7,6 +7,7 @@ import { BookOpen, Lightbulb, RotateCcw, AlertTriangle, FileText, Sparkles, Down
 import { generateNotesPdf } from '@/lib/notesPdf';
 import { useToast } from '@/hooks/use-toast';
 import { RankersStarPromo } from '@/components/RankersStarPromo';
+import { errorMessage } from '@/lib/errors';
 
 export interface Notes {
   title: string;
@@ -46,8 +47,8 @@ export const NotesView = ({ notes, exam, classLevel, subject, style }: Props) =>
     try {
       await generateNotesPdf({ notes, exam, classLevel, subject, chapter: notes.title || subject });
       toast({ title: 'Notes downloaded', description: 'Print, share, revise — anytime.' });
-    } catch (e: any) {
-      toast({ title: 'Download failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Download failed', description: errorMessage(e) || 'Try again', variant: 'destructive' });
     } finally {
       setDownloading(false);
     }

@@ -7,20 +7,6 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   { ignores: ["dist"] },
   {
-    // Supabase Edge Functions run on Deno, are not part of the Vite bundle and
-    // are not type-checked by this project's tsconfig. Lint them with the Deno
-    // global instead of the browser globals, and allow `any` because their
-    // payloads are AI/JSON shaped and validated at runtime.
-    files: ["supabase/functions/**/*.ts"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      globals: { Deno: "readonly" },
-    },
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-    },
-  },
-  {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -35,6 +21,20 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    // Supabase Edge Functions run on Deno, are not part of the Vite bundle and
+    // are not type-checked by this project's tsconfig. Lint them with the Deno
+    // global instead of the browser globals, and allow `any` because their
+    // payloads are AI/JSON shaped and validated at runtime.
+    files: ["supabase/functions/**/*.ts"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: { Deno: "readonly" },
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 );

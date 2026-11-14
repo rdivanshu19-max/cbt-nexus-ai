@@ -77,7 +77,23 @@ function OrbitingDots() {
   );
 }
 
+/** A device or browser without WebGL throws when the canvas context is created. */
+function supportsWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export const Hero3D = () => {
+  if (!supportsWebGL()) return null;
+
   return (
     <div className="absolute inset-0 -z-10 pointer-events-none opacity-80">
       <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 6.2], fov: 42 }} gl={{ antialias: true, alpha: true }}>

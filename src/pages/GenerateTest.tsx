@@ -15,6 +15,7 @@ import { Brain, Check, ChevronDown, Hash, Trash2 } from 'lucide-react';
 import { getTopics, chaptersWithTopics } from '@/lib/syllabus';
 import { GenerationProgress } from '@/components/GenerationProgress';
 import { runTestGeneration, Difficulty, Bucket } from '@/lib/generateTestRunner';
+import { errorMessage } from '@/lib/errors';
 
 const subjects = {
   JEE: ['Physics', 'Chemistry', 'Mathematics'],
@@ -146,8 +147,8 @@ const GenerateTest = () => {
           : `${made} questions generated.`,
       });
       navigate(`/test/${testId}`);
-    } catch (err: any) {
-      toast({ title: 'Generation failed', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Generation failed', description: errorMessage(err), variant: 'destructive' });
     } finally {
       setGenerating(false);
     }

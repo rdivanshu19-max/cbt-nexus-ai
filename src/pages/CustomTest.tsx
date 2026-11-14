@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, Loader2, FileText, AlertTriangle, Clock } from 'lucide-react';
+import { errorMessage } from '@/lib/errors';
 
 const DAILY_LIMIT = 3;
 
@@ -103,8 +104,8 @@ const CustomTest = () => {
 
       toast({ title: 'Test created!', description: data.message || 'Your custom test is ready.' });
       navigate(`/test/${data.testId}`);
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Error', description: errorMessage(err), variant: 'destructive' });
     } finally {
       setGenerating(false);
     }

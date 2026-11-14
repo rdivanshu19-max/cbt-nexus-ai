@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +13,7 @@ import { useAutosave } from '@/contexts/AutosaveContext';
 import { AutosaveBadge } from '@/components/AutosaveBadge';
 import { RankersEdgeButton, RankersStarButton } from '@/components/RankersEdgeButton';
 import { ReadingThemePicker, getReadingTheme } from '@/components/ReadingThemes';
+import { errorMessage } from '@/lib/errors';
 if (typeof document !== 'undefined') document.documentElement.dataset.readingTheme = getReadingTheme();
 
 export interface Question {
@@ -33,13 +35,15 @@ export interface Response {
   time_spent_seconds: number;
 }
 
+type TestRow = Database['public']['Tables']['tests']['Row'];
+
 const TestTaking = () => {
   const { testId } = useParams<{ testId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const [test, setTest] = useState<any>(null);
+  const [test, setTest] = useState<TestRow | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [responses, setResponses] = useState<Map<string, Response>>(new Map());
   const [currentQ, setCurrentQ] = useState(0);
@@ -275,9 +279,9 @@ const TestTaking = () => {
 
       if (storageKey) localStorage.removeItem(storageKey);
       navigate(`/results/${attemptId}`);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Submit failed:', err);
-      toast({ title: 'Submission failed', description: err?.message || 'Please try submitting again.', variant: 'destructive' });
+      toast({ title: 'Submission failed', description: errorMessage(err) || 'Please try submitting again.', variant: 'destructive' });
       submittedRef.current = false;
       setSubmitting(false);
     }

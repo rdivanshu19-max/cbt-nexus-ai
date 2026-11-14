@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTest } from '@/lib/test-management';
 import { Clock3, Loader2, Plus, Trash2 } from 'lucide-react';
+import { errorMessage } from '@/lib/errors';
 
 type MyTest = {
   id: string;
@@ -38,7 +39,7 @@ export const MyTestsPanel = ({ userId }: MyTestsPanelProps) => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        toast({ title: 'Error', description: error.message, variant: 'destructive' });
+        toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
         setLoading(false);
         return;
       }
@@ -58,8 +59,8 @@ export const MyTestsPanel = ({ userId }: MyTestsPanelProps) => {
       await deleteTest(testId);
       setTests((prev) => prev.filter((test) => test.id !== testId));
       toast({ title: 'Custom test deleted' });
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } catch (error) {
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
     } finally {
       setDeletingId(null);
     }

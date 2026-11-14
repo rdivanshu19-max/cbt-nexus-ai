@@ -66,7 +66,7 @@ export async function syncErrorBook(
     .select('question_id')
     .eq('user_id', userId)
     .eq('source_attempt_id', attemptId);
-  const already = new Set((existing || []).map((r: any) => r.question_id));
+  const already = new Set((existing || []).map((r: { question_id: string }) => r.question_id));
 
   const rows = questions
     .filter((q) => !already.has(q.id))

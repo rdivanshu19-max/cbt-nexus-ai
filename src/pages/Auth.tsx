@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff } from 'lucide-react';
+import { errorMessage } from '@/lib/errors';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -48,8 +49,8 @@ const Auth = () => {
         toast({ title: 'Password reset email sent! Check your inbox.' });
         setMode('login');
       }
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Error', description: errorMessage(err), variant: 'destructive' });
     } finally {
       setLoading(false);
     }

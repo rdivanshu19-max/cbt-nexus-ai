@@ -52,7 +52,7 @@ export async function renderHtmlToPdf(htmlBody: string, opts: RenderOptions): Pr
   document.body.appendChild(wrapper);
 
   try {
-    if ((document as any).fonts?.ready) await (document as any).fonts.ready;
+    if (document.fonts?.ready) await document.fonts.ready;
     // wait for any embedded images (logo etc.)
     await Promise.all(
       Array.from(wrapper.querySelectorAll('img')).map(
@@ -243,7 +243,7 @@ export function pdfFooter(): string {
 }
 
 /** HTML-escape user supplied text. */
-export function esc(s: any): string {
+export function esc(s: unknown): string {
   return String(s ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2, Plus, Building2, Layers, FileUp } from 'lucide-react';
 import { nextSundayIST } from '@/lib/sundays';
+import { errorMessage } from '@/lib/errors';
 
 type Coaching = { id: string; name: string; logo_url: string | null; description: string | null; website_url: string | null };
 type Series = { id: string; coaching_id: string | null; title: string; tagline: string | null; description: string | null; session_label: string | null; is_published: boolean };
@@ -49,7 +50,7 @@ export const TestSeriesManager = () => {
   const run = async (fn: () => Promise<void>, ok: string) => {
     setBusy(true);
     try { await fn(); toast({ title: ok }); await load(); }
-    catch (e: any) { toast({ title: 'Error', description: e.message, variant: 'destructive' }); }
+    catch (e) { toast({ title: 'Error', description: errorMessage(e), variant: 'destructive' }); }
     finally { setBusy(false); }
   };
 

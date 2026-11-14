@@ -90,7 +90,7 @@ const Flashcards = () => {
     };
     if (existing) await supabase.from('flashcard_reviews').update(patch).eq('user_id', user!.id).eq('card_id', card.id);
     else await supabase.from('flashcard_reviews').insert(patch);
-    setReviews((p) => ({ ...p, [card.id]: { ...(existing || ({} as any)), ...patch } as Review }));
+    setReviews((p) => ({ ...p, [card.id]: { ...(existing ?? ({} as Partial<Review>)), ...patch } as Review }));
     setRevealed(false);
     setReviewIdx((i) => (i === null ? null : i + 1));
   };
@@ -184,7 +184,7 @@ const Flashcards = () => {
               {cards.map((c) => {
                 const rv = reviews[c.id];
                 return (
-                  <WindowCard key={c.id} title={undefined as any} right={
+                  <WindowCard key={c.id} right={
                     <div className="flex items-center gap-2 text-[10px] font-mono-hud text-muted-foreground">
                       {rv && <span>box {rv.box} · next {rv.next_review_at}</span>}
                     </div>

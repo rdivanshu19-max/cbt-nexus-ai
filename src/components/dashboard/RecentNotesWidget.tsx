@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+/** Only the field this widget reads; the full notes payload is far larger. */
+interface SavedNotesShape {
+  revision_cards?: unknown[];
+}
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Bookmark, RotateCcw, ArrowRight, Sparkles } from 'lucide-react';
@@ -14,7 +18,7 @@ interface Row {
   exam: string;
   created_at: string;
   finished_card_indices: number[] | null;
-  notes: any;
+  notes: SavedNotesShape | null;
 }
 
 export const RecentNotesWidget = () => {
@@ -30,7 +34,7 @@ export const RecentNotesWidget = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(3);
-      setRows((data as any) || []);
+      setRows((data as unknown as Row[]) || []);
     })();
   }, [user]);
 

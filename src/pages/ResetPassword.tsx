@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { errorMessage } from '@/lib/errors';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -32,8 +33,8 @@ const ResetPassword = () => {
       if (error) throw error;
       toast({ title: 'Password updated successfully!' });
       navigate('/dashboard');
-    } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } catch (err) {
+      toast({ title: 'Error', description: errorMessage(err), variant: 'destructive' });
     } finally {
       setLoading(false);
     }
