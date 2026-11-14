@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
+import { AppCrashFallback, ErrorBoundary } from "./components/ErrorBoundary";
 import "./index.css";
 
 // Remove any leftover ad-network service workers / caches (Adsterra, Monetag popunders)
@@ -21,6 +22,8 @@ if (stored && stored !== "full") {
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="cbt-nexus-theme-v2">
-    <App />
+    <ErrorBoundary label="app" fallback={<AppCrashFallback />}>
+      <App />
+    </ErrorBoundary>
   </ThemeProvider>,
 );

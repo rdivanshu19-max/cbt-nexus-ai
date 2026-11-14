@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { Sparkles, Loader2, Bookmark, BookmarkCheck, RotateCcw } from 'lucide-react';
 import { ChapterAutocomplete } from '@/components/short-notes/ChapterAutocomplete';
 import { NotesView, type Notes } from '@/components/short-notes/NotesView';
@@ -16,6 +17,7 @@ import { useAutosave } from '@/contexts/AutosaveContext';
 import { GenerationProgress } from '@/components/GenerationProgress';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
 import { useEffect } from 'react';
+import { errorMessage } from '@/lib/errors';
 
 const SUBJECTS_BY_EXAM: Record<string, string[]> = {
   JEE: ['Physics', 'Chemistry', 'Mathematics'],
@@ -61,8 +63,8 @@ const ShortNotes = () => {
       setProgress(100);
       setNotes(data.notes);
       toast({ title: 'Notes ready', description: `Short notes for "${chapter}" generated.` });
-    } catch (e: any) {
-      toast({ title: 'Generation failed', description: e?.message || 'Please try again.', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Generation failed', description: errorMessage(e) || 'Please try again.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -78,7 +80,8 @@ const ShortNotes = () => {
         .insert({
           user_id: user.id,
           exam, class_level: classLevel, subject, chapter: chapter.trim(), style,
-          notes: notes as any,
+          // The generated notes object is stored as a JSON column.
+          notes: notes as unknown as Json,
         })
         .select('id')
         .single();
@@ -86,9 +89,9 @@ const ShortNotes = () => {
       setSavedId(data.id);
       setAutosaveStatus('saved', Date.now());
       toast({ title: 'Saved', description: 'Note bookmarked. Open it anytime from "Saved Notes".' });
-    } catch (e: any) {
+    } catch (e) {
       setAutosaveStatus('error');
-      toast({ title: 'Save failed', description: e?.message || 'Try again.', variant: 'destructive' });
+      toast({ title: 'Save failed', description: errorMessage(e) || 'Try again.', variant: 'destructive' });
     } finally {
       setSaving(false);
     }

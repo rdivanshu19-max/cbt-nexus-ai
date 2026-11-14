@@ -142,7 +142,7 @@ export function getChapters(subject: string, exam: string, classLevel: string): 
   const list = CHAPTERS[subject] || [];
   return list
     .filter((c) => {
-      const examOk = exam === 'Both' ? true : c.exams.includes(exam as any);
+      const examOk = exam === 'Both' ? true : (c.exams as string[]).includes(exam);
       const classOk = classLevel === 'Dropper' ? true : c.classLevel === classLevel;
       return examOk && classOk;
     })

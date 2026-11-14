@@ -1,4 +1,4 @@
-import { ExternalLink, Mic, BookOpen, Infinity as InfinityIcon, GraduationCap, Library, Users, Sparkles } from 'lucide-react';
+import { ExternalLink, Mic, BookOpen, Infinity as InfinityIcon, GraduationCap, Library, Users, Sparkles, type LucideIcon } from 'lucide-react';
 import { rankersEdgeLogo, rankersStarLogo } from '@/lib/brandLogos';
 
 interface Props {
@@ -16,7 +16,7 @@ interface BrandCard {
   tag: string;
   tagline: string;
   desc: string;
-  chips: { icon: any; label: string }[];
+  chips: { icon: LucideIcon; label: string }[];
   ring: string;
   bg: string;
 }

@@ -17,10 +17,27 @@ import { AddErrorForm } from '@/components/AddErrorForm';
 import { MISTAKE_LABELS, REVISION_INTERVALS, nextRevisionDate } from '@/lib/errorBook';
 import { Bookmark, BookmarkCheck, CheckCircle2, Circle, Mic, Square, Play, Trash2, RotateCcw, Zap, CalendarClock } from 'lucide-react';
 
+/** The JSON snapshot stored with each wrong answer. */
+interface QuestionSnapshot {
+  option_a?: string;
+  option_b?: string;
+  option_c?: string;
+  option_d?: string;
+  question_text?: string;
+  correct_answer?: string;
+  user_answer?: string;
+  explanation?: string;
+  manual?: boolean;
+  photo?: string;
+  source_type?: string;
+  source_name?: string;
+  question_ref?: string;
+}
+
 interface ErrorRow {
   id: string;
   question_id: string | null;
-  question_snapshot: any;
+  question_snapshot: QuestionSnapshot | null;
   subject: string | null;
   chapter: string | null;
   topic: string | null;
@@ -82,7 +99,9 @@ const ErrorBook = () => {
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
   }, [rows]);
 
-  const update = async (id: string, patch: Partial<ErrorRow>) => {
+  // The snapshot column is never edited from this screen, and it holds a JSON
+  // blob, so it is excluded from the patch type the Supabase client accepts.
+  const update = async (id: string, patch: Partial<Omit<ErrorRow, 'question_snapshot'>>) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
     const { error } = await supabase.from('error_book').update(patch).eq('id', id);
     if (error) toast({ title: 'Could not save', description: error.message, variant: 'destructive' });
@@ -152,7 +171,7 @@ const ErrorBook = () => {
           title={<>Never repeat a <span className="gradient-text-aurora">mistake</span></>}
           subtitle={`${rows.filter((r) => !r.resolved).length} open errors • wrong answers are auto-saved after every test`}
         />
-        {user && <AddErrorForm userId={user.id} onAdded={(r) => setRows((p) => [r as ErrorRow, ...p])} />}
+        {user && <AddErrorForm userId={user.id} onAdded={(r) => setRows((p) => [r as unknown as ErrorRow, ...p])} />}
 
         {boosterChapters.length > 0 && (
           <Card className="ink-card border-primary/30">
@@ -200,7 +219,7 @@ const ErrorBook = () => {
         ) : (
           <div className="space-y-4">
             {filtered.map((row) => {
-              const snap = row.question_snapshot || {};
+              const snap: QuestionSnapshot = row.question_snapshot ?? {};
               const options = [snap.option_a, snap.option_b, snap.option_c, snap.option_d];
               const keys = ['A', 'B', 'C', 'D'];
               return (

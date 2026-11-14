@@ -1,14 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { UIIntensityToggle } from '@/components/UIIntensityToggle';
 import { Button } from '@/components/ui/button';
-import { Hero3D } from '@/components/Hero3D';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import {
   BookOpen, Brain, BarChart3, Zap, Shield, ArrowRight, Sparkles, FileCheck2, Trophy,
   Heart, ExternalLink, Rocket, Briefcase, Target,
   Activity, Timer, Layers, Flag, Bookmark, Wand2,
 } from 'lucide-react';
 import { rankersEdgeLogo, rankersStarLogo, nexusLogo } from '@/lib/brandLogos';
+
+// three.js is ~600 KB. Loading it lazily keeps it out of the first paint, and the
+// hero is decorative, so a slow or failed load must never block the page.
+const Hero3D = lazy(() =>
+  import('@/components/Hero3D').then((m) => ({ default: m.Hero3D })),
+);
 
 const Index = () => {
   const arsenal = [
@@ -61,7 +68,11 @@ const Index = () => {
         <div className="lg:hidden pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-primary/25 blur-3xl animate-float" />
         <div className="lg:hidden pointer-events-none absolute top-40 -left-16 h-56 w-56 rounded-full bg-accent/20 blur-3xl animate-pulse-soft" />
         <div className="absolute inset-0 hidden lg:block opacity-90">
-          <Hero3D />
+          <ErrorBoundary label="hero-3d">
+            <Suspense fallback={null}>
+              <Hero3D />
+            </Suspense>
+          </ErrorBoundary>
         </div>
 
         <div className="container relative mx-auto px-4 sm:px-6 w-full">

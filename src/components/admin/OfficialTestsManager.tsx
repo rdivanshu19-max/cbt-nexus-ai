@@ -19,6 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { deleteTest } from '@/lib/test-management';
 import { ProcessingDialog } from '@/components/ProcessingDialog';
 import { Clock3, Eye, EyeOff, FileText, Loader2, Pencil, Trash2, Upload } from 'lucide-react';
+import { errorMessage } from '@/lib/errors';
 
 type OfficialTest = {
   id: string;
@@ -73,7 +74,7 @@ export const OfficialTestsManager = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
       setLoading(false);
       return;
     }
@@ -141,8 +142,8 @@ export const OfficialTestsManager = () => {
       });
       resetUploadForm();
       await fetchOfficialTests();
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } catch (error) {
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
     } finally {
       setUploading(false);
     }
@@ -185,7 +186,7 @@ export const OfficialTestsManager = () => {
     setSavingEdit(false);
 
     if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
       return;
     }
 
@@ -202,8 +203,8 @@ export const OfficialTestsManager = () => {
       await deleteTest(testId);
       setTests((prev) => prev.filter((test) => test.id !== testId));
       toast({ title: 'Official test deleted' });
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } catch (error) {
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
     } finally {
       setDeletingId(null);
     }
@@ -213,7 +214,7 @@ export const OfficialTestsManager = () => {
     const next = !test.is_published;
     const { error } = await supabase.from('tests').update({ is_published: next }).eq('id', test.id);
     if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      toast({ title: 'Error', description: errorMessage(error), variant: 'destructive' });
       return;
     }
     setTests((prev) => prev.map((t) => (t.id === test.id ? { ...t, is_published: next } : t)));

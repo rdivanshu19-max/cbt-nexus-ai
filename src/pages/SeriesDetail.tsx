@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, BookOpen, Lock, Monitor, PlayCircle, Sparkles, Mail } from 'lucide-react';
 import { EARLY_ACCESS_EMAIL, SeriesTest, isTestUnlocked, lockLabel, redeemCode } from '@/lib/testSeries';
+import { errorMessage } from '@/lib/errors';
 
 const SeriesDetail = () => {
   const { seriesId } = useParams();
@@ -36,8 +37,8 @@ const SeriesDetail = () => {
       if (seriesId && ids.includes(seriesId)) setUnlocked(true);
       toast({ title: 'Unlocked!', description: 'All tests in this series are now open for your account.' });
       setCode('');
-    } catch (e: any) {
-      toast({ title: 'Code not accepted', description: e.message, variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Code not accepted', description: errorMessage(e), variant: 'destructive' });
     } finally { setBusy(false); }
   };
 

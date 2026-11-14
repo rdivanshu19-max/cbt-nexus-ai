@@ -37,7 +37,7 @@ function stripMath(s: string): string {
     .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
     .replace(/[{}\\]/g, '');
 }
-function eM(s: any): string { return esc(stripMath(String(s ?? ''))); }
+function eM(s: unknown): string { return esc(stripMath(String(s ?? ''))); }
 
 export async function generateTestPaperPdf(input: TestPdfInput): Promise<void> {
   // 1) Normalize question_number: ensure unique & sequential numbering.
@@ -67,7 +67,7 @@ export async function generateTestPaperPdf(input: TestPdfInput): Promise<void> {
     ${qs.map((q) => {
       const opts = ['A', 'B', 'C', 'D'] as const;
       const optsHtml = opts.map((o) => {
-        const text = (q as any)[`option_${o.toLowerCase()}`];
+        const text = q[`option_${o.toLowerCase()}` as keyof typeof q];
         const isCorrect = input.includeAnswers && q.correct_answer === o;
         const isUserPick = input.includeAnswers && q.user_answer === o;
         let style = 'background:#fff;border:1px solid #e4e4e7;color:#1f2937;';

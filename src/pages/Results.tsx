@@ -15,17 +15,26 @@ import { RankersStarPromo } from '@/components/RankersStarPromo';
 import { useToast } from '@/hooks/use-toast';
 import { PageHeader, WindowCard } from '@/components/ui/page-header';
 import { Tukkabazi } from '@/components/Tukkabazi';
+import type { TukkabaziQuestion } from '@/components/Tukkabazi';
+import type { Response } from '@/pages/TestTaking';
 import { syncErrorBook } from '@/lib/errorBook';
+import { errorMessage } from '@/lib/errors';
+import type { Database } from '@/integrations/supabase/types';
+
+type AttemptRow = Database['public']['Tables']['test_attempts']['Row'];
+type TestRow = Database['public']['Tables']['tests']['Row'];
+type QuestionRow = Database['public']['Tables']['test_questions']['Row'];
+type ResponseRow = Database['public']['Tables']['test_responses']['Row'];
 
 const Results = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
   const { user, profile } = useAuth();
   const { toast } = useToast();
-  const [attempt, setAttempt] = useState<any>(null);
-  const [test, setTest] = useState<any>(null);
-  const [responses, setResponses] = useState<any[]>([]);
-  const [questions, setQuestions] = useState<any[]>([]);
-  const [otherAttempts, setOtherAttempts] = useState<any[]>([]);
+  const [attempt, setAttempt] = useState<AttemptRow | null>(null);
+  const [test, setTest] = useState<TestRow | null>(null);
+  const [responses, setResponses] = useState<ResponseRow[]>([]);
+  const [questions, setQuestions] = useState<QuestionRow[]>([]);
+  const [otherAttempts, setOtherAttempts] = useState<AttemptRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [downloadingTest, setDownloadingTest] = useState(false);
@@ -56,7 +65,7 @@ const Results = () => {
 
       const { data: qs } = await supabase.from('test_questions').select('*').eq('test_id', att.test_id).order('question_number');
       setQuestions(qs || []);
-      if (att.status === 'completed') syncErrorBook(user.id, att.id, (qs || []) as any, (resps || []) as any).catch(() => {});
+      if (att.status === 'completed') syncErrorBook(user.id, att.id, qs || [], resps || []).catch(() => {});
 
       setLoading(false);
     };
@@ -112,8 +121,8 @@ const Results = () => {
         })),
       });
       toast({ title: 'Report downloaded', description: 'Share it on Instagram/WhatsApp!' });
-    } catch (e: any) {
-      toast({ title: 'Failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Failed', description: errorMessage(e) || 'Try again', variant: 'destructive' });
     } finally {
       setDownloading(false);
     }
@@ -147,8 +156,8 @@ const Results = () => {
         }),
       });
       toast({ title: 'Test paper downloaded', description: 'Solved version with answers & explanations.' });
-    } catch (e: any) {
-      toast({ title: 'Failed', description: e?.message || 'Try again', variant: 'destructive' });
+    } catch (e) {
+      toast({ title: 'Failed', description: errorMessage(e) || 'Try again', variant: 'destructive' });
     } finally {
       setDownloadingTest(false);
     }
@@ -179,7 +188,7 @@ const Results = () => {
     <DashboardLayout>
       <div className="space-y-6 max-w-5xl mx-auto">
         <Link to="/tests" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to tests</Link>
-        {user && <Tukkabazi userId={user.id} attemptId={attempt.id} testId={attempt.test_id} questions={questions as any} responses={new Map(responses.map((r: any) => [r.question_id, r]))} />}
+        {user && <Tukkabazi userId={user.id} attemptId={attempt.id} testId={attempt.test_id} questions={questions as unknown as TukkabaziQuestion[]} responses={new Map(responses.map((r) => [r.question_id, r as unknown as Response]))} />}
         <div className="flex flex-wrap gap-2"><Button asChild size="sm" variant="outline"><Link to="/error-book">Open Error Book</Link></Button><Button asChild size="sm" variant="outline"><Link to="/planner">Plan revision</Link></Button></div>
         <PageHeader chip="PERFORMANCE REPORT" title={<>Test <span className="gradient-text-aurora">results</span></>} subtitle={test.title} actions={<div className="flex items-center gap-2 flex-wrap">
             <Badge className="text-base px-3 py-1.5 gradient-primary text-primary-foreground border-0">

@@ -24,7 +24,7 @@ const compress = (file: File) => new Promise<string>((resolve, reject) => {
 
 const sel = 'h-10 rounded-md border bg-background px-2 text-sm w-full';
 
-export const AddErrorForm = ({ userId, onAdded }: { userId: string; onAdded: (row: any) => void }) => {
+export const AddErrorForm = ({ userId, onAdded }: { userId: string; onAdded: (row: Record<string, unknown>) => void }) => {
   const [open, setOpen] = useState(false);
   const [f, setF] = useState({ subject: 'Physics', chapter: '', source_type: 'Module', source_name: '', question_ref: '', question_text: '', correct: '', mistake_tag: 'concept_gap', note: '' });
   const [photo, setPhoto] = useState<string | null>(null);
