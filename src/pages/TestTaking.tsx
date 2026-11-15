@@ -67,13 +67,16 @@ const TestTaking = () => {
       const { data: qs } = await supabase.from('test_questions').select('*').eq('test_id', testId).order('question_number');
       if (qs) setQuestions(qs);
 
-      // Hydrate autosave
+      // Hydrate autosave. A corrupt draft must never abort the load: parse it
+      // once inside the guard and reuse the parsed value below.
       let initialTimeLeft = testData.duration_minutes * 60;
+      let savedDraft: { attemptId?: string } | null = null;
       if (storageKey) {
         try {
           const raw = localStorage.getItem(storageKey);
           if (raw) {
             const saved = JSON.parse(raw);
+            savedDraft = saved;
             if (saved.responses) {
               setResponses(new Map(Object.entries(saved.responses)) as Map<string, Response>);
             }
@@ -84,15 +87,19 @@ const TestTaking = () => {
             if (saved.attemptId) setAttemptId(saved.attemptId);
           }
         } catch {
-          /* corrupt or unavailable local draft: start the test from a clean state */
+          // Corrupt or unavailable local draft: drop it and start from a clean state.
+          savedDraft = null;
+          try {
+            localStorage.removeItem(storageKey);
+          } catch {
+            /* storage unavailable: nothing to clear */
+          }
         }
       }
       setTimeLeft(initialTimeLeft);
 
       // Reuse attempt id if stored, else create
-      const stored = storageKey ? localStorage.getItem(storageKey) : null;
-      const parsed = stored ? JSON.parse(stored) : null;
-      if (!parsed?.attemptId) {
+      if (!savedDraft?.attemptId) {
         const { data: attempt } = await supabase.from('test_attempts').insert({
           user_id: user.id, test_id: testId, status: 'in_progress',
         }).select().single();
@@ -205,14 +212,29 @@ const TestTaking = () => {
 
       const allResponses = Array.from(responses.values());
 
+      // A failed submit can be retried, and an attempt can already hold rows from
+      // an earlier partial submit. There is no unique (attempt_id, question_id)
+      // constraint, so insert only the questions this attempt does not have yet
+      // instead of duplicating them and double-counting in analytics.
+      const { data: existingResponses, error: existingError } = await supabase
+        .from('test_responses')
+        .select('question_id')
+        .eq('attempt_id', attemptId);
+
+      if (existingError) throw existingError;
+
+      const alreadySaved = new Set((existingResponses ?? []).map((row) => row.question_id));
+
       for (const resp of allResponses) {
-        await supabase.from('test_responses').insert({
+        if (alreadySaved.has(resp.question_id)) continue;
+        const { error: insertError } = await supabase.from('test_responses').insert({
           attempt_id: attemptId,
           question_id: resp.question_id,
           selected_answer: resp.selected_answer,
           is_marked_for_review: resp.is_marked_for_review,
           time_spent_seconds: resp.time_spent_seconds,
         });
+        if (insertError) throw insertError;
       }
 
       const { data: fullQuestions } = await supabase.from('test_questions').select('*').eq('test_id', testId);
