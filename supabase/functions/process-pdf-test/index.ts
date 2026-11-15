@@ -264,6 +264,18 @@ serve(async (req) => {
       return respond({ ok: false, error: "Only admins can upload official tests" });
     }
 
+    // filePath / answerKeyFilePath come from the browser and are read here with the
+    // service-role key, which bypasses storage RLS. Without this check any signed-in
+    // user could point the function at another student's paper or an admin answer
+    // key and have its text folded into a test they own.
+    const isOwnedPath = (path: string) => path.startsWith(`${userId}/`);
+    if (!isAdmin) {
+      const pathsAreOwned = isOwnedPath(filePath) && (!answerKeyFilePath || isOwnedPath(answerKeyFilePath));
+      if (!pathsAreOwned) {
+        return respond({ ok: false, error: "You can only process PDFs that you uploaded yourself." });
+      }
+    }
+
     if (!isAdmin) {
       const dayWindow = getDayWindow();
       const { count, error: countError } = await supabase
