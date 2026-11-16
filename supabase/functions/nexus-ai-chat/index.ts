@@ -6,6 +6,31 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// The client controls this array, so it cannot be trusted as-is: a caller could
+// inject a "system" role message and replace Nexus AI's instructions, or send a
+// huge transcript and drain the project's gateway credits. Keep only real
+// user/assistant turns, bounded in number and length.
+type ChatMessage = { role: "user" | "assistant"; content: string };
+
+const MAX_MESSAGES = 20;
+const MAX_MESSAGE_CHARS = 4000;
+
+const sanitizeMessages = (raw: unknown): ChatMessage[] => {
+  if (!Array.isArray(raw)) return [];
+  const out: ChatMessage[] = [];
+  for (const entry of raw.slice(-MAX_MESSAGES)) {
+    if (!entry || typeof entry !== "object") continue;
+    const role = (entry as { role?: unknown }).role;
+    const content = (entry as { content?: unknown }).content;
+    if (role !== "user" && role !== "assistant") continue;
+    if (typeof content !== "string") continue;
+    const text = content.trim().slice(0, MAX_MESSAGE_CHARS);
+    if (!text) continue;
+    out.push({ role, content: text });
+  }
+  return out;
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -19,7 +44,13 @@ serve(async (req) => {
       });
     }
 
-    const { messages } = await req.json();
+    const payload = await req.json().catch(() => null);
+    const messages = sanitizeMessages(payload?.messages);
+    if (messages.length === 0) {
+      return new Response(JSON.stringify({ error: "No message to answer. Please type a question." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 

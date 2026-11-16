@@ -82,6 +82,16 @@ const callAI = async (apiKey: string, system: string, user: string) => {
   throw new Error(lastErr);
 };
 
+const toInt = (raw: unknown, fallback: number) => {
+  const n = Number(raw);
+  return Number.isFinite(n) ? Math.trunc(n) : fallback;
+};
+
+const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
+
+const asStringList = (raw: unknown): string[] =>
+  Array.isArray(raw) ? raw.filter((v): v is string => typeof v === "string" && v.trim().length > 0).slice(0, 40) : [];
+
 const sanitizeInteger = (raw: unknown) => {
   const m = String(raw ?? "").match(/-?\d+/);
   if (!m) return null;
@@ -122,7 +132,9 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (ownerError) throw ownerError;
       if (!owner) throw new Error("Test not found");
-      if (owner.created_by && owner.created_by !== userId) {
+      // A null created_by means the test was created outside this flow (admin or
+      // series import). Those are admin-owned: never let a student append to them.
+      if (owner.created_by !== userId) {
         const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
         if (!isAdmin) {
           return new Response(JSON.stringify({ error: "You are not allowed to modify this test." }), {
@@ -135,16 +147,31 @@ Deno.serve(async (req) => {
 
     /* ---------- phase 1: create the empty test shell ---------- */
     if (body.phase === "create") {
+      // The client builds this body, so bound every stored value: an unbounded
+      // duration/marks row is unusable in the exam UI and cannot be corrected
+      // by the student afterwards.
+      const title = typeof body.title === "string" ? body.title.trim().slice(0, 200) : "";
+      if (!title) {
+        return new Response(JSON.stringify({ error: "A test title is required." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const duration = clamp(toInt(body.duration, 60), 1, 600);
+      const marks = clamp(toInt(body.marks, 0), 0, 2000);
+      const description = typeof body.description === "string" && body.description.trim()
+        ? body.description.trim().slice(0, 1000)
+        : `AI-generated ${body.examType} test`;
+
       const { data: test, error } = await supabase.from("tests").insert({
-        title: body.title,
-        description: body.description || `AI-generated ${body.examType} test`,
+        title,
+        description,
         test_type: "ai_generated",
         exam_type: body.examType,
         subject: body.subject || null,
         chapter: body.chapter || null,
         class_level: body.classLevel || null,
-        duration_minutes: body.duration,
-        total_marks: body.marks,
+        duration_minutes: duration,
+        total_marks: marks,
         correct_marks: 4,
         wrong_marks: -1,
         unattempted_marks: 0,
@@ -164,8 +191,9 @@ Deno.serve(async (req) => {
       if (!apiKey) throw new Error("AI is not configured");
 
       const {
-        testId, startNumber, count, integerCount = 0,
-        examType, difficulty = "moderate", subject, chapters = [], topics = [],
+        testId, startNumber, integerCount = 0,
+        examType, difficulty = "moderate", subject,
+        chapters: rawChapters, topics: rawTopics,
         classLevel,
       } = body as {
         testId: string; startNumber: number; count: number; integerCount?: number;
@@ -173,7 +201,15 @@ Deno.serve(async (req) => {
         chapters?: string[]; topics?: string[]; classLevel?: string;
       };
 
-      const mcqCount = Math.max(0, count - integerCount);
+      // Every batch is one paid AI call, so the requested size is clamped to the
+      // range the client actually uses (1-25) instead of being taken on trust.
+      const count = clamp(toInt(body.count, 0), 1, 25);
+      const integerCountClamped = clamp(toInt(integerCount, 0), 0, count);
+      const startNumberClamped = clamp(toInt(startNumber, 1), 1, 500);
+      const chapters = asStringList(rawChapters);
+      const topics = asStringList(rawTopics);
+
+      const mcqCount = Math.max(0, count - integerCountClamped);
 
       const scopeLines = [
         subject ? `Subject: ${subject}` : `Cover the full ${examType} syllabus with a balanced spread across subjects.`,
@@ -192,10 +228,10 @@ DIFFICULTY (mandatory, applies to every question): ${DIFFICULTY_BRIEF[difficulty
 
 Composition:
 - ${mcqCount} single-correct MCQ questions ("question_type": "mcq") with exactly four options and one correct answer.
-- ${integerCount} integer-answer questions ("question_type": "integer").
-${integerCount > 0 ? integerRules : ""}
+- ${integerCountClamped} integer-answer questions ("question_type": "integer").
+${integerCountClamped > 0 ? integerRules : ""}
 
-Number the questions ${startNumber} to ${startNumber + count - 1} in the "question_number" field.
+Number the questions ${startNumberClamped} to ${startNumberClamped + count - 1} in the "question_number" field.
 Set every question's "difficulty" field to "${difficulty}".
 All questions must be self-contained (no diagrams or images required).
 
@@ -209,7 +245,7 @@ ${jsonShape}`;
         const asInteger = isInteger && intAns !== null;
         return {
           test_id: testId,
-          question_number: startNumber + i,
+          question_number: startNumberClamped + i,
           question_type: asInteger ? "integer" : "mcq",
           question_text: String(q.question_text || "").trim(),
           option_a: asInteger ? "" : String(q.option_a ?? ""),
