@@ -142,7 +142,10 @@ const TestTaking = () => {
       handleSubmit();
       return;
     }
-    const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    // Clamp at zero: an unclamped counter kept ticking past 0 while a submit
+    // was in flight or while the attempt was still being created, which showed
+    // a negative clock and stored a time_taken_seconds longer than the paper.
+    const timer = setInterval(() => setTimeLeft(t => Math.max(0, t - 1)), 1000);
     return () => clearInterval(timer);
   }, [timeLeft, loading]);
 
@@ -258,7 +261,7 @@ const TestTaking = () => {
       const negativeMarks = wrong * Math.abs(test.wrong_marks);
       const totalScore = positiveMarks - negativeMarks;
       const accuracy = correct + wrong > 0 ? (correct / (correct + wrong)) * 100 : 0;
-      const timeTaken = test.duration_minutes * 60 - timeLeft;
+      const timeTaken = Math.max(0, Math.min(test.duration_minutes * 60, test.duration_minutes * 60 - timeLeft));
 
       for (const q of fullQuestions) {
         const resp = responses.get(q.id);
