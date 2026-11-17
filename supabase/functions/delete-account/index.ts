@@ -26,25 +26,44 @@ Deno.serve(async (req) => {
     const userId = userData.user.id;
     const admin = createClient(url, serviceKey);
 
+    // Every delete below used to ignore its error. Deleting the auth account
+    // anyway left the student's rows orphaned with no session left to retry
+    // from, so a "successful" deletion could silently keep their data. Now the
+    // auth user is removed only after every table has been cleared cleanly.
+    const failures: string[] = [];
+    const wipe = async (label: string, run: () => Promise<{ error: { message: string } | null }>) => {
+      const { error } = await run();
+      if (error) failures.push(`${label}: ${error.message}`);
+    };
+
     // Wipe app data first (attempts/responses cascade through FKs).
     const { data: attempts } = await admin.from('test_attempts').select('id').eq('user_id', userId);
     if (attempts?.length) {
-      await admin.from('test_responses').delete().in('attempt_id', attempts.map((a) => a.id));
+      const attemptIds = attempts.map((a) => a.id);
+      await wipe('test_responses', () => admin.from('test_responses').delete().in('attempt_id', attemptIds));
     }
-    await admin.from('test_attempts').delete().eq('user_id', userId);
-    await admin.from('chat_messages').delete().eq('user_id', userId);
-    await admin.from('study_streaks').delete().eq('user_id', userId);
-    await admin.from('saved_notes').delete().eq('user_id', userId);
-    await admin.from('pdf_conversions').delete().eq('user_id', userId);
-    await admin.from('profiles').delete().eq('user_id', userId);
-    await admin.from('user_roles').delete().eq('user_id', userId);
+    await wipe('test_attempts', () => admin.from('test_attempts').delete().eq('user_id', userId));
+    await wipe('chat_messages', () => admin.from('chat_messages').delete().eq('user_id', userId));
+    await wipe('study_streaks', () => admin.from('study_streaks').delete().eq('user_id', userId));
+    await wipe('saved_notes', () => admin.from('saved_notes').delete().eq('user_id', userId));
+    await wipe('pdf_conversions', () => admin.from('pdf_conversions').delete().eq('user_id', userId));
+    await wipe('profiles', () => admin.from('profiles').delete().eq('user_id', userId));
+    await wipe('user_roles', () => admin.from('user_roles').delete().eq('user_id', userId));
 
     // Custom tests created by the user
     const { data: ownTests } = await admin.from('tests').select('id').eq('created_by', userId);
     if (ownTests?.length) {
       const ids = ownTests.map((t) => t.id);
-      await admin.from('test_questions').delete().in('test_id', ids);
-      await admin.from('tests').delete().in('id', ids);
+      await wipe('test_questions', () => admin.from('test_questions').delete().in('test_id', ids));
+      await wipe('tests', () => admin.from('tests').delete().in('id', ids));
+    }
+
+    if (failures.length > 0) {
+      console.error('delete-account: data cleanup failed, account kept so it can be retried:', failures);
+      return json({
+        ok: false,
+        error: 'Your account data could not be fully removed, so nothing was deleted. Please try again.',
+      });
     }
 
     // Finally remove the auth account so the email can no longer sign in.
