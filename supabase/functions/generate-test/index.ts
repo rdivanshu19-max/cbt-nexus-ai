@@ -252,20 +252,27 @@ ${jsonShape}`;
           option_b: asInteger ? "" : String(q.option_b ?? ""),
           option_c: asInteger ? "" : String(q.option_c ?? ""),
           option_d: asInteger ? "" : String(q.option_d ?? ""),
-          correct_answer: asInteger && intAns !== null ? intAns : String(q.correct_answer || "A").trim().charAt(0).toUpperCase(),
+          // Never guess a key. An MCQ without a readable A-D answer is dropped
+          // below instead of being stored as "A" and scored wrongly.
+          correct_answer: asInteger && intAns !== null
+            ? intAns
+            : String(q.correct_answer ?? "").trim().charAt(0).toUpperCase(),
           explanation: String(q.explanation || ""),
           subject: q.subject || subject || null,
           topic: q.topic || null,
           difficulty: difficulty,
         };
-      }).filter((r: any) => r.question_text.length > 0);
+      }).filter((r: any) => (
+        r.question_text.length > 0 &&
+        (r.question_type === "integer" ? r.correct_answer.length > 0 : ["A", "B", "C", "D"].includes(r.correct_answer))
+      ));
 
       if (rows.length === 0) throw new Error("No usable questions in batch");
 
       const { error } = await supabase.from("test_questions").insert(rows);
       if (error) throw error;
 
-      return new Response(JSON.stringify({ inserted: rows.length }), {
+      return new Response(JSON.stringify({ inserted: rows.length, skipped: generated.slice(0, count).length - rows.length }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

@@ -18,6 +18,7 @@ import { Tukkabazi } from '@/components/Tukkabazi';
 import type { TukkabaziQuestion } from '@/components/Tukkabazi';
 import type { Response } from '@/pages/TestTaking';
 import { syncErrorBook } from '@/lib/errorBook';
+import { answersMatch } from '@/lib/answers';
 import { errorMessage } from '@/lib/errors';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -86,13 +87,14 @@ const Results = () => {
         bySubject[subj] = bySubject[subj] || { correct: 0, wrong: 0, unattempted: 0, total: 0 };
         bySubject[subj].total++;
         const r = responses.find((x) => x.question_id === q.id);
+        const isRight = answersMatch(r?.selected_answer, q.correct_answer, q.question_type);
         if (!r?.selected_answer) bySubject[subj].unattempted++;
-        else if (r.selected_answer === q.correct_answer) bySubject[subj].correct++;
+        else if (isRight) bySubject[subj].correct++;
         else bySubject[subj].wrong++;
         if (q.topic) {
           byTopic[q.topic] = byTopic[q.topic] || { correct: 0, wrong: 0, total: 0, subject: subj };
           byTopic[q.topic].total++;
-          if (r?.selected_answer === q.correct_answer) byTopic[q.topic].correct++;
+          if (isRight) byTopic[q.topic].correct++;
           else if (r?.selected_answer) byTopic[q.topic].wrong++;
         }
       }

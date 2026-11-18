@@ -16,6 +16,9 @@ type ApiResponse = {
   diagnostics?: Record<string, unknown>;
 };
 
+// test_questions.correct_answer only accepts these four values.
+const MCQ_KEYS = ["A", "B", "C", "D"];
+
 function respond(data: ApiResponse) {
   return new Response(JSON.stringify(data), {
     status: 200,
@@ -362,12 +365,25 @@ serve(async (req) => {
       return respond({ ok: false, error: "Questions were found but none had valid format (need question text + 4 options)." });
     }
 
-    const totalMarks = questions.length * correctMarks;
+    // A question whose answer could not be determined must not be stored with a
+    // guessed key: every answer is A-D only, so an unreadable key would score the
+    // paper wrongly. Drop those questions and tell the student why.
+    const keyedQuestions = questions.filter((question: any) => MCQ_KEYS.includes(question.correct_answer));
+    const skippedForMissingKey = questions.length - keyedQuestions.length;
+    if (!keyedQuestions.length) {
+      return respond({
+        ok: false,
+        error: "I could not read the correct answer for any of the questions in this PDF. Please attach the answer key PDF or TXT and try again.",
+        diagnostics: { extractedQuestionCount: questions.length, skippedForMissingKey },
+      });
+    }
+
+    const totalMarks = keyedQuestions.length * correctMarks;
     const { data: test, error: testError } = await supabase
       .from("tests")
       .insert({
         title,
-        description: `Extracted from uploaded PDF (${questions.length} questions)`,
+        description: `Extracted from uploaded PDF (${keyedQuestions.length} questions)`,
         test_type: isAdminUpload ? "admin_uploaded" : "user_custom",
         exam_type: examType || null,
         subject: subject || null,
@@ -385,7 +401,7 @@ serve(async (req) => {
 
     if (testError) throw new Error(`Failed to create test: ${testError.message}`);
 
-    const questionsToInsert = questions.map((question: any, index: number) => ({
+    const questionsToInsert = keyedQuestions.map((question: any, index: number) => ({
       test_id: test.id,
       question_number: index + 1,
       question_text: question.question_text,
@@ -393,7 +409,7 @@ serve(async (req) => {
       option_b: question.option_b,
       option_c: question.option_c,
       option_d: question.option_d,
-      correct_answer: question.correct_answer || "A",
+      correct_answer: question.correct_answer,
       explanation: "",
       subject: subject || null,
       topic: null,
@@ -410,13 +426,16 @@ serve(async (req) => {
     return respond({
       ok: true,
       testId: test.id,
-      questionCount: questions.length,
-      message: `✅ ${questions.length} questions extracted successfully!`,
+      questionCount: keyedQuestions.length,
+      message: skippedForMissingKey > 0
+        ? `✅ ${keyedQuestions.length} questions extracted. ${skippedForMissingKey} question(s) were skipped because their correct answer could not be read — attach an answer key to include them.`
+        : `✅ ${keyedQuestions.length} questions extracted successfully!`,
       diagnostics: {
         usedModel,
         scannedPdf: isScanned,
         extractedTextLength: extractedText.length,
         estimatedQuestionCount,
+        skippedForMissingKey,
       },
     });
   } catch (error: any) {
