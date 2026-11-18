@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { answersMatch } from '@/lib/answers';
 
 export type MistakeTag = 'concept_gap' | 'silly_error' | 'time_trap' | 'guessed';
 
@@ -72,7 +73,10 @@ export async function syncErrorBook(
     .filter((q) => !already.has(q.id))
     .map((q) => {
       const resp = responses.find((r) => r.question_id === q.id);
-      if (!resp?.selected_answer) return null; // only wrong answers, not skipped
+      if (!resp?.selected_answer) return null; // skipped questions are not mistakes
+      // Correct answers must never enter the Error Book: only questions the
+      // student actually got wrong are worth revising.
+      if (answersMatch(resp.selected_answer, q.correct_answer, q.question_type)) return null;
       return {
         user_id: userId,
         question_id: q.id,

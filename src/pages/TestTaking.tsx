@@ -14,6 +14,7 @@ import { AutosaveBadge } from '@/components/AutosaveBadge';
 import { RankersEdgeButton, RankersStarButton } from '@/components/RankersEdgeButton';
 import { ReadingThemePicker, getReadingTheme } from '@/components/ReadingThemes';
 import { errorMessage } from '@/lib/errors';
+import { answersMatch } from '@/lib/answers';
 if (typeof document !== 'undefined') document.documentElement.dataset.readingTheme = getReadingTheme();
 
 export interface Question {
@@ -178,12 +179,6 @@ const TestTaking = () => {
       updated.set(qId, { ...existing, selected_answer: clean || null });
       return updated;
     });
-  };
-
-  const answersMatch = (selected: string | null, correct: string, type?: string | null) => {
-    if (!selected) return false;
-    if (type === 'integer') return Number.parseInt(selected, 10) === Number.parseInt(correct, 10);
-    return selected.trim().toUpperCase() === correct.trim().toUpperCase();
   };
 
   const toggleReview = () => {

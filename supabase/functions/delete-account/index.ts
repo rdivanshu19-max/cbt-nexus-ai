@@ -8,6 +8,48 @@ const corsHeaders = {
 const json = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
+type AdminClient = ReturnType<typeof createClient>;
+
+/** Removes every object this user owns, returning any folder that failed. */
+async function purgeUserStorage(admin: AdminClient, userId: string): Promise<string[]> {
+  const targets: { bucket: string; prefix: string }[] = [
+    { bucket: 'test-pdfs', prefix: userId },
+    { bucket: 'question-images', prefix: `voice/${userId}` },
+  ];
+  const warnings: string[] = [];
+
+  for (const { bucket, prefix } of targets) {
+    try {
+      const { data: objects, error } = await admin.storage.from(bucket).list(prefix, { limit: 1000 });
+      if (error) {
+        warnings.push(`${bucket}: ${error.message}`);
+        continue;
+      }
+      const paths: string[] = [];
+      for (const entry of objects ?? []) {
+        // Folders come back without a metadata marker; recurse one level, which
+        // covers the answer-keys/ subfolder the upload form uses.
+        if (!entry.id) {
+          const { data: nested } = await admin.storage.from(bucket).list(`${prefix}/${entry.name}`, { limit: 1000 });
+          for (const child of nested ?? []) {
+            if (child.id) paths.push(`${prefix}/${entry.name}/${child.name}`);
+          }
+        } else {
+          paths.push(`${prefix}/${entry.name}`);
+        }
+      }
+      if (paths.length) {
+        const { error: removeError } = await admin.storage.from(bucket).remove(paths);
+        if (removeError) warnings.push(`${bucket}: ${removeError.message}`);
+      }
+    } catch (e) {
+      warnings.push(`${bucket}: ${e instanceof Error ? e.message : 'unknown error'}`);
+    }
+  }
+
+  return warnings;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
@@ -47,11 +89,16 @@ Deno.serve(async (req) => {
       await admin.from('tests').delete().in('id', ids);
     }
 
+    // Remove the user's stored files too. Deleting the account alone left the
+    // uploaded papers and voice notes behind in private buckets, so the data
+    // outlived the deletion request.
+    const storageWarnings = await purgeUserStorage(admin, userId);
+
     // Finally remove the auth account so the email can no longer sign in.
     const { error: delErr } = await admin.auth.admin.deleteUser(userId);
     if (delErr) return json({ ok: false, error: delErr.message });
 
-    return json({ ok: true });
+    return json({ ok: true, ...(storageWarnings.length ? { warnings: storageWarnings } : {}) });
   } catch (e) {
     return json({ ok: false, error: e instanceof Error ? e.message : 'Unknown error' });
   }
