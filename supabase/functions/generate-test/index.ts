@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { requireUser } from "../_shared/auth.ts";
+import { normaliseAnswerKey } from "../_shared/answerKey.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -256,7 +257,7 @@ ${jsonShape}`;
           // below instead of being stored as "A" and scored wrongly.
           correct_answer: asInteger && intAns !== null
             ? intAns
-            : String(q.correct_answer ?? "").trim().charAt(0).toUpperCase(),
+            : normaliseAnswerKey(q.correct_answer),
           explanation: String(q.explanation || ""),
           subject: q.subject || subject || null,
           topic: q.topic || null,

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.25.76";
+import { normaliseAnswerKey } from "../_shared/answerKey.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -349,9 +350,7 @@ serve(async (req) => {
         option_b: String(question.optionB || question.option_b || "").trim(),
         option_c: String(question.optionC || question.option_c || "").trim(),
         option_d: String(question.optionD || question.option_d || "").trim(),
-        correct_answer: question.correctAnswer || question.correct_answer
-          ? String(question.correctAnswer || question.correct_answer).trim().toUpperCase().charAt(0)
-          : null,
+        correct_answer: normaliseAnswerKey(question.correctAnswer ?? question.correct_answer),
       }))
       .filter((question: any) => (
         question.question_text.length > 0 &&
