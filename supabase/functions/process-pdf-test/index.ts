@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.25.76";
+import { applyAnswerKeys, normaliseAnswer } from "../_shared/answerKey.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -338,6 +339,12 @@ serve(async (req) => {
       });
     }
 
+    // The prompt tells the model to return null when no key is visible, and to
+    // name the option as a single letter. Neither is guaranteed: "Option B"
+    // used to be stored as "O", and a missing key was silently stored as "A".
+    // Normalise every answer properly and count the ones that could not be read.
+    const keyed = applyAnswerKeys(rawQuestions as any[]);
+
     const questions = rawQuestions
       .map((question: any, index: number) => ({
         question_number: question.questionNumber || index + 1,
@@ -346,9 +353,10 @@ serve(async (req) => {
         option_b: String(question.optionB || question.option_b || "").trim(),
         option_c: String(question.optionC || question.option_c || "").trim(),
         option_d: String(question.optionD || question.option_d || "").trim(),
-        correct_answer: question.correctAnswer || question.correct_answer
-          ? String(question.correctAnswer || question.correct_answer).trim().toUpperCase().charAt(0)
-          : null,
+        correct_answer: keyed.answers[index] ?? null,
+        answer_key_verified: Boolean(
+          normaliseAnswer((rawQuestions[index] as any)?.correctAnswer ?? (rawQuestions[index] as any)?.correct_answer ?? null),
+        ),
       }))
       .filter((question: any) => (
         question.question_text.length > 0 &&
@@ -362,12 +370,17 @@ serve(async (req) => {
       return respond({ ok: false, error: "Questions were found but none had valid format (need question text + 4 options)." });
     }
 
+    const unverifiedAnswers = questions.filter((question: any) => !question.answer_key_verified).length;
+    const keyWarning = unverifiedAnswers > 0
+      ? ` No answer key was readable for ${unverifiedAnswers} of ${questions.length} question(s); those keys are unverified and default to A — attach the answer key PDF to score this paper correctly.`
+      : "";
+
     const totalMarks = questions.length * correctMarks;
     const { data: test, error: testError } = await supabase
       .from("tests")
       .insert({
         title,
-        description: `Extracted from uploaded PDF (${questions.length} questions)`,
+        description: `Extracted from uploaded PDF (${questions.length} questions).${keyWarning}`.trim(),
         test_type: isAdminUpload ? "admin_uploaded" : "user_custom",
         exam_type: examType || null,
         subject: subject || null,
@@ -404,20 +417,24 @@ serve(async (req) => {
     if (insertError) throw new Error(`Failed to insert questions: ${insertError.message}`);
 
     if (!isAdmin) {
-      await supabase.from("pdf_conversions").insert({ user_id: userId });
+      // The daily quota is counted from this table, so a silent failure here
+      // would hand out unlimited free conversions. Log it loudly instead.
+      const { error: quotaError } = await supabase.from("pdf_conversions").insert({ user_id: userId });
+      if (quotaError) console.error("pdf_conversions insert failed (quota not recorded):", quotaError);
     }
 
     return respond({
       ok: true,
       testId: test.id,
       questionCount: questions.length,
-      message: `✅ ${questions.length} questions extracted successfully!`,
       diagnostics: {
         usedModel,
         scannedPdf: isScanned,
         extractedTextLength: extractedText.length,
         estimatedQuestionCount,
+        unverifiedAnswers,
       },
+      message: `✅ ${questions.length} questions extracted successfully!${unverifiedAnswers > 0 ? ` ${unverifiedAnswers} question(s) have an unverified answer key.` : ""}`,
     });
   } catch (error: any) {
     console.error("Edge function error:", error);
